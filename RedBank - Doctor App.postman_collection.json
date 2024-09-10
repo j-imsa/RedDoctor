@@ -1,0 +1,193 @@
+{
+	"info": {
+		"_postman_id": "c82fc195-9fd4-4fa1-b9fb-6a6853d97160",
+		"name": "RedBank - Doctor App",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3443036"
+	},
+	"item": [
+		{
+			"name": "Docker",
+			"item": [
+				{
+					"name": "Add a day",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    // \"public_id\": \"dfsdfsdf\",\n    \"date\": \"11-12-2024\",\n    \"start\": \"11:30:10\",\n    \"end\": \"12:35:00\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/{{version}}/doctors",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{version}}",
+								"doctors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "See all appointments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/{{version}}/doctors/11-12-2024?page=1&size=15&sort_direction=asc&type=all",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{version}}",
+								"doctors",
+								"11-12-2024"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "size",
+									"value": "15"
+								},
+								{
+									"key": "sort_direction",
+									"value": "asc"
+								},
+								{
+									"key": "type",
+									"value": "all"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove an appointments",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/{{version}}/doctors/_xGtBGXubs1yZucqNt8cKb_DJezaZ-xv-u7Ken-8VzhmBiQXqjaqkiy3M4v0jPa_dd",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{version}}",
+								"doctors",
+								"_xGtBGXubs1yZucqNt8cKb_DJezaZ-xv-u7Ken-8VzhmBiQXqjaqkiy3M4v0jPa_dd"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Patient",
+			"item": [
+				{
+					"name": "See all available appointments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/{{version}}/doctors/11-12-2024?type=open&page=1&size=15&sort_direction=asc",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{version}}",
+								"doctors",
+								"11-12-2024"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "open"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "size",
+									"value": "15"
+								},
+								{
+									"key": "sort_direction",
+									"value": "asc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Take an appointment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Foo bar\",\n    \"phone_number\": \"9131231234\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/{{version}}/patients/i625bsvXoeAwTFiPGd6Huo4gGIXgCqkMtuF1rwPMTN_sUiDq4kuHgJWIljKc715O",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{version}}",
+								"patients",
+								"i625bsvXoeAwTFiPGd6Huo4gGIXgCqkMtuF1rwPMTN_sUiDq4kuHgJWIljKc715O"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "See a patient's appointments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/{{version}}/patients/9131231234",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{version}}",
+								"patients",
+								"9131231234"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
