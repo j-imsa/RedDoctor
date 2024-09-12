@@ -68,10 +68,25 @@ curl --location 'http://localhost:8088/v0.9/patients/9131231234'
 
 ### To-Do
 
-- [ ] Code Coverage
-  - [JaCoCo](https://www.jacoco.org/jacoco/trunk/index.html)
-- [ ] Concurrency vs Functional
+- [ ] Concurrency check
+  - Locking
+    - [ ] Optimistic Locking
+    - [ ] Pessimistic Locking
+  - Transactional Boundaries
+    - [ ] @Transactional
+
+- [ ] Status
+  - [ ] OPEN
+  - [ ] TAKEN
+  - [ ] DELETED
+
 - [ ] Docker
   - [Google Jib](https://cloud.google.com/java/getting-started/jib)
+  - Compose
+    - [ ] MySQL
+
+- [ ] Code Coverage
+  - [JaCoCo](https://www.jacoco.org/jacoco/trunk/index.html)
+
 - [ ] Testcontainers
   - [Link](https://java.testcontainers.org/)
