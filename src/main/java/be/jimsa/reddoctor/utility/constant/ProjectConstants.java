@@ -35,7 +35,7 @@ public class ProjectConstants {
     public static final String PATIENT = "Patient";
     public static final String PATIENT_FIELD = "patient";
     public static final String PATIENT_DTO_DOCUMENT_NAME = "Patient";
-    public static final String PATIENT_DTO_DOCUMENT_DESCRIPTION = "This is 'PatientDto'";
+    public static final String PATIENT_DTO_DOCUMENT_DESCRIPTION = "This is 'PatientDto', and will ignored when it's null";
     public static final String PATIENT_PHONE_NUMBER_FIELD = "phone_number";
     public static final String PATIENT_DATABASE_TABLE_NAME = "patients";
     public static final String PATIENT_DATABASE_JOIN_ID = "patient_id";
@@ -129,6 +129,7 @@ public class ProjectConstants {
     public static final String EXCEPTION_METHOD_APP_406_EXCEPTION = "App406Exceptions";
     public static final String EXCEPTION_METHOD_APP_5XX_EXCEPTION = "App5xxExceptions";
 
+
     // ======================== Response ======================== //
     public static final String RESPONSE_DOCUMENT_NAME = "App Response";
     public static final String RESPONSE_DOCUMENT_DESCRIPTION = "This is 'ResponseDto'";
@@ -184,7 +185,7 @@ public class ProjectConstants {
               "action": false,
               "timestamp": "10/09/2024 10:20:30 PM",
               "result": {
-                "path": "{METHOD} /{VERSION}/{PATH}",
+                "path": "{METHOD} /{VERSION}/{PATH-PID-...}",
                 "message": "Internal service error!"
               }
             }
@@ -213,7 +214,7 @@ public class ProjectConstants {
               "action": false,
               "timestamp": "10/09/2024 10:26:24 PM",
               "result": {
-                "path": "POST /v0.9/patients/2Vpi103xK5OblG8ykrm8GOimac7W5ESDHxGbL_5dlwvBB6D6xxXeCTlcZgc-8cyB",
+                "path": "{METHOD} /{VERSION}/{PATH-PID-...}",
                 "message": "The resource with provided public_id not founded!"
               }
             }
@@ -281,7 +282,7 @@ public class ProjectConstants {
     public static final String API_DOCUMENT_APPOINTMENT_GET_ALL_200_EXAMPLE_2_VALUE = """
             {
               "action": true,
-              "timestamp": "2024-09-02T13:54:39.976049836",
+              "timestamp": "10/09/2024 10:20:30 PM",
               "result": []
             }
             """;
@@ -323,7 +324,7 @@ public class ProjectConstants {
     public static final String API_DOCUMENT_APPOINTMENT_GET_ONE_200_EXAMPLE_2_VALUE = """
             {
               "action": true,
-              "timestamp": "2024-09-02T13:54:39.976049836",
+              "timestamp": "10/09/2024 10:20:30 PM",
               "result": []
             }
             """;
@@ -352,7 +353,7 @@ public class ProjectConstants {
               "action": false,
               "timestamp": "10/09/2024 10:17:26 PM",
               "result": {
-                "path": "DELETE /{version}/doctors/nFy_PXVUyw2QA8PIQBBtGpVo5GnSsLgXUab-nuVCJyEuPpgCpLa_psO6BFcZLnBX",
+                "path": "{METHOD} /{VERSION}/{PATH-PID-...}",
                 "message": "The resource with provided public_id not founded!"
               }
             }
