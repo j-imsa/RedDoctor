@@ -124,10 +124,8 @@ public class ProjectConstants {
 
     public static final String EXCEPTION_METHOD_METHOD_ARGUMENT_NOT_VALID = "MethodArgumentNotValid";
     public static final String EXCEPTION_METHOD_HTTP_MESSAGE_NOT_READABLE = "HttpMessageNotReadable";
-    public static final String EXCEPTION_METHOD_APP_4XX_EXCEPTION = "App4xxExceptions";
-    public static final String EXCEPTION_METHOD_APP_404_EXCEPTION = "App404Exceptions";
-    public static final String EXCEPTION_METHOD_APP_406_EXCEPTION = "App406Exceptions";
-    public static final String EXCEPTION_METHOD_APP_5XX_EXCEPTION = "App5xxExceptions";
+    public static final String EXCEPTION_METHOD_APP_SERVICE_EXCEPTION = "AppServiceExceptions";
+    public static final String EXCEPTION_METHOD_APP_500_EXCEPTION = "App500Exceptions";
 
 
     // ======================== Response ======================== //
@@ -175,10 +173,12 @@ public class ProjectConstants {
     public static final String API_DOCUMENT_RESPONSE_CODE_201 = "201";
     public static final String API_DOCUMENT_RESPONSE_CODE_400 = "400";
     public static final String API_DOCUMENT_RESPONSE_CODE_404 = "404";
+    public static final String API_DOCUMENT_RESPONSE_CODE_409 = "409";
     public static final String API_DOCUMENT_RESPONSE_CODE_500 = "500";
 
     public static final String API_DOCUMENT_400_DESCRIPTION = "Due to invalid inputs, it responded as a bad request";
     public static final String API_DOCUMENT_404_DESCRIPTION = "Due to invalid public_id, it responded a not-found";
+    public static final String API_DOCUMENT_409_DESCRIPTION = "This appointment has been reserved before";
     public static final String API_DOCUMENT_500_DESCRIPTION = "Internal server error has occurred";
     public static final String API_DOCUMENT_500_EXAMPLE = """
             {
@@ -216,6 +216,16 @@ public class ProjectConstants {
               "result": {
                 "path": "{METHOD} /{VERSION}/{PATH-PID-...}",
                 "message": "The resource with provided public_id not founded!"
+              }
+            }
+            """;
+    public static final String API_DOCUMENT_APPOINTMENT_UPDATE_409_EXAMPLE = """
+            {
+              "action": false,
+              "timestamp": "14/09/2024 07:12:13 PM",
+              "result": {
+                "path": "{METHOD} /{VERSION}/{PATH-PID-...}",
+                "message": "The resource already exists!"
               }
             }
             """;

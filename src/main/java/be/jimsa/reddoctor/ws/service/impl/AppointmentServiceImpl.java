@@ -1,9 +1,7 @@
 package be.jimsa.reddoctor.ws.service.impl;
 
 
-import be.jimsa.reddoctor.config.exception.BadFormatRequestException;
-import be.jimsa.reddoctor.config.exception.NotFoundResourceException;
-import be.jimsa.reddoctor.config.exception.ReservedResourceException;
+import be.jimsa.reddoctor.config.exception.AppServiceException;
 import be.jimsa.reddoctor.config.log.EvaluateExecuteTimeout;
 import be.jimsa.reddoctor.utility.id.PublicIdGenerator;
 import be.jimsa.reddoctor.utility.mapper.AppointmentMapper;
@@ -17,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -45,13 +44,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         // Logic 00: date check?!
         Optional<List<Appointment>> optionalList = appointmentRepository.findAllByDate(appointmentDto.getDate());
         if (optionalList.isPresent() && !optionalList.get().isEmpty()) {
-            throw new BadFormatRequestException(EXCEPTION_DATE_MESSAGE);
+            throw new AppServiceException(EXCEPTION_DATE_MESSAGE, HttpStatus.BAD_REQUEST);
         }
 
         // Logic 01: end - start >= 0
         int l1 = appointmentDto.getEnd().compareTo(appointmentDto.getStart());
         if (l1 < 0) {
-            throw new BadFormatRequestException(EXCEPTION_START_END_FORMAT_MESSAGE);
+            throw new AppServiceException(EXCEPTION_START_END_FORMAT_MESSAGE, HttpStatus.BAD_REQUEST);
         }
 
         // Logic 02: |end - start| < 30 min ==> ignore
@@ -135,10 +134,10 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentRepository.delete(optionalAppointment.get());
                 return true;
             } else {
-                throw new ReservedResourceException(EXCEPTION_NOT_ACCEPTABLE_RESOURCE_MESSAGE);
+                throw new AppServiceException(EXCEPTION_NOT_ACCEPTABLE_RESOURCE_MESSAGE, HttpStatus.NOT_ACCEPTABLE);
             }
         } else {
-            throw new NotFoundResourceException(EXCEPTION_NOT_FOUND_RESOURCE_MESSAGE);
+            throw new AppServiceException(EXCEPTION_NOT_FOUND_RESOURCE_MESSAGE, HttpStatus.NOT_FOUND);
         }
     }
 }
