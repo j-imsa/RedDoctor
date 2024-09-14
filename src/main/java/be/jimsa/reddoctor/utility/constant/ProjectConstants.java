@@ -173,11 +173,13 @@ public class ProjectConstants {
     public static final String API_DOCUMENT_RESPONSE_CODE_201 = "201";
     public static final String API_DOCUMENT_RESPONSE_CODE_400 = "400";
     public static final String API_DOCUMENT_RESPONSE_CODE_404 = "404";
+    public static final String API_DOCUMENT_RESPONSE_CODE_406 = "406";
     public static final String API_DOCUMENT_RESPONSE_CODE_409 = "409";
     public static final String API_DOCUMENT_RESPONSE_CODE_500 = "500";
 
     public static final String API_DOCUMENT_400_DESCRIPTION = "Due to invalid inputs, it responded as a bad request";
     public static final String API_DOCUMENT_404_DESCRIPTION = "Due to invalid public_id, it responded a not-found";
+    public static final String API_DOCUMENT_406_DESCRIPTION = "This appointment has a related patient, so it can not be removed";
     public static final String API_DOCUMENT_409_DESCRIPTION = "This appointment has been reserved before";
     public static final String API_DOCUMENT_500_DESCRIPTION = "Internal server error has occurred";
     public static final String API_DOCUMENT_500_EXAMPLE = """
@@ -365,6 +367,16 @@ public class ProjectConstants {
               "result": {
                 "path": "{METHOD} /{VERSION}/{PATH-PID-...}",
                 "message": "The resource with provided public_id not founded!"
+              }
+            }
+            """;
+    public static final String API_DOCUMENT_APPOINTMENT_DELETE_BY_PUBLIC_ID_406_EXAMPLE = """
+            {
+              "action": false,
+              "timestamp": "10/09/2024 10:17:26 PM",
+              "result": {
+                "path": "{METHOD} /{VERSION}/{PATH-PID-...}",
+                "message": "The resource with provided public_id founded with a relation, so you can not remove it!"
               }
             }
             """;
