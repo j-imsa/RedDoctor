@@ -1,6 +1,6 @@
 package be.jimsa.reddoctor.ws.controller;
 
-import be.jimsa.reddoctor.config.document.annotation.PublicIdDocument;
+import be.jimsa.reddoctor.config.document.annotation.PublicIdParameterDocument;
 import be.jimsa.reddoctor.config.document.annotation.ReadMyAppointmentsRequestDocument;
 import be.jimsa.reddoctor.config.document.annotation.UpdateAnAppointmentRequestDocument;
 import be.jimsa.reddoctor.config.validation.annotation.ValidPublicId;
@@ -37,7 +37,7 @@ public class PatientController {
     @PostMapping("/{" + PATIENT_PUBLIC_ID_FIELD + "}")
     @UpdateAnAppointmentRequestDocument(summary = PATIENT_DOCUMENT_POST_SUMMERY, description = PATIENT_DOCUMENT_POST_DESCRIPTION)
     public ResponseEntity<ResponseDto> updateAnAppointment(
-            @PublicIdDocument @ValidPublicId @PathVariable(APPOINTMENT_PUBLIC_ID_FIELD) String publicId,
+            @PublicIdParameterDocument @ValidPublicId @PathVariable(APPOINTMENT_PUBLIC_ID_FIELD) String publicId,
             @Valid @RequestBody PatientDto patientDto
     ) {
         AppointmentDto updatedAppointmentDto = patientService.updateAnAppointment(publicId, patientDto);

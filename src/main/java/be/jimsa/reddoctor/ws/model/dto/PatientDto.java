@@ -15,7 +15,7 @@ import static be.jimsa.reddoctor.utility.constant.ProjectConstants.*;
 
 @Data
 @Builder
-@Schema(name = PATIENT_DOCUMENT_NAME, description = PATIENT_DOCUMENT_DESCRIPTION)
+@Schema(name = PATIENT_DTO_DOCUMENT_NAME, description = PATIENT_DTO_DOCUMENT_DESCRIPTION)
 @AllArgsConstructor
 @NoArgsConstructor
 public class PatientDto {

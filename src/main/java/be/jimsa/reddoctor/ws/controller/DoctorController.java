@@ -2,7 +2,7 @@ package be.jimsa.reddoctor.ws.controller;
 
 import be.jimsa.reddoctor.config.document.annotation.CreateAppointmentRequestDocument;
 import be.jimsa.reddoctor.config.document.annotation.DeleteAnAppointmentRequestDocument;
-import be.jimsa.reddoctor.config.document.annotation.PublicIdDocument;
+import be.jimsa.reddoctor.config.document.annotation.PublicIdParameterDocument;
 import be.jimsa.reddoctor.config.document.annotation.ReadAllRequestDocument;
 import be.jimsa.reddoctor.config.validation.annotation.ValidPublicId;
 import be.jimsa.reddoctor.ws.model.dto.AppointmentDto;
@@ -95,7 +95,7 @@ public class DoctorController {
     @DeleteMapping("/{" + APPOINTMENT_PUBLIC_ID_FIELD + "}")
     @DeleteAnAppointmentRequestDocument(summary = APPOINTMENT_DOCUMENT_DELETE_SUMMERY, description = APPOINTMENT_DOCUMENT_DELETE_DESCRIPTION)
     public ResponseEntity<ResponseDto> removeAProject(
-            @PublicIdDocument @ValidPublicId @PathVariable(APPOINTMENT_PUBLIC_ID_FIELD) String publicId
+            @PublicIdParameterDocument @ValidPublicId @PathVariable(APPOINTMENT_PUBLIC_ID_FIELD) String publicId
     ) {
         boolean result = appointmentService.removeAnAppointment(publicId);
         return ResponseEntity

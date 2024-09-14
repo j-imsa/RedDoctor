@@ -18,5 +18,5 @@ import java.lang.annotation.Target;
                 @ExampleObject(name = "Invalid example", value = "xyz789xyz789xyz789x", summary = "Example public ID 2, Invalid")
         }
 )
-public @interface PublicIdDocument {
+public @interface PublicIdParameterDocument {
 }

@@ -7,17 +7,26 @@ public class ProjectConstants {
     private ProjectConstants() {
     }
 
+    // ======================== Application ======================== //
+    public static final String APP_VERSION = "/v0.9";
+
+
     // ======================== DOCTOR ======================== //
     public static final String DOCTOR_DOCUMENT_NAME = "Doctor endpoint";
     public static final String DOCTOR_DOCUMENT_DESCRIPTION = "Rest APIs Doctor details";
-    public static final String APP_VERSION = "/v0.9";
     public static final String DOCTOR_PATH = APP_VERSION + "/doctors";
+
+
+    // ======================== Patient ======================== //
+    public static final String PATIENT_DOCUMENT_NAME = "Patient endpoint";
+    public static final String PATIENT_DOCUMENT_DESCRIPTION = "Rest APIs Patient details";
     public static final String PATIENT_PATH = APP_VERSION + "/patients";
+
 
     // ======================== Appointment ======================== //
     public static final String APPOINTMENT = "Appointment";
-    public static final String APPOINTMENT_DOCUMENT_NAME = "Appointment";
-    public static final String APPOINTMENT_DOCUMENT_DESCRIPTION = "This is 'AppointmentDto'";
+    public static final String APPOINTMENT_DTO_DOCUMENT_NAME = "Appointment";
+    public static final String APPOINTMENT_DTO_DOCUMENT_DESCRIPTION = "This is 'AppointmentDto'";
     public static final String APPOINTMENT_TYPE_FIELD = "type";
     public static final String APPOINTMENT_DATE_FIELD = "date";
     public static final String APPOINTMENT_TIME_FIELD = "startTime";
@@ -38,6 +47,8 @@ public class ProjectConstants {
     public static final String APPOINTMENT_SORT_DIRECTION_DEFAULT_VALUE = "asc";
 
     // ======================== Patient ======================== //
+    public static final String PATIENT_DTO_DOCUMENT_NAME = "Patient";
+    public static final String PATIENT_DTO_DOCUMENT_DESCRIPTION = "This is 'PatientDto'";
     public static final String PATIENT = "Patient";
     public static final String PATIENT_FORMAT = "patient";
     public static final String PATIENT_FIELD = "patient";
@@ -46,8 +57,6 @@ public class ProjectConstants {
     public static final String PATIENT_DATE_FIELD = "date";
     public static final String PATIENT_PHONE_NUMBER_FORMAT = "phone_number";
     public static final String PATIENT_DATABASE_TABLE_NAME = "patients";
-    public static final String PATIENT_DOCUMENT_NAME = "Patient endpoint";
-    public static final String PATIENT_DOCUMENT_DESCRIPTION = "Rest APIs Patient details";
     public static final String PATIENT_DATABASE_JOIN_ID = "patient_id";
 
     // ======================== Document ======================== //
@@ -100,7 +109,7 @@ public class ProjectConstants {
 
     // ======================== Response ======================== //
     public static final String RESPONSE_DOCUMENT_NAME = "App Response";
-    public static final String RESPONSE_DOCUMENT_DESCRIPTION = "This is a kind of 'ResponseDto'";
+    public static final String RESPONSE_DOCUMENT_DESCRIPTION = "This is 'ResponseDto'";
     public static final String RESPONSE_DOCUMENT_ACTION_DESCRIPTION = "What is the final result? It will be true if the process is finished without any faults, otherwise, it is false.";
     public static final String RESPONSE_DOCUMENT_ACTION_EXAMPLE = "true";
     public static final String RESPONSE_DOCUMENT_TIMESTAMP = "The time of response";
