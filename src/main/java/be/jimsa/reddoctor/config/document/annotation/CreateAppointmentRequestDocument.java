@@ -16,127 +16,67 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import static be.jimsa.reddoctor.utility.constant.ProjectConstants.*;
+
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Operation(
         responses = {
                 @ApiResponse(
-                        responseCode = "201",
-                        description = "Creating appointments with the provided info was successful",
+                        responseCode = API_DOCUMENT_RESPONSE_CODE_201,
+                        description = API_DOCUMENT_APPOINTMENT_POST_201_DESCRIPTION,
                         content = @Content(
-                                examples = @ExampleObject("""
-                                        {
-                                            "action": true,
-                                            "timestamp": "10/09/2024 10:20:30 PM",
-                                            "result": [
-                                                {
-                                                    "date": "11-12-2024",
-                                                    "start": "11:30:10",
-                                                    "end": "12:00:10",
-                                                    "public_id": "RIXzFN_gwWmX2qXtY_fMT3HsLZ8fB4Roypdwzf1cQCglaBu8yznm0VXXqdzc01BI",
-                                                    "patient": null
-                                                },
-                                                {
-                                                    "date": "11-12-2024",
-                                                    "start": "12:00:10",
-                                                    "end": "12:30:10",
-                                                    "public_id": "1_ufS5cjPkmwmcTYIC1rTSvHdJIHP3IfDHY_N-2FXER1J3Vv4fLOE3Z8VYkfl3lG",
-                                                    "patient": null
-                                                }
-                                            ]
-                                        }
-                                        """),
+                                examples = @ExampleObject(API_DOCUMENT_APPOINTMENT_POST_201_EXAMPLE),
                                 schema = @Schema(implementation = ResponseDto.class)
                         )
                 ),
                 @ApiResponse(
-                        responseCode = "400",
-                        description = "Due to invalid inputs, it responded as a bad request",
+                        responseCode = API_DOCUMENT_RESPONSE_CODE_400,
+                        description = API_DOCUMENT_400_DESCRIPTION,
                         content = @Content(
-                                examples = @ExampleObject("""
-                                        {
-                                            "action": false,
-                                            "timestamp": "10/09/2024 10:01:13 PM",
-                                            "result": {
-                                                "publicId": "public_id must be null on the creation operation"
-                                            }
-                                        }
-                                        """),
+                                examples = @ExampleObject(API_DOCUMENT_APPOINTMENT_POST_400_EXAMPLE),
                                 schema = @Schema(implementation = ResponseDto.class)
                         )
                 ),
                 @ApiResponse(
-                        responseCode = "500",
-                        description = "Internal server error has occurred",
+                        responseCode = API_DOCUMENT_RESPONSE_CODE_500,
+                        description = API_DOCUMENT_500_DESCRIPTION,
                         content = @Content(
-                                examples = @ExampleObject("""
-                                        {
-                                            "action": false,
-                                            "timestamp": "10/09/2024 10:20:30 PM",
-                                            "result": {
-                                                "path": "POST /{version}/doctors",
-                                                "message": "Internal service error!"
-                                            }
-                                        }
-                                        """),
+                                examples = @ExampleObject(API_DOCUMENT_500_EXAMPLE),
                                 schema = @Schema(implementation = ResponseDto.class)
                         )
                 )
         },
         requestBody = @RequestBody(
-                description = "This request comes with a date, start and end time",
+                description = API_DOCUMENT_APPOINTMENT_POST_REQUEST_BODY_DESCRIPTION,
                 required = true,
                 content = @Content(
                         mediaType = MediaType.APPLICATION_JSON_VALUE,
                         examples = {
                                 @ExampleObject(
-                                        name = "A valid request with a valid body #1",
-                                        summary = "Valid example #1",
-                                        value = """
-                                                {
-                                                    "date": "11-12-2024",
-                                                    "start": "11:30:10",
-                                                    "end": "12:35:00"
-                                                }
-                                                """),
-                                @ExampleObject(
-                                        name = "An invalid request without a valid body #1",
-                                        summary = "Invalid example #1",
-                                        value = """
-                                                {
-                                                    "start": "11:30:10",
-                                                    "end": "12:35:00"
-                                                }
-                                                """
+                                        name = API_DOCUMENT_APPOINTMENT_POST_REQUEST_BODY_EXAMPLE_1_NAME,
+                                        summary = API_DOCUMENT_APPOINTMENT_POST_REQUEST_BODY_EXAMPLE_1_SUMMERY,
+                                        value = API_DOCUMENT_APPOINTMENT_POST_REQUEST_BODY_EXAMPLE_1_VALUE
                                 ),
                                 @ExampleObject(
-                                        name = "An invalid request without a valid body #2",
-                                        summary = "Invalid example #2",
-                                        value = """
-                                                {
-                                                    "date": "11-12-2024",
-                                                    "start": "11:30:10"
-                                                }
-                                                """
+                                        name = API_DOCUMENT_APPOINTMENT_POST_REQUEST_BODY_EXAMPLE_2_NAME,
+                                        summary = API_DOCUMENT_APPOINTMENT_POST_REQUEST_BODY_EXAMPLE_2_SUMMERY,
+                                        value = API_DOCUMENT_APPOINTMENT_POST_REQUEST_BODY_EXAMPLE_2_VALUE
                                 ),
                                 @ExampleObject(
-                                        name = "An invalid request without a valid body #3",
-                                        summary = "Invalid example #3",
-                                        value = """
-                                                {
-                                                     "date": "11-12-2024",
-                                                     "end": "12:35:00"
-                                                }
-                                                """
+                                        name = API_DOCUMENT_APPOINTMENT_POST_REQUEST_BODY_EXAMPLE_3_NAME,
+                                        summary = API_DOCUMENT_APPOINTMENT_POST_REQUEST_BODY_EXAMPLE_3_SUMMERY,
+                                        value = API_DOCUMENT_APPOINTMENT_POST_REQUEST_BODY_EXAMPLE_3_VALUE
                                 ),
                                 @ExampleObject(
-                                        name = "An invalid request without a valid body #4",
-                                        summary = "Invalid example #4",
-                                        value = """
-                                                {
-                                                    "date": "11-12-2024"
-                                                }
-                                                """
+                                        name = API_DOCUMENT_APPOINTMENT_POST_REQUEST_BODY_EXAMPLE_4_NAME,
+                                        summary = API_DOCUMENT_APPOINTMENT_POST_REQUEST_BODY_EXAMPLE_4_SUMMERY,
+                                        value = API_DOCUMENT_APPOINTMENT_POST_REQUEST_BODY_EXAMPLE_4_VALUE
+                                ),
+                                @ExampleObject(
+                                        name = API_DOCUMENT_APPOINTMENT_POST_REQUEST_BODY_EXAMPLE_5_NAME,
+                                        summary = API_DOCUMENT_APPOINTMENT_POST_REQUEST_BODY_EXAMPLE_5_SUMMERY,
+                                        value = API_DOCUMENT_APPOINTMENT_POST_REQUEST_BODY_EXAMPLE_5_VALUE
                                 ),
                         },
                         schema = @Schema(implementation = AppointmentDto.class)
@@ -144,7 +84,6 @@ import java.lang.annotation.Target;
         )
 )
 public @interface CreateAppointmentRequestDocument {
-    String summary() default "Default summary";
-
-    String description() default "Default description";
+    String summary() default API_DOCUMENT_DEFAULT_SUMMERY;
+    String description() default API_DOCUMENT_DEFAULT_DESCRIPTION;
 }

@@ -8,34 +8,36 @@ import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.context.annotation.Configuration;
 
+import static be.jimsa.reddoctor.utility.constant.ProjectConstants.*;
+
 @Configuration
 @OpenAPIDefinition(
         info = @Info(
-                title = "RedBank Doctor Appointment (RBDA)",
-                description = "RBDA microservice REST API documentation",
-                version = "v0.0.9",
+                title = API_DOCUMENT_INFO_TITLE,
+                description = API_DOCUMENT_INFO_DESCRIPTION,
+                version = API_DOCUMENT_INFO_VERSION,
                 contact = @Contact(
-                        name = "Iman Salehi",
-                        url = "https://www.linkedin.com/in/jimsa/",
-                        email = "cse.isalehi@gmail.com"
+                        name = API_DOCUMENT_INFO_CONTACT_NAME,
+                        url = API_DOCUMENT_INFO_CONTACT_URL,
+                        email = API_DOCUMENT_INFO_CONTACT_EMAIL
                 ),
                 license = @License(
-                        name = "Apache 2.0",
-                        url = "https://www.apache.org/licenses/LICENSE-2.0"
+                        name = API_DOCUMENT_INFO_LICENSE_NAME,
+                        url = API_DOCUMENT_INFO_LICENSE_URL
                 )
         ),
         externalDocs = @ExternalDocumentation(
-                description = "Source code repository",
-                url = "https://github.com/j-imsa/RedDoctor"
+                description = API_DOCUMENT_EXTERNAL_DOCS_DESCRIPTION,
+                url = API_DOCUMENT_EXTERNAL_DOCS_URL
         ),
         servers = {
                 @Server(
-                        description = "Dev, local",
-                        url = "http://localhost:8088/"
+                        description = API_DOCUMENT_SERVERS_1_DESCRIPTION,
+                        url = API_DOCUMENT_SERVERS_1_URL
                 ),
                 @Server(
-                        description = "Dev, Server",
-                        url = "http://152.11.42.185:8090/"
+                        description = API_DOCUMENT_SERVERS_2_DESCRIPTION,
+                        url = API_DOCUMENT_SERVERS_2_URL
                 )
         }
 )

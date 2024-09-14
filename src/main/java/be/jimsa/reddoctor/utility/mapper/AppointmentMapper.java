@@ -6,8 +6,8 @@ import be.jimsa.reddoctor.ws.model.entity.Appointment;
 import be.jimsa.reddoctor.ws.model.entity.Patient;
 import org.springframework.stereotype.Component;
 
-import static be.jimsa.reddoctor.utility.constant.ProjectConstants.APPOINTMENT_ALL_TYPE;
-import static be.jimsa.reddoctor.utility.constant.ProjectConstants.APPOINTMENT_OPEN_TYPE;
+import static be.jimsa.reddoctor.utility.constant.ProjectConstants.GENERAL_TYPE_ALL;
+import static be.jimsa.reddoctor.utility.constant.ProjectConstants.GENERAL_TYPE_OPEN;
 
 @Component
 public class AppointmentMapper {
@@ -38,7 +38,7 @@ public class AppointmentMapper {
                 .publicId(entity.getPublicId())
                 .patientDto(patientDto)
                 .type(
-                        patientDto == null ? APPOINTMENT_OPEN_TYPE : APPOINTMENT_ALL_TYPE
+                        patientDto == null ? GENERAL_TYPE_OPEN : GENERAL_TYPE_ALL
                 )
                 .build();
     }

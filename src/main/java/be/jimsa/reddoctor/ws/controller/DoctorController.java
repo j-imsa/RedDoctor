@@ -2,7 +2,7 @@ package be.jimsa.reddoctor.ws.controller;
 
 import be.jimsa.reddoctor.config.document.annotation.CreateAppointmentRequestDocument;
 import be.jimsa.reddoctor.config.document.annotation.DeleteAnAppointmentRequestDocument;
-import be.jimsa.reddoctor.config.document.annotation.PublicIdDocument;
+import be.jimsa.reddoctor.config.document.annotation.PublicIdParameterDocument;
 import be.jimsa.reddoctor.config.document.annotation.ReadAllRequestDocument;
 import be.jimsa.reddoctor.config.validation.annotation.ValidPublicId;
 import be.jimsa.reddoctor.ws.model.dto.AppointmentDto;
@@ -52,31 +52,31 @@ public class DoctorController {
                 );
     }
 
-    @GetMapping("/{" + APPOINTMENT_DATE_FIELD + "}")
+    @GetMapping(DOCTOR_GET_PATH)
     @ReadAllRequestDocument(summary = APPOINTMENT_DOCUMENT_GET_SUMMERY, description = APPOINTMENT_DOCUMENT_GET_DESCRIPTION)
     public ResponseEntity<ResponseDto> getAppointments(
 
             @JsonFormat(pattern = DATE_FORMAT)
-            @PathVariable(APPOINTMENT_DATE_FIELD) String date,
+            @PathVariable(GENERAL_DATE_FIELD) String date,
 
-            @Pattern(regexp = APPOINTMENT_VALIDATION_TYPE_PATTERN, message = APPOINTMENT_VALIDATION_TYPE_FIELD_PATTERN_MESSAGE)
-            @RequestParam(value = APPOINTMENT_TYPE_FIELD, defaultValue = APPOINTMENT_TYPE_FIELD_DEFAULT_VALUE)
-            @Parameter(example = APPOINTMENT_DOCUMENT_TYPE_FIELD, description = APPOINTMENT_DOCUMENT_TYPE_FIELD_PATTERN_MESSAGE)
+            @Pattern(regexp = GENERAL_VALIDATION_TYPE_PATTERN, message = GENERAL_VALIDATION_TYPE_FIELD_PATTERN_MESSAGE)
+            @RequestParam(value = GENERAL_TYPE_FIELD, defaultValue = APPOINTMENT_TYPE_FIELD_DEFAULT_VALUE)
+            @Parameter(example = GENERAL_TYPE_FIELD, description = GENERAL_DOCUMENT_TYPE_FIELD_PATTERN_MESSAGE)
             String type,
 
-            @Positive(message = APPOINTMENT_VALIDATION_PAGE_POSITIVE_INTEGER)
-            @RequestParam(defaultValue = APPOINTMENT_PAGE_DEFAULT_VALUE)
-            @Parameter(example = APPOINTMENT_DOCUMENT_PAGE_EXAMPLE)
+            @Positive(message = GENERAL_VALIDATION_PAGE_POSITIVE_INTEGER)
+            @RequestParam(defaultValue = GENERAL_PAGE_DEFAULT_VALUE)
+            @Parameter(example = GENERAL_DOCUMENT_PAGE_EXAMPLE)
             int page,
 
-            @Positive(message = APPOINTMENT_VALIDATION_SIZE_POSITIVE_INTEGER)
-            @RequestParam(defaultValue = APPOINTMENT_SIZE_DEFAULT_VALUE)
-            @Parameter(example = APPOINTMENT_DOCUMENT_SIZE_EXAMPLE)
+            @Positive(message = GENERAL_VALIDATION_SIZE_POSITIVE_INTEGER)
+            @RequestParam(defaultValue = GENERAL_SIZE_DEFAULT_VALUE)
+            @Parameter(example = GENERAL_DOCUMENT_SIZE_EXAMPLE)
             int size,
 
-            @Pattern(regexp = APPOINTMENT_VALIDATION_SORT_DIRECTION_PATTERN, message = APPOINTMENT_VALIDATION_SORT_DIRECTION_PATTERN_MESSAGE)
-            @RequestParam(value = APPOINTMENT_SORT_DIRECTION, defaultValue = APPOINTMENT_SORT_DIRECTION_DEFAULT_VALUE)
-            @Parameter(example = APPOINTMENT_DOCUMENT_SORT_FIELD_DIRECTION_EXAMPLE, description = APPOINTMENT_DOCUMENT_SORT_DIRECTION_FIELD_DESCRIPTION)
+            @Pattern(regexp = GENERAL_VALIDATION_SORT_DIRECTION_PATTERN, message = GENERAL_VALIDATION_SORT_DIRECTION_PATTERN_MESSAGE)
+            @RequestParam(value = GENERAL_SORT_DIRECTION, defaultValue = GENERAL_SORT_DIRECTION_ASC_FIELD)
+            @Parameter(example = GENERAL_SORT_DIRECTION_DESC_FIELD, description = GENERAL_DOCUMENT_SORT_DIRECTION_FIELD_DESCRIPTION)
             String sortDirection
     ) {
         List<AppointmentDto> appointmentDtos = appointmentService.readAppointments(
@@ -92,10 +92,10 @@ public class DoctorController {
                 );
     }
 
-    @DeleteMapping("/{" + APPOINTMENT_PUBLIC_ID_FIELD + "}")
+    @DeleteMapping(DOCTOR_DELETE_PATH)
     @DeleteAnAppointmentRequestDocument(summary = APPOINTMENT_DOCUMENT_DELETE_SUMMERY, description = APPOINTMENT_DOCUMENT_DELETE_DESCRIPTION)
     public ResponseEntity<ResponseDto> removeAProject(
-            @PublicIdDocument @ValidPublicId @PathVariable(APPOINTMENT_PUBLIC_ID_FIELD) String publicId
+            @PublicIdParameterDocument @ValidPublicId @PathVariable(GENERAL_PUBLIC_ID_FIELD) String publicId
     ) {
         boolean result = appointmentService.removeAnAppointment(publicId);
         return ResponseEntity

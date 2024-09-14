@@ -68,7 +68,7 @@ public class PatientServiceImpl implements PatientService {
         }
 
         Sort sort;
-        if (sortDirection.equalsIgnoreCase(APPOINTMENT_SORT_DIRECTION_ASC_FIELD)) {
+        if (sortDirection.equalsIgnoreCase(GENERAL_SORT_DIRECTION_ASC_FIELD)) {
             sort = Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD);
         } else {
             sort = Sort.by(Sort.Direction.DESC, APPOINTMENT_TIME_FIELD);

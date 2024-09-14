@@ -16,110 +16,62 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import static be.jimsa.reddoctor.utility.constant.ProjectConstants.*;
+
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Operation(
         responses = {
                 @ApiResponse(
-                        responseCode = "200",
-                        description = "Updating an appointment with the provided info was successful",
+                        responseCode = API_DOCUMENT_RESPONSE_CODE_200,
+                        description = API_DOCUMENT_APPOINTMENT_UPDATE_200_DESCRIPTION,
                         content = @Content(
-                                examples = @ExampleObject("""
-                                        {
-                                            "action": true,
-                                            "timestamp": "10/09/2024 10:27:38 PM",
-                                            "result": {
-                                                "date": "11-12-2024",
-                                                "start": "11:30:10",
-                                                "end": "12:00:10",
-                                                "public_id": "i625bsvXoeAwTFiPGd6Huo4gGIXgCqkMtuF1rwPMTN_sUiDq4kuHgJWIljKc715O",
-                                                "patient": {
-                                                    "name": "Foo bar",
-                                                    "phone_number": "9131231234"
-                                                }
-                                            }
-                                        }
-                                        """),
+                                examples = @ExampleObject(API_DOCUMENT_APPOINTMENT_UPDATE_200_EXAMPLE),
                                 schema = @Schema(implementation = ResponseDto.class)
                         )
                 ),
                 @ApiResponse(
-                        responseCode = "404",
-                        description = "Due to invalid public_id, it responded a not-found",
+                        responseCode = API_DOCUMENT_RESPONSE_CODE_404,
+                        description = API_DOCUMENT_404_DESCRIPTION,
                         content = @Content(
-                                examples = @ExampleObject("""
-                                        {
-                                            "action": false,
-                                            "timestamp": "10/09/2024 10:26:24 PM",
-                                            "result": {
-                                                "path": "POST /v0.9/patients/2Vpi103xK5OblG8ykrm8GOimac7W5ESDHxGbL_5dlwvBB6D6xxXeCTlcZgc-8cyB",
-                                                "message": "The resource with provided public_id not founded!"
-                                            }
-                                        }
-                                        """),
+                                examples = @ExampleObject(API_DOCUMENT_APPOINTMENT_UPDATE_404_EXAMPLE),
                                 schema = @Schema(implementation = ResponseDto.class)
                         )
                 ),
                 @ApiResponse(
-                        responseCode = "500",
-                        description = "Internal server error has occurred",
+                        responseCode = API_DOCUMENT_RESPONSE_CODE_500,
+                        description = API_DOCUMENT_500_DESCRIPTION,
                         content = @Content(
-                                examples = @ExampleObject("""
-                                        {
-                                            "action": false,
-                                            "timestamp": "10/09/2024 10:20:30 PM",
-                                            "result": {
-                                                "path": "POST /{version}/doctors",
-                                                "message": "Internal service error!"
-                                            }
-                                        }
-                                        """),
+                                examples = @ExampleObject(API_DOCUMENT_500_EXAMPLE),
                                 schema = @Schema(implementation = ResponseDto.class)
                         )
                 )
         },
         requestBody = @RequestBody(
-                description = "This request comes with a name and phone number",
+                description = API_DOCUMENT_APPOINTMENT_UPDATE_REQUEST_BODY_DESCRIPTION,
                 required = true,
                 content = @Content(
                         mediaType = MediaType.APPLICATION_JSON_VALUE,
                         examples = {
                                 @ExampleObject(
-                                        name = "A valid request with a valid body #1",
-                                        summary = "Valid example #1",
-                                        value = """
-                                                {
-                                                    "name": "Foo bar",
-                                                    "phone_number": "9131231234"
-                                                }
-                                                """),
-                                @ExampleObject(
-                                        name = "An invalid request without a valid body #1",
-                                        summary = "Invalid example #1",
-                                        value = """
-                                                {
-                                                    "phone_number": "9131231234"
-                                                }
-                                                """
+                                        name = API_DOCUMENT_APPOINTMENT_UPDATE_REQUEST_BODY_EXAMPLE_1_NAME,
+                                        summary = API_DOCUMENT_APPOINTMENT_UPDATE_REQUEST_BODY_EXAMPLE_1_SUMMERY,
+                                        value = API_DOCUMENT_APPOINTMENT_UPDATE_REQUEST_BODY_EXAMPLE_1_VALUE
                                 ),
                                 @ExampleObject(
-                                        name = "An invalid request without a valid body #2",
-                                        summary = "Invalid example #2",
-                                        value = """
-                                                {
-                                                    "name": "Foo bar"
-                                                }
-                                                """
+                                        name = API_DOCUMENT_APPOINTMENT_UPDATE_REQUEST_BODY_EXAMPLE_2_NAME,
+                                        summary = API_DOCUMENT_APPOINTMENT_UPDATE_REQUEST_BODY_EXAMPLE_2_SUMMERY,
+                                        value = API_DOCUMENT_APPOINTMENT_UPDATE_REQUEST_BODY_EXAMPLE_2_VALUE
                                 ),
                                 @ExampleObject(
-                                        name = "An invalid request without a valid body #3",
-                                        summary = "Invalid example #3",
-                                        value = """
-                                                {
-                                                    "name": "Foo",
-                                                    "phone_number": "000"
-                                                }
-                                                """
+                                        name = API_DOCUMENT_APPOINTMENT_UPDATE_REQUEST_BODY_EXAMPLE_3_NAME,
+                                        summary = API_DOCUMENT_APPOINTMENT_UPDATE_REQUEST_BODY_EXAMPLE_3_SUMMERY,
+                                        value = API_DOCUMENT_APPOINTMENT_UPDATE_REQUEST_BODY_EXAMPLE_3_VALUE
+                                ),
+                                @ExampleObject(
+                                        name = API_DOCUMENT_APPOINTMENT_UPDATE_REQUEST_BODY_EXAMPLE_4_NAME,
+                                        summary = API_DOCUMENT_APPOINTMENT_UPDATE_REQUEST_BODY_EXAMPLE_4_SUMMERY,
+                                        value = API_DOCUMENT_APPOINTMENT_UPDATE_REQUEST_BODY_EXAMPLE_4_VALUE
                                 )
                         },
                         schema = @Schema(implementation = PatientDto.class)
@@ -127,7 +79,7 @@ import java.lang.annotation.Target;
         )
 )
 public @interface UpdateAnAppointmentRequestDocument {
-    String summary() default "Default summary";
+    String summary() default API_DOCUMENT_DEFAULT_SUMMERY;
 
-    String description() default "Default description";
+    String description() default API_DOCUMENT_DEFAULT_DESCRIPTION;
 }
