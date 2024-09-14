@@ -34,10 +34,10 @@ public class PatientController {
 
     private final PatientService patientService;
 
-    @PostMapping("/{" + PATIENT_PUBLIC_ID_FIELD + "}")
+    @PostMapping("/{" + GENERAL_PUBLIC_ID_FIELD + "}")
     @UpdateAnAppointmentRequestDocument(summary = PATIENT_DOCUMENT_POST_SUMMERY, description = PATIENT_DOCUMENT_POST_DESCRIPTION)
     public ResponseEntity<ResponseDto> updateAnAppointment(
-            @PublicIdParameterDocument @ValidPublicId @PathVariable(APPOINTMENT_PUBLIC_ID_FIELD) String publicId,
+            @PublicIdParameterDocument @ValidPublicId @PathVariable(GENERAL_PUBLIC_ID_FIELD) String publicId,
             @Valid @RequestBody PatientDto patientDto
     ) {
         AppointmentDto updatedAppointmentDto = patientService.updateAnAppointment(publicId, patientDto);
@@ -58,24 +58,24 @@ public class PatientController {
 
             @PathVariable(PATIENT_PHONE_NUMBER_FIELD) String phoneNumber,
 
-            @Pattern(regexp = APPOINTMENT_VALIDATION_TYPE_PATTERN, message = APPOINTMENT_VALIDATION_TYPE_FIELD_PATTERN_MESSAGE)
-            @RequestParam(value = APPOINTMENT_TYPE_FIELD, defaultValue = APPOINTMENT_TYPE_FIELD_DEFAULT_VALUE)
-            @Parameter(example = APPOINTMENT_DOCUMENT_TYPE_FIELD, description = APPOINTMENT_DOCUMENT_TYPE_FIELD_PATTERN_MESSAGE)
+            @Pattern(regexp = GENERAL_VALIDATION_TYPE_PATTERN, message = GENERAL_VALIDATION_TYPE_FIELD_PATTERN_MESSAGE)
+            @RequestParam(value = GENERAL_TYPE_FIELD, defaultValue = APPOINTMENT_TYPE_FIELD_DEFAULT_VALUE)
+            @Parameter(example = GENERAL_TYPE_FIELD, description = GENERAL_DOCUMENT_TYPE_FIELD_PATTERN_MESSAGE)
             String type,
 
-            @Positive(message = APPOINTMENT_VALIDATION_PAGE_POSITIVE_INTEGER)
-            @RequestParam(defaultValue = APPOINTMENT_PAGE_DEFAULT_VALUE)
-            @Parameter(example = APPOINTMENT_DOCUMENT_PAGE_EXAMPLE)
+            @Positive(message = GENERAL_VALIDATION_PAGE_POSITIVE_INTEGER)
+            @RequestParam(defaultValue = GENERAL_PAGE_DEFAULT_VALUE)
+            @Parameter(example = GENERAL_DOCUMENT_PAGE_EXAMPLE)
             int page,
 
-            @Positive(message = APPOINTMENT_VALIDATION_SIZE_POSITIVE_INTEGER)
-            @RequestParam(defaultValue = APPOINTMENT_SIZE_DEFAULT_VALUE)
-            @Parameter(example = APPOINTMENT_DOCUMENT_SIZE_EXAMPLE)
+            @Positive(message = GENERAL_VALIDATION_SIZE_POSITIVE_INTEGER)
+            @RequestParam(defaultValue = GENERAL_SIZE_DEFAULT_VALUE)
+            @Parameter(example = GENERAL_DOCUMENT_SIZE_EXAMPLE)
             int size,
 
-            @Pattern(regexp = APPOINTMENT_VALIDATION_SORT_DIRECTION_PATTERN, message = APPOINTMENT_VALIDATION_SORT_DIRECTION_PATTERN_MESSAGE)
-            @RequestParam(value = APPOINTMENT_SORT_DIRECTION, defaultValue = APPOINTMENT_SORT_DIRECTION_DEFAULT_VALUE)
-            @Parameter(example = APPOINTMENT_DOCUMENT_SORT_FIELD_DIRECTION_EXAMPLE, description = APPOINTMENT_DOCUMENT_SORT_DIRECTION_FIELD_DESCRIPTION)
+            @Pattern(regexp = GENERAL_VALIDATION_SORT_DIRECTION_PATTERN, message = GENERAL_VALIDATION_SORT_DIRECTION_PATTERN_MESSAGE)
+            @RequestParam(value = GENERAL_SORT_DIRECTION, defaultValue = GENERAL_SORT_DIRECTION_ASC_FIELD)
+            @Parameter(example = GENERAL_SORT_DIRECTION_DESC_FIELD, description = GENERAL_DOCUMENT_SORT_DIRECTION_FIELD_DESCRIPTION)
             String sortDirection
     ) {
         List<AppointmentDto> appointmentDtos = patientService.readMyAppointments(

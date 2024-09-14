@@ -78,7 +78,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                     .end(current.plus(interval))
                     .date(appointmentDto.getDate())
                     .publicId(publicIdGenerator.generatePublicId(PUBLIC_ID_DEFAULT_LENGTH))
-                    .type(APPOINTMENT_OPEN_TYPE)
+                    .type(GENERAL_TYPE_OPEN)
                     .build();
             current = current.plus(interval);
             dtos.add(dto);
@@ -93,7 +93,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         LocalDate date = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern(DATE_FORMAT));
 
         Sort sort;
-        if (sortDirection.equalsIgnoreCase(APPOINTMENT_SORT_DIRECTION_ASC_FIELD)) {
+        if (sortDirection.equalsIgnoreCase(GENERAL_SORT_DIRECTION_ASC_FIELD)) {
             sort = Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD);
         } else {
             sort = Sort.by(Sort.Direction.DESC, APPOINTMENT_TIME_FIELD);
@@ -106,7 +106,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         );
 
         Page<Appointment> appointmentPage;
-        if (type.equalsIgnoreCase(APPOINTMENT_ALL_TYPE)) {
+        if (type.equalsIgnoreCase(GENERAL_TYPE_ALL)) {
             appointmentPage = appointmentRepository.findAllByDate(pageable, date);
         } else {
             appointmentPage = appointmentRepository.findAllByPatientIsNullAndDate(pageable, date);

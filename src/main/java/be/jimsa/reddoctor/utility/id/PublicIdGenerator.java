@@ -2,6 +2,7 @@ package be.jimsa.reddoctor.utility.id;
 
 import org.springframework.stereotype.Component;
 
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -10,6 +11,8 @@ import static be.jimsa.reddoctor.utility.constant.ProjectConstants.*;
 
 @Component
 public class PublicIdGenerator {
+
+    private static final Random PUBLIC_ID_RANDOM = new Random();
 
     public String generatePublicId(int length) {
         if (length < PUBLIC_ID_MIN_LENGTH || length > PUBLIC_ID_MAX_LENGTH) {

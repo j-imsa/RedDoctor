@@ -25,8 +25,8 @@ import static be.jimsa.reddoctor.utility.constant.ProjectConstants.*;
 @NoArgsConstructor
 public class AppointmentDto {
 
-    @JsonProperty(APPOINTMENT_PUBLIC_ID_FIELD)
-    @Null(message = APPOINTMENT_PUBLIC_ID_NULL_MESSAGE, groups = {Create.class})
+    @JsonProperty(GENERAL_PUBLIC_ID_FIELD)
+    @Null(message = APPOINTMENT_VALIDATION_PUBLIC_ID_NULL_MESSAGE, groups = {Create.class})
     @ValidPublicId(groups = Read.class)
     @Schema(
             type = "string",
@@ -36,7 +36,7 @@ public class AppointmentDto {
     private String publicId;
 
     @JsonFormat(pattern = DATE_FORMAT)
-    @NotNull(message = APPOINTMENT_VALIDATION_DATE_MESSAGE, groups = {Create.class, Read.class})
+    @NotNull(message = GENERAL_VALIDATION_DATE_MESSAGE, groups = {Create.class, Read.class})
     @Schema(type = "string", example = "12-30-45", description = DATE_FORMAT)
     private LocalDate date;
 
@@ -50,12 +50,12 @@ public class AppointmentDto {
     @Schema(type = "string", example = "18:30:45", description = TIME_FORMAT)
     private LocalTime end;
 
-    @Null(message = APPOINTMENT_TYPE_NULL_MESSAGE, groups = {Create.class})
+    @Null(message = APPOINTMENT_VALIDATION_TYPE_NULL_MESSAGE, groups = {Create.class})
     @JsonIgnore
     private String type;
 
-    @JsonProperty(PATIENT_FORMAT)
-    @Null(message = APPOINTMENT_PATIENT_NULL_MESSAGE, groups = {Create.class})
+    @JsonProperty(PATIENT_FIELD)
+    @Null(message = APPOINTMENT_VALIDATION_PATIENT_NULL_MESSAGE, groups = {Create.class})
     private PatientDto patientDto;
 
     public interface Create {

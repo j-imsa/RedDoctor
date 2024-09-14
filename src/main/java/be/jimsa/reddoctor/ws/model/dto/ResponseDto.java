@@ -18,7 +18,7 @@ public class ResponseDto {
     @Schema(description = RESPONSE_DOCUMENT_ACTION_DESCRIPTION, example = RESPONSE_DOCUMENT_ACTION_EXAMPLE)
     private boolean action;
 
-    @Schema(description = RESPONSE_DOCUMENT_TIMESTAMP)
+    @Schema(description = RESPONSE_DOCUMENT_TIMESTAMP, example = RESPONSE_DATE_TIME_FORMAT_EXAMPLE)
     @JsonFormat(pattern = DATE_TIME_FORMAT)
     private LocalDateTime timestamp;
 
