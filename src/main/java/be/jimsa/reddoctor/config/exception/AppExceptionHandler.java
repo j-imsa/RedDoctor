@@ -1,7 +1,6 @@
-package be.jimsa.reddoctor.config.exception.handler;
+package be.jimsa.reddoctor.config.exception;
 
 
-import be.jimsa.reddoctor.config.exception.*;
 import be.jimsa.reddoctor.utility.constant.ProjectConstants;
 import be.jimsa.reddoctor.ws.model.dto.ResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
@@ -70,19 +69,16 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
                 );
     }
 
-    @ExceptionHandler(value = {
-            BadFormatRequestException.class,
-            ResourceAlreadyExistException.class
-    })
-    public ResponseEntity<ResponseDto> handleApp4xxExceptions(RuntimeException ex, HttpServletRequest webRequest) {
+    @ExceptionHandler(value = AppServiceException.class)
+    public ResponseEntity<ResponseDto> handleAppServiceExceptions(AppServiceException ex, HttpServletRequest webRequest) {
         log.error(
-                String.format(GENERAL_EXCEPTION_LOG_PATTERN, EXCEPTION_METHOD_APP_4XX_EXCEPTION, ex.getMessage())
+                String.format(GENERAL_EXCEPTION_LOG_PATTERN, EXCEPTION_METHOD_APP_SERVICE_EXCEPTION, ex.getMessage())
         );
         Map<String, String> hashMap = new HashMap<>();
         hashMap.put(ProjectConstants.GENERAL_EXCEPTION_MESSAGE, ex.getMessage());
         hashMap.put(ProjectConstants.GENERAL_EXCEPTION_PATH, String.format(ProjectConstants.GENERAL_EXCEPTION_REGEX, webRequest.getMethod(), webRequest.getRequestURI()));
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(ex.getHttpStatus())
                 .body(
                         ResponseDto.builder()
                                 .action(false)
@@ -92,57 +88,10 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
                 );
     }
 
-    @ExceptionHandler(value = {
-            NotFoundResourceException.class
-    })
-    public ResponseEntity<ResponseDto> handleApp404Exceptions(NotFoundResourceException ex, HttpServletRequest webRequest) {
+    @ExceptionHandler(value = Exception.class)
+    public ResponseEntity<ResponseDto> handleExceptions(Exception ex, HttpServletRequest webRequest) {
         log.error(
-                String.format(GENERAL_EXCEPTION_LOG_PATTERN, EXCEPTION_METHOD_APP_404_EXCEPTION, ex.getMessage())
-        );
-        Map<String, String> hashMap = new HashMap<>();
-        hashMap.put(ProjectConstants.GENERAL_EXCEPTION_MESSAGE, ex.getMessage());
-        hashMap.put(ProjectConstants.GENERAL_EXCEPTION_PATH,
-                String.format(ProjectConstants.GENERAL_EXCEPTION_REGEX, webRequest.getMethod(), webRequest.getRequestURI()));
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(
-                        ResponseDto.builder()
-                                .action(false)
-                                .timestamp(LocalDateTime.now())
-                                .result(hashMap)
-                                .build()
-                );
-    }
-
-    @ExceptionHandler(value = {
-            ReservedResourceException.class
-    })
-    public ResponseEntity<ResponseDto> handleApp406Exceptions(ReservedResourceException ex, HttpServletRequest webRequest) {
-        log.error(
-                String.format(GENERAL_EXCEPTION_LOG_PATTERN, EXCEPTION_METHOD_APP_406_EXCEPTION, ex.getMessage())
-        );
-        Map<String, String> hashMap = new HashMap<>();
-        hashMap.put(ProjectConstants.GENERAL_EXCEPTION_MESSAGE, ex.getMessage());
-        hashMap.put(ProjectConstants.GENERAL_EXCEPTION_PATH,
-                String.format(ProjectConstants.GENERAL_EXCEPTION_REGEX, webRequest.getMethod(), webRequest.getRequestURI()));
-        return ResponseEntity
-                .status(HttpStatus.NOT_ACCEPTABLE)
-                .body(
-                        ResponseDto.builder()
-                                .action(false)
-                                .timestamp(LocalDateTime.now())
-                                .result(hashMap)
-                                .build()
-                );
-    }
-
-    @ExceptionHandler(value = {
-            Exception.class,
-            InternalServiceException.class
-    })
-    public ResponseEntity<ResponseDto> handleApp5xxExceptions(Exception ex, HttpServletRequest webRequest) {
-        log.error(
-                String.format(GENERAL_EXCEPTION_LOG_PATTERN, EXCEPTION_METHOD_APP_5XX_EXCEPTION, ex.getMessage())
+                String.format(GENERAL_EXCEPTION_LOG_PATTERN, EXCEPTION_METHOD_APP_500_EXCEPTION, ex.getMessage())
         );
         Map<String, String> hashMap = new HashMap<>();
         hashMap.put(ProjectConstants.GENERAL_EXCEPTION_MESSAGE, ex.getMessage());

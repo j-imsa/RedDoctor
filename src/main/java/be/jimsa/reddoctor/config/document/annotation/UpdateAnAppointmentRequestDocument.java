@@ -39,6 +39,14 @@ import static be.jimsa.reddoctor.utility.constant.ProjectConstants.*;
                         )
                 ),
                 @ApiResponse(
+                        responseCode = API_DOCUMENT_RESPONSE_CODE_409,
+                        description = API_DOCUMENT_409_DESCRIPTION,
+                        content = @Content(
+                                examples = @ExampleObject(API_DOCUMENT_APPOINTMENT_UPDATE_409_EXAMPLE),
+                                schema = @Schema(implementation = ResponseDto.class)
+                        )
+                ),
+                @ApiResponse(
                         responseCode = API_DOCUMENT_RESPONSE_CODE_500,
                         description = API_DOCUMENT_500_DESCRIPTION,
                         content = @Content(
