@@ -46,8 +46,8 @@ public class ProjectConstants {
     public static final String PATIENT_DATE_FIELD = "date";
     public static final String PATIENT_PHONE_NUMBER_FORMAT = "phone_number";
     public static final String PATIENT_DATABASE_TABLE_NAME = "patients";
-    public static final String PATIENT_DOCUMENT_NAME = "Patient";
-    public static final String PATIENT_DOCUMENT_DESCRIPTION = "This is 'PatientDto'";
+    public static final String PATIENT_DOCUMENT_NAME = "Patient endpoint";
+    public static final String PATIENT_DOCUMENT_DESCRIPTION = "Rest APIs Patient details";
     public static final String PATIENT_DATABASE_JOIN_ID = "patient_id";
 
     // ======================== Document ======================== //
