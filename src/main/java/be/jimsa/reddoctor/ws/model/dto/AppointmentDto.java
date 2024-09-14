@@ -3,6 +3,7 @@ package be.jimsa.reddoctor.ws.model.dto;
 import be.jimsa.reddoctor.config.validation.annotation.ValidPublicId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
@@ -56,6 +57,7 @@ public class AppointmentDto {
 
     @JsonProperty(PATIENT_FIELD)
     @Null(message = APPOINTMENT_VALIDATION_PATIENT_NULL_MESSAGE, groups = {Create.class})
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private PatientDto patientDto;
 
     public interface Create {
