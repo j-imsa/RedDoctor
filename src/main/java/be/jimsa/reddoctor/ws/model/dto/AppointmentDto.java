@@ -29,25 +29,25 @@ public class AppointmentDto {
     @Null(message = APPOINTMENT_VALIDATION_PUBLIC_ID_NULL_MESSAGE, groups = {Create.class})
     @ValidPublicId(groups = Read.class)
     @Schema(
-            type = "string",
-            description = "The public_id of the resource",
-            example = "a7vqO-mCBzlJpgGjSU-HYsTpLblN4El-UEmr8M9LMIm01dqmNIqENiE0RiLIfu9e"
+            type = GENERAL_STRING_TYPE,
+            description = PUBLIC_ID_DESCRIPTION,
+            example = PUBLIC_ID_EXAMPLE
     )
     private String publicId;
 
     @JsonFormat(pattern = DATE_FORMAT)
     @NotNull(message = GENERAL_VALIDATION_DATE_MESSAGE, groups = {Create.class, Read.class})
-    @Schema(type = "string", example = "12-30-45", description = DATE_FORMAT)
+    @Schema(type = GENERAL_STRING_TYPE, example = DATE_FORMAT_EXAMPLE, description = DATE_FORMAT)
     private LocalDate date;
 
     @JsonFormat(pattern = TIME_FORMAT)
     @NotNull(message = APPOINTMENT_VALIDATION_START_MESSAGE, groups = {Create.class, Read.class})
-    @Schema(type = "string", example = "12:30:45", description = TIME_FORMAT)
+    @Schema(type = GENERAL_STRING_TYPE, example = TIME_FORMAT_EXAMPLE, description = TIME_FORMAT)
     private LocalTime start;
 
     @JsonFormat(pattern = TIME_FORMAT)
     @NotNull(message = APPOINTMENT_VALIDATION_END_MESSAGE, groups = {Create.class, Read.class})
-    @Schema(type = "string", example = "18:30:45", description = TIME_FORMAT)
+    @Schema(type = GENERAL_STRING_TYPE, example = TIME_FORMAT_EXAMPLE, description = TIME_FORMAT)
     private LocalTime end;
 
     @Null(message = APPOINTMENT_VALIDATION_TYPE_NULL_MESSAGE, groups = {Create.class})

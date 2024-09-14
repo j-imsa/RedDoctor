@@ -34,7 +34,7 @@ public class PatientController {
 
     private final PatientService patientService;
 
-    @PostMapping("/{" + GENERAL_PUBLIC_ID_FIELD + "}")
+    @PostMapping(PATIENT_POST_PATH)
     @UpdateAnAppointmentRequestDocument(summary = PATIENT_DOCUMENT_POST_SUMMERY, description = PATIENT_DOCUMENT_POST_DESCRIPTION)
     public ResponseEntity<ResponseDto> updateAnAppointment(
             @PublicIdParameterDocument @ValidPublicId @PathVariable(GENERAL_PUBLIC_ID_FIELD) String publicId,
@@ -52,7 +52,7 @@ public class PatientController {
                 );
     }
 
-    @GetMapping("/{" + PATIENT_PHONE_NUMBER_FIELD + "}")
+    @GetMapping(PATIENT_GET_PATH)
     @ReadMyAppointmentsRequestDocument(summary = PATIENT_DOCUMENT_GET_SUMMERY, description = PATIENT_DOCUMENT_GET_DESCRIPTION)
     public ResponseEntity<ResponseDto> getMyAppointments(
 

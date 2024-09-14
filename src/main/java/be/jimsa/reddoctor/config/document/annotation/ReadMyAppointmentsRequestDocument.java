@@ -13,56 +13,26 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import static be.jimsa.reddoctor.utility.constant.ProjectConstants.*;
+
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Operation(
         responses = {
                 @ApiResponse(
-                        responseCode = "200",
-                        description = "Reading all appointments was successful",
+                        responseCode = API_DOCUMENT_RESPONSE_CODE_200,
+                        description = API_DOCUMENT_APPOINTMENT_GET_ONE_200_DESCRIPTION,
                         content = @Content(
                                 examples = {
                                         @ExampleObject(
-                                                name = "when there are three items",
-                                                summary = "Response with values",
-                                                value = """
-                                                        {
-                                                            "action": true,
-                                                            "timestamp": "10/09/2024 10:20:27 PM",
-                                                            "result": [
-                                                                {
-                                                                    "date": "11-12-2024",
-                                                                    "start": "11:30:10",
-                                                                    "end": "12:00:10",
-                                                                    "public_id": "i625bsvXoeAwTFiPGd6Huo4gGIXgCqkMtuF1rwPMTN_sUiDq4kuHgJWIljKc715O",
-                                                                    "patient": {
-                                                                        "name": "Foo bar",
-                                                                        "phone_number": "9131231234"
-                                                                    }
-                                                                },
-                                                                {
-                                                                    "date": "11-12-2024",
-                                                                    "start": "15:30:10",
-                                                                    "end": "16:00:10",
-                                                                    "public_id": "i625bsvXoeAwTFiPGd6Huo4gGIXgCqkMtuF1rwPMTN_sUiDq4kuHgJWIljKc715O",
-                                                                    "patient": {
-                                                                        "name": "Foo bar",
-                                                                        "phone_number": "9131231234"
-                                                                    }
-                                                                }
-                                                            ]
-                                                        }
-                                                        """),
+                                                name = API_DOCUMENT_APPOINTMENT_GET_ONE_200_EXAMPLE_1_NAME,
+                                                summary = API_DOCUMENT_APPOINTMENT_GET_ONE_200_EXAMPLE_1_SUMMERY,
+                                                value = API_DOCUMENT_APPOINTMENT_GET_ONE_200_EXAMPLE_1_VALUE
+                                        ),
                                         @ExampleObject(
-                                                name = "when there is no item!",
-                                                summary = "Response without value",
-                                                value = """
-                                                        {
-                                                          "action": true,
-                                                          "timestamp": "2024-09-02T13:54:39.976049836",
-                                                          "result": []
-                                                        }
-                                                        """
+                                                name = API_DOCUMENT_APPOINTMENT_GET_ONE_200_EXAMPLE_2_NAME,
+                                                summary = API_DOCUMENT_APPOINTMENT_GET_ONE_200_EXAMPLE_2_SUMMERY,
+                                                value = API_DOCUMENT_APPOINTMENT_GET_ONE_200_EXAMPLE_2_VALUE
                                         )
 
                                 },
@@ -70,26 +40,17 @@ import java.lang.annotation.Target;
                         )
                 ),
                 @ApiResponse(
-                        responseCode = "500",
-                        description = "Internal server error has occurred",
+                        responseCode = API_DOCUMENT_RESPONSE_CODE_500,
+                        description = API_DOCUMENT_500_DESCRIPTION,
                         content = @Content(
-                                examples = @ExampleObject("""
-                                        {
-                                            "action": false,
-                                            "timestamp": "2024-09-02T02:21:41.009081702",
-                                            "result": {
-                                                "path": "GET /{version}/doctors/11-12-2024?type=open&page=1&size=15&sort_direction=asc",
-                                                "message": "Internal service error!"
-                                            }
-                                        }
-                                        """),
+                                examples = @ExampleObject(API_DOCUMENT_500_EXAMPLE),
                                 schema = @Schema(implementation = ResponseDto.class)
                         )
                 )
         }
 )
 public @interface ReadMyAppointmentsRequestDocument {
-    String summary() default "Default summary";
+    String summary() default API_DOCUMENT_DEFAULT_SUMMERY;
 
-    String description() default "Default description";
+    String description() default API_DOCUMENT_DEFAULT_DESCRIPTION;
 }

@@ -8,14 +8,24 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import static be.jimsa.reddoctor.utility.constant.ProjectConstants.*;
+
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 @Parameter(
-        description = "The public_id of the resource",
-        example = "a7vqO-mCBzlJpgGjSU-HYsTpLblN4El-UEmr8M9LMIm01dqmNIqENiE0RiLIfu9e",
+        description = API_DOCUMENT_PUBLIC_ID_DESCRIPTION,
+        example = API_DOCUMENT_PUBLIC_ID_EXAMPLE,
         examples = {
-                @ExampleObject(name = "Valid example", value = "a7vqO-mCBzlJpgGjSU-HYsTpLblN4El-UEmr8M9LMIm01dqmNIqENiE0RiLIfu9e", summary = "Example public ID 1, Valid"),
-                @ExampleObject(name = "Invalid example", value = "xyz789xyz789xyz789x", summary = "Example public ID 2, Invalid")
+                @ExampleObject(
+                        name = API_DOCUMENT_PUBLIC_ID_EXAMPLE_1_NAME,
+                        value = API_DOCUMENT_PUBLIC_ID_EXAMPLE_1_VALUE,
+                        summary = API_DOCUMENT_PUBLIC_ID_EXAMPLE_1_SUMMERY
+                ),
+                @ExampleObject(
+                        name = API_DOCUMENT_PUBLIC_ID_EXAMPLE_2_NAME,
+                        value = API_DOCUMENT_PUBLIC_ID_EXAMPLE_2_VALUE,
+                        summary = API_DOCUMENT_PUBLIC_ID_EXAMPLE_2_SUMMERY
+                )
         }
 )
 public @interface PublicIdParameterDocument {

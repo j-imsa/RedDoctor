@@ -13,62 +13,39 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import static be.jimsa.reddoctor.utility.constant.ProjectConstants.*;
+
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Operation(
         responses = {
                 @ApiResponse(
-                        responseCode = "200",
-                        description = "Deleting an appointment with the provided public_id was successful",
+                        responseCode = API_DOCUMENT_RESPONSE_CODE_200,
+                        description = API_DOCUMENT_APPOINTMENT_DELETE_BY_PUBLIC_ID_200_DESCRIPTION,
                         content = @Content(
-                                examples = @ExampleObject("""
-                                        {
-                                            "action": true,
-                                            "timestamp": "10/09/2024 10:18:23 PM",
-                                            "result": true
-                                        }
-                                        """),
+                                examples = @ExampleObject(API_DOCUMENT_APPOINTMENT_DELETE_BY_PUBLIC_ID_200_EXAMPLE),
                                 schema = @Schema(implementation = ResponseDto.class)
                         )
                 ),
                 @ApiResponse(
-                        responseCode = "404",
-                        description = "Due to invalid public_id, it responded a not-found",
+                        responseCode = API_DOCUMENT_RESPONSE_CODE_404,
+                        description = API_DOCUMENT_404_DESCRIPTION,
                         content = @Content(
-                                examples = @ExampleObject("""
-                                        {
-                                            "action": false,
-                                            "timestamp": "10/09/2024 10:17:26 PM",
-                                            "result": {
-                                                "path": "DELETE /{version}/doctors/nFy_PXVUyw2QA8PIQBBtGpVo5GnSsLgXUab-nuVCJyEuPpgCpLa_psO6BFcZLnBX",
-                                                "message": "The resource with provided public_id not founded!"
-                                            }
-                                        }
-                                        """),
+                                examples = @ExampleObject(API_DOCUMENT_APPOINTMENT_DELETE_BY_PUBLIC_ID_404_EXAMPLE),
                                 schema = @Schema(implementation = ResponseDto.class)
                         )
                 ),
                 @ApiResponse(
-                        responseCode = "500",
-                        description = "Internal server error has occurred",
+                        responseCode = API_DOCUMENT_RESPONSE_CODE_500,
+                        description = API_DOCUMENT_500_DESCRIPTION,
                         content = @Content(
-                                examples = @ExampleObject("""
-                                        {
-                                            "action": false,
-                                            "timestamp": "2024-09-02T02:21:41.009081702",
-                                            "result": {
-                                                "path": "DELETE /{version}/doctors",
-                                                "message": "Internal service error!"
-                                            }
-                                        }
-                                        """),
+                                examples = @ExampleObject(API_DOCUMENT_500_EXAMPLE),
                                 schema = @Schema(implementation = ResponseDto.class)
                         )
                 )
         }
 )
 public @interface DeleteAnAppointmentRequestDocument {
-    String summary() default "Default summary";
-
-    String description() default "Default description";
+    String summary() default API_DOCUMENT_DEFAULT_SUMMERY;
+    String description() default API_DOCUMENT_DEFAULT_DESCRIPTION;
 }

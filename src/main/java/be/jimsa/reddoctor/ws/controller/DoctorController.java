@@ -52,7 +52,7 @@ public class DoctorController {
                 );
     }
 
-    @GetMapping("/{" + GENERAL_DATE_FIELD + "}")
+    @GetMapping(DOCTOR_GET_PATH)
     @ReadAllRequestDocument(summary = APPOINTMENT_DOCUMENT_GET_SUMMERY, description = APPOINTMENT_DOCUMENT_GET_DESCRIPTION)
     public ResponseEntity<ResponseDto> getAppointments(
 
@@ -92,7 +92,7 @@ public class DoctorController {
                 );
     }
 
-    @DeleteMapping("/{" + GENERAL_PUBLIC_ID_FIELD + "}")
+    @DeleteMapping(DOCTOR_DELETE_PATH)
     @DeleteAnAppointmentRequestDocument(summary = APPOINTMENT_DOCUMENT_DELETE_SUMMERY, description = APPOINTMENT_DOCUMENT_DELETE_DESCRIPTION)
     public ResponseEntity<ResponseDto> removeAProject(
             @PublicIdParameterDocument @ValidPublicId @PathVariable(GENERAL_PUBLIC_ID_FIELD) String publicId
