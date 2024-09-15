@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "c82fc195-9fd4-4fa1-b9fb-6a6853d97160",
-		"name": "RedBank - Doctor App",
+		"name": "DoctorApp Collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "3443036"
 	},
@@ -48,7 +48,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/{{version}}/doctors/11-12-2024?page=1&size=15&sort_direction=asc&type=all",
+							"raw": "{{base_url}}/{{version}}/doctors/11-12-2024?page=1&size=15&sort_direction=asc&status=all",
 							"host": [
 								"{{base_url}}"
 							],
@@ -71,7 +71,7 @@
 									"value": "asc"
 								},
 								{
-									"key": "type",
+									"key": "status",
 									"value": "all"
 								}
 							]
@@ -85,14 +85,14 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/{{version}}/doctors/_xGtBGXubs1yZucqNt8cKb_DJezaZ-xv-u7Ken-8VzhmBiQXqjaqkiy3M4v0jPa_dd",
+							"raw": "{{base_url}}/{{version}}/doctors/ygqkIvK-B2G164sTJRYCy4pN7O-iuHfERfptHBPd-ouwcb5sdNdCN2y_FDc8RoLu",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"{{version}}",
 								"doctors",
-								"_xGtBGXubs1yZucqNt8cKb_DJezaZ-xv-u7Ken-8VzhmBiQXqjaqkiy3M4v0jPa_dd"
+								"ygqkIvK-B2G164sTJRYCy4pN7O-iuHfERfptHBPd-ouwcb5sdNdCN2y_FDc8RoLu"
 							]
 						}
 					},
@@ -109,7 +109,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/{{version}}/doctors/11-12-2024?type=open&page=1&size=15&sort_direction=asc",
+							"raw": "{{base_url}}/{{version}}/doctors/11-12-2024?status=open&page=1&size=15&sort_direction=asc",
 							"host": [
 								"{{base_url}}"
 							],
@@ -120,7 +120,7 @@
 							],
 							"query": [
 								{
-									"key": "type",
+									"key": "status",
 									"value": "open"
 								},
 								{
@@ -155,14 +155,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/{{version}}/patients/i625bsvXoeAwTFiPGd6Huo4gGIXgCqkMtuF1rwPMTN_sUiDq4kuHgJWIljKc715O",
+							"raw": "{{base_url}}/{{version}}/patients/9sL0JIT4om-J230FyV-hq6JPfbstKIpTFzpqmpsBYM9yvSEBLzd62F5nV9LEOlaF",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"{{version}}",
 								"patients",
-								"i625bsvXoeAwTFiPGd6Huo4gGIXgCqkMtuF1rwPMTN_sUiDq4kuHgJWIljKc715O"
+								"9sL0JIT4om-J230FyV-hq6JPfbstKIpTFzpqmpsBYM9yvSEBLzd62F5nV9LEOlaF"
 							]
 						}
 					},

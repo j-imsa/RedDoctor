@@ -121,8 +121,8 @@ public class ProjectConstants {
     public static final String EXCEPTION_NOT_FOUND_RESOURCE_MESSAGE = "The resource with provided public_id not founded!";
     public static final String EXCEPTION_NOT_FOUND_RESOURCE_BY_PHONE_NUMBER_MESSAGE = "The resource with provided phone_number not founded!";
     public static final String EXCEPTION_NOT_ACCEPTABLE_RESOURCE_MESSAGE = "The resource with provided public_id founded with a relation, so you can not remove it!";
-    public static final String EXCEPTION_RESOURCE_ALREADY_EXIST_MESSAGE = "The appointment has already reserved!";
-    public static final String EXCEPTION_RESOURCE_ALREADY_DELETED_MESSAGE = "The appointment has already deleted!";
+    public static final String EXCEPTION_RESOURCE_ALREADY_EXIST_MESSAGE = "The appointment has already been reserved!";
+    public static final String EXCEPTION_RESOURCE_ALREADY_DELETED_MESSAGE = "The appointment has already been deleted!";
 
     public static final String EXCEPTION_METHOD_METHOD_ARGUMENT_NOT_VALID = "MethodArgumentNotValid";
     public static final String EXCEPTION_METHOD_HTTP_MESSAGE_NOT_READABLE = "HttpMessageNotReadable";
@@ -383,7 +383,7 @@ public class ProjectConstants {
               "timestamp": "10/09/2024 10:17:26 PM",
               "result": {
                 "path": "{METHOD} /{VERSION}/{PATH-PID-...}",
-                "message": "The appointment has already deleted!"
+                "message": "The appointment has already been deleted!"
               }
             }
             """;

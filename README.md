@@ -1,6 +1,11 @@
 # RedDoctor
 
 
+### Challenge
+
+> [CHALLENGE.md](CHALLENGE.md)
+
+
 ### Document:
 
 > http://localhost:8088/api-docs
@@ -25,7 +30,7 @@ curl --location 'http://localhost:8088/v0.9/doctors' \
 2. Doctor can see all appointments
 
 ```shell
-curl --location 'http://localhost:8088/v0.9/doctors/11-12-2024?page=1&size=15&sort_direction=asc&type=all'
+curl --location 'http://localhost:8088/v0.9/doctors/11-12-2024?page=1&size=15&sort_direction=asc&status=all'
 ```
 
 3. Doctor can remove an appointment
@@ -37,7 +42,7 @@ curl --location --request DELETE 'http://localhost:8088/v0.9/doctors/_xGtBGXubs1
 4. Patient can see available appointments
 
 ```shell
-curl --location 'http://localhost:8088/v0.9/doctors/11-12-2024?type=open&page=1&size=15&sort_direction=asc'
+curl --location 'http://localhost:8088/v0.9/doctors/11-12-2024?status=open&page=1&size=15&sort_direction=asc'
 ```
 
 5. Patient can take an appointment
@@ -61,9 +66,9 @@ curl --location 'http://localhost:8088/v0.9/patients/9131231234'
 
 ### Postman imports
 
-> Environment: [RedBank.postman_environment.json](RedBank.postman_environment.json)
+> Environment: [DoctorApp Environment.postman_environment.json](DoctorApp%20Environment.postman_environment.json)
 
-> Collection: [RedBank - Doctor App.postman_collection.json](RedBank%20-%20Doctor%20App.postman_collection.json)
+> Collection: [DoctorApp Collection.postman_collection.json](DoctorApp%20Collection.postman_collection.json)
 
 
 ### To-Do
@@ -75,10 +80,10 @@ curl --location 'http://localhost:8088/v0.9/patients/9131231234'
   - Transactional Boundaries
     - [ ] @Transactional
 
-- [ ] Status
-  - [ ] OPEN
-  - [ ] TAKEN
-  - [ ] DELETED
+- [x] Status
+  - [x] OPEN
+  - [x] TAKEN
+  - [x] DELETED
 
 - [ ] Docker
   - [Google Jib](https://cloud.google.com/java/getting-started/jib)
