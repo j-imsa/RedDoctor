@@ -206,6 +206,7 @@ public class ProjectConstants {
                 "date": "11-12-2024",
                 "start": "11:30:10",
                 "end": "12:00:10",
+                "status": "TAKEN",
                 "public_id": "i625bsvXoeAwTFiPGd6Huo4gGIXgCqkMtuF1rwPMTN_sUiDq4kuHgJWIljKc715O",
                 "patient": {
                   "name": "Foo bar",
@@ -279,15 +280,26 @@ public class ProjectConstants {
                   "date": "11-12-2024",
                   "start": "11:30:10",
                   "end": "12:00:10",
-                  "public_id": "6ZCGPsreW4NoaRj12dhZBFRMH1jjzDOdEVHYDsivUdr5r6_JLQ5Mx69VCFHb7aQ4",
-                  "patient": null
+                  "status": "OPEN",
+                  "public_id": "6ZCGPsreW4NoaRj12dhZBFRMH1jjzDOdEVHYDsivUdr5r6_JLQ5Mx69VCFHb7aQ4"
                 },
                 {
                   "date": "11-12-2024",
                   "start": "12:00:10",
                   "end": "12:30:10",
-                  "public_id": "f6we3b2vdp-VQtjmrSIbyEWdO3Klj02JgCGuQHHIB27Yk1wxv2layTeBrVT_YNry",
-                  "patient": null
+                  "status": "OPEN",
+                  "public_id": "f6we3b2vdp-VQtjmrSIbyEWdO3Klj02JgCGuQHHIB27Yk1wxv2layTeBrVT_YNry"
+                },
+                {
+                  "date": "11-12-2024",
+                  "start": "15:30:10",
+                  "end": "16:00:10",
+                  "status": "TAKEN",
+                  "public_id": "i625bsvXoeAwTFiPGd6Huo4gGIXgCqkMtuF1rwPMTN_sUiDq4kuHgJWIljKc715O",
+                  "patient": {
+                    "name": "Foo bar",
+                    "phone_number": "9131231234"
+                  }
                 }
               ]
             }
@@ -315,6 +327,7 @@ public class ProjectConstants {
                   "date": "11-12-2024",
                   "start": "11:30:10",
                   "end": "12:00:10",
+                  "status": "TAKEN",
                   "public_id": "i625bsvXoeAwTFiPGd6Huo4gGIXgCqkMtuF1rwPMTN_sUiDq4kuHgJWIljKc715O",
                   "patient": {
                     "name": "Foo bar",
@@ -325,6 +338,7 @@ public class ProjectConstants {
                   "date": "11-12-2024",
                   "start": "15:30:10",
                   "end": "16:00:10",
+                  "status": "TAKEN",
                   "public_id": "i625bsvXoeAwTFiPGd6Huo4gGIXgCqkMtuF1rwPMTN_sUiDq4kuHgJWIljKc715O",
                   "patient": {
                     "name": "Foo bar",
@@ -363,6 +377,16 @@ public class ProjectConstants {
               "result": true
             }
             """;
+    public static final String API_DOCUMENT_APPOINTMENT_DELETE_BY_PUBLIC_ID_400_EXAMPLE = """
+            {
+              "action": false,
+              "timestamp": "10/09/2024 10:17:26 PM",
+              "result": {
+                "path": "{METHOD} /{VERSION}/{PATH-PID-...}",
+                "message": "The appointment has already deleted!"
+              }
+            }
+            """;
     public static final String API_DOCUMENT_APPOINTMENT_DELETE_BY_PUBLIC_ID_404_EXAMPLE = """
             {
               "action": false,
@@ -388,24 +412,24 @@ public class ProjectConstants {
     public static final String API_DOCUMENT_APPOINTMENT_POST_201_DESCRIPTION = "Creating appointments with the provided info was successful";
     public static final String API_DOCUMENT_APPOINTMENT_POST_201_EXAMPLE = """
             {
-              "action": true,
-              "timestamp": "10/09/2024 10:20:30 PM",
-              "result": [
-                {
-                  "date": "11-12-2024",
-                  "start": "11:30:10",
-                  "end": "12:00:10",
-                  "public_id": "RIXzFN_gwWmX2qXtY_fMT3HsLZ8fB4Roypdwzf1cQCglaBu8yznm0VXXqdzc01BI",
-                  "patient": null
-                },
-                {
-                  "date": "11-12-2024",
-                  "start": "12:00:10",
-                  "end": "12:30:10",
-                  "public_id": "1_ufS5cjPkmwmcTYIC1rTSvHdJIHP3IfDHY_N-2FXER1J3Vv4fLOE3Z8VYkfl3lG",
-                  "patient": null
-                }
-              ]
+                "action": true,
+                "timestamp": "15/09/2024 09:54:59 AM",
+                "result": [
+                    {
+                        "date": "11-12-2024",
+                        "start": "11:30:10",
+                        "end": "12:00:10",
+                        "status": "OPEN",
+                        "public_id": "9sL0JIT4om-J230FyV-hq6JPfbstKIpTFzpqmpsBYM9yvSEBLzd62F5nV9LEOlaF"
+                    },
+                    {
+                        "date": "11-12-2024",
+                        "start": "12:00:10",
+                        "end": "12:30:10",
+                        "status": "OPEN",
+                        "public_id": "ygqkIvK-B2G164sTJRYCy4pN7O-iuHfERfptHBPd-ouwcb5sdNdCN2y_FDc8RoLu"
+                    }
+                ]
             }
             """;
     public static final String API_DOCUMENT_APPOINTMENT_POST_400_EXAMPLE = """

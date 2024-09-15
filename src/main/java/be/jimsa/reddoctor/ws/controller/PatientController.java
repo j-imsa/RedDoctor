@@ -14,7 +14,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -42,8 +41,7 @@ public class PatientController {
     ) {
         AppointmentDto updatedAppointmentDto = patientService.updateAnAppointment(publicId, patientDto);
         return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(
+                .ok(
                         ResponseDto.builder()
                                 .action(true)
                                 .timestamp(LocalDateTime.now())
