@@ -408,6 +408,16 @@ public class ProjectConstants {
               }
             }
             """;
+    public static final String API_DOCUMENT_APPOINTMENT_DELETE_BY_PUBLIC_ID_409_EXAMPLE = """
+            {
+              "action": false,
+              "timestamp": "10/09/2024 10:17:26 PM",
+              "result": {
+                "path": "{METHOD} /{VERSION}/{PATH-PID-...}",
+                "message": "This appointment has been reserved before"
+              }
+            }
+            """;
 
     // @CreateAppointmentRequestDocument
     public static final String API_DOCUMENT_APPOINTMENT_POST_201_DESCRIPTION = "Creating appointments with the provided info was successful";
