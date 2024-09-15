@@ -127,6 +127,7 @@ public class ProjectConstants {
     public static final String EXCEPTION_METHOD_METHOD_ARGUMENT_NOT_VALID = "MethodArgumentNotValid";
     public static final String EXCEPTION_METHOD_HTTP_MESSAGE_NOT_READABLE = "HttpMessageNotReadable";
     public static final String EXCEPTION_METHOD_APP_SERVICE_EXCEPTION = "AppServiceExceptions";
+    public static final String EXCEPTION_METHOD_OPTIMISTIC_LOCK_EXCEPTION = "OptimisticLockException";
     public static final String EXCEPTION_METHOD_CONSTRAINT_VIOLATION_EXCEPTION = "ConstraintViolationExceptions";
     public static final String EXCEPTION_METHOD_APP_500_EXCEPTION = "App500Exceptions";
 
@@ -404,6 +405,16 @@ public class ProjectConstants {
               "result": {
                 "path": "{METHOD} /{VERSION}/{PATH-PID-...}",
                 "message": "The resource with provided public_id founded with a relation, so you can not remove it!"
+              }
+            }
+            """;
+    public static final String API_DOCUMENT_APPOINTMENT_DELETE_BY_PUBLIC_ID_409_EXAMPLE = """
+            {
+              "action": false,
+              "timestamp": "10/09/2024 10:17:26 PM",
+              "result": {
+                "path": "{METHOD} /{VERSION}/{PATH-PID-...}",
+                "message": "This appointment has been reserved before"
               }
             }
             """;

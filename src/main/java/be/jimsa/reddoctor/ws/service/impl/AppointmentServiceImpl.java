@@ -9,6 +9,7 @@ import be.jimsa.reddoctor.ws.model.entity.Appointment;
 import be.jimsa.reddoctor.ws.model.enums.Status;
 import be.jimsa.reddoctor.ws.repository.AppointmentRepository;
 import be.jimsa.reddoctor.ws.service.AppointmentService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -97,6 +98,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         log.info(LOGGER_SIZE, appointmentPage.getSize());
     }
 
+    @Transactional
     @Override
     public boolean removeAnAppointment(String publicId) {
         Optional<Appointment> optionalAppointment = appointmentRepository.findByPublicId(publicId);

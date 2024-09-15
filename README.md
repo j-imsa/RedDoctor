@@ -73,12 +73,12 @@ curl --location 'http://localhost:8088/v0.9/patients/9131231234'
 
 ### To-Do
 
-- [ ] Concurrency check
+- [x] Concurrency check
   - Locking
-    - [ ] Optimistic Locking
+    - [x] Optimistic Locking
     - [ ] Pessimistic Locking
   - Transactional Boundaries
-    - [ ] @Transactional
+    - [x] @Transactional
 
 - [x] Status
   - [x] OPEN

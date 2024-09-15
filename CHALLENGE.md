@@ -21,7 +21,7 @@ As a doctor I would like to be able to delete some of my open appointments.
 #### Test cases:
 1. If there is no open appointment then 404 error is shown.
 2. If the appointment is taken by a patient, then a 406 error is shown
-3. Concurrency check; if doctor is deleting the same appointment that a patient is taking at the same time.
+3. **Concurrency check**; if doctor is deleting the same appointment that a patient is taking at the same time.
 
 ### Story: Patients can view a doctor open appointment
 As a patient I like to be able to see all the open appointments for the given day. So, I can take one of these appointments.
