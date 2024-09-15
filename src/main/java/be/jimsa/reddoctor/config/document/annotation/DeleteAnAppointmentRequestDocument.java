@@ -28,6 +28,14 @@ import static be.jimsa.reddoctor.utility.constant.ProjectConstants.*;
                         )
                 ),
                 @ApiResponse(
+                        responseCode = API_DOCUMENT_RESPONSE_CODE_400,
+                        description = API_DOCUMENT_400_DESCRIPTION,
+                        content = @Content(
+                                examples = @ExampleObject(API_DOCUMENT_APPOINTMENT_DELETE_BY_PUBLIC_ID_400_EXAMPLE),
+                                schema = @Schema(implementation = ResponseDto.class)
+                        )
+                ),
+                @ApiResponse(
                         responseCode = API_DOCUMENT_RESPONSE_CODE_404,
                         description = API_DOCUMENT_404_DESCRIPTION,
                         content = @Content(

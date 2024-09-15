@@ -2,6 +2,7 @@ package be.jimsa.reddoctor.ws.model.entity;
 
 
 import be.jimsa.reddoctor.config.validation.annotation.ValidPublicId;
+import be.jimsa.reddoctor.ws.model.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,6 +37,9 @@ public class Appointment extends BaseEntity {
 
     @Column(nullable = false)
     private LocalTime endTime;
+
+    @Enumerated(EnumType.ORDINAL)
+    private Status status;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = PATIENT_DATABASE_JOIN_ID, referencedColumnName = PATIENT_DATABASE_JOIN_ID, nullable = true)

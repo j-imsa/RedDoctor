@@ -8,7 +8,7 @@ import java.util.List;
 public interface AppointmentService {
     List<AppointmentDto> createAppointments(AppointmentDto appointmentDto);
 
-    List<AppointmentDto> readAppointments(String date, int page, int size, String type, String sortDirection);
+    List<AppointmentDto> readAppointments(String date, int page, int size, String statusStr, String sortDirection);
 
     boolean removeAnAppointment(String publicId);
 }

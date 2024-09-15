@@ -14,7 +14,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -42,8 +41,7 @@ public class PatientController {
     ) {
         AppointmentDto updatedAppointmentDto = patientService.updateAnAppointment(publicId, patientDto);
         return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(
+                .ok(
                         ResponseDto.builder()
                                 .action(true)
                                 .timestamp(LocalDateTime.now())
@@ -56,12 +54,9 @@ public class PatientController {
     @ReadMyAppointmentsRequestDocument(summary = PATIENT_DOCUMENT_GET_SUMMERY, description = PATIENT_DOCUMENT_GET_DESCRIPTION)
     public ResponseEntity<ResponseDto> getMyAppointments(
 
-            @PathVariable(PATIENT_PHONE_NUMBER_FIELD) String phoneNumber,
-
-            @Pattern(regexp = GENERAL_VALIDATION_TYPE_PATTERN, message = GENERAL_VALIDATION_TYPE_FIELD_PATTERN_MESSAGE)
-            @RequestParam(value = GENERAL_TYPE_FIELD, defaultValue = APPOINTMENT_TYPE_FIELD_DEFAULT_VALUE)
-            @Parameter(example = GENERAL_TYPE_FIELD, description = GENERAL_DOCUMENT_TYPE_FIELD_PATTERN_MESSAGE)
-            String type,
+            @PathVariable(PATIENT_PHONE_NUMBER_FIELD)
+            @Pattern(regexp = PATIENT_VALIDATION_PHONE_NUMBER_PATTERN, message = PATIENT_VALIDATION_PHONE_NUMBER_PATTERN_MESSAGE)
+            String phoneNumber,
 
             @Positive(message = GENERAL_VALIDATION_PAGE_POSITIVE_INTEGER)
             @RequestParam(defaultValue = GENERAL_PAGE_DEFAULT_VALUE)
@@ -79,7 +74,7 @@ public class PatientController {
             String sortDirection
     ) {
         List<AppointmentDto> appointmentDtos = patientService.readMyAppointments(
-                phoneNumber, page, size, type, sortDirection
+                phoneNumber, page, size, sortDirection
         );
         return ResponseEntity
                 .ok(

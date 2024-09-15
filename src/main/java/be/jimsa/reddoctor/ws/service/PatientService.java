@@ -8,5 +8,5 @@ import java.util.List;
 public interface PatientService {
     AppointmentDto updateAnAppointment(String publicId, PatientDto patientDto);
 
-    List<AppointmentDto> readMyAppointments(String phoneNumber, int page, int size, String type, String sortDirection);
+    List<AppointmentDto> readMyAppointments(String phoneNumber, int page, int size, String sortDirection);
 }

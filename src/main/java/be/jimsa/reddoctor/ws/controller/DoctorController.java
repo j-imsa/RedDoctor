@@ -59,10 +59,10 @@ public class DoctorController {
             @JsonFormat(pattern = DATE_FORMAT)
             @PathVariable(GENERAL_DATE_FIELD) String date,
 
-            @Pattern(regexp = GENERAL_VALIDATION_TYPE_PATTERN, message = GENERAL_VALIDATION_TYPE_FIELD_PATTERN_MESSAGE)
-            @RequestParam(value = GENERAL_TYPE_FIELD, defaultValue = APPOINTMENT_TYPE_FIELD_DEFAULT_VALUE)
-            @Parameter(example = GENERAL_TYPE_FIELD, description = GENERAL_DOCUMENT_TYPE_FIELD_PATTERN_MESSAGE)
-            String type,
+            @Pattern(regexp = GENERAL_VALIDATION_STATUS_PATTERN, message = GENERAL_VALIDATION_STATUS_FIELD_PATTERN_MESSAGE)
+            @RequestParam(value = GENERAL_STATUS_FIELD, defaultValue = GENERAL_STATUS_OPEN)
+            @Parameter(example = GENERAL_STATUS_FIELD, description = GENERAL_DOCUMENT_STATUS_FIELD_PATTERN_MESSAGE)
+            String status,
 
             @Positive(message = GENERAL_VALIDATION_PAGE_POSITIVE_INTEGER)
             @RequestParam(defaultValue = GENERAL_PAGE_DEFAULT_VALUE)
@@ -80,7 +80,7 @@ public class DoctorController {
             String sortDirection
     ) {
         List<AppointmentDto> appointmentDtos = appointmentService.readAppointments(
-                date, page, size, type, sortDirection
+                date, page, size, status, sortDirection
         );
         return ResponseEntity
                 .ok(

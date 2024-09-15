@@ -1,16 +1,26 @@
-package be.jimsa.reddoctor.utility.mapper;
+package be.jimsa.reddoctor.utility;
 
+import be.jimsa.reddoctor.utility.id.PublicIdGenerator;
 import be.jimsa.reddoctor.ws.model.dto.AppointmentDto;
 import be.jimsa.reddoctor.ws.model.dto.PatientDto;
 import be.jimsa.reddoctor.ws.model.entity.Appointment;
 import be.jimsa.reddoctor.ws.model.entity.Patient;
+import be.jimsa.reddoctor.ws.model.enums.Status;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import static be.jimsa.reddoctor.utility.constant.ProjectConstants.GENERAL_TYPE_ALL;
-import static be.jimsa.reddoctor.utility.constant.ProjectConstants.GENERAL_TYPE_OPEN;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import static be.jimsa.reddoctor.utility.constant.ProjectConstants.*;
 
 @Component
-public class AppointmentMapper {
+@AllArgsConstructor
+public class AppointmentUtils {
+
+    private final PublicIdGenerator publicIdGenerator;
 
     public Appointment mapToEntity(AppointmentDto dto) {
         Patient patient = dto.getPatientDto() == null ? null : Patient.builder()
@@ -23,6 +33,7 @@ public class AppointmentMapper {
                 .endTime(dto.getEnd())
                 .publicId(dto.getPublicId())
                 .patient(patient)
+                .status(dto.getStatus())
                 .build();
     }
 
@@ -37,9 +48,25 @@ public class AppointmentMapper {
                 .end(entity.getEndTime())
                 .publicId(entity.getPublicId())
                 .patientDto(patientDto)
-                .type(
-                        patientDto == null ? GENERAL_TYPE_OPEN : GENERAL_TYPE_ALL
-                )
+                .status(entity.getStatus())
                 .build();
+    }
+
+    public List<AppointmentDto> splitter(AppointmentDto appointmentDto) {
+        Duration interval = Duration.ofMinutes(30);
+        LocalTime current = appointmentDto.getStart();
+        List<AppointmentDto> dtos = new ArrayList<>();
+        while (current.plus(interval).isBefore(appointmentDto.getEnd()) || current.plus(interval).equals(appointmentDto.getEnd())) {
+            AppointmentDto dto = AppointmentDto.builder()
+                    .start(current)
+                    .end(current.plus(interval))
+                    .date(appointmentDto.getDate())
+                    .publicId(publicIdGenerator.generatePublicId(PUBLIC_ID_DEFAULT_LENGTH))
+                    .status(Status.OPEN)
+                    .build();
+            current = current.plus(interval);
+            dtos.add(dto);
+        }
+        return dtos;
     }
 }

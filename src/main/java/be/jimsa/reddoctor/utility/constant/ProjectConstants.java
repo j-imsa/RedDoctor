@@ -26,7 +26,6 @@ public class ProjectConstants {
     public static final String APPOINTMENT_DTO_DOCUMENT_NAME = "Appointment";
     public static final String APPOINTMENT_DTO_DOCUMENT_DESCRIPTION = "This is 'AppointmentDto'";
     public static final String APPOINTMENT_TIME_FIELD = "startTime";
-    public static final String APPOINTMENT_TYPE_FIELD_DEFAULT_VALUE = "all";
     public static final String APPOINTMENT_DATABASE_TABLE_NAME = "appointments";
     public static final String APPOINTMENT_DATABASE_JOIN_ID = "appointment_id";
 
@@ -43,7 +42,7 @@ public class ProjectConstants {
 
     // ======================== General ======================== //
     public static final String GENERAL_STRING_TYPE = "string";
-    public static final String GENERAL_TYPE_FIELD = "type";
+    public static final String GENERAL_STATUS_FIELD = "status";
     public static final String GENERAL_DATE_FIELD = "date";
     public static final String GENERAL_SORT_FIELD = "sort_field";
     public static final String GENERAL_PUBLIC_ID_FIELD = "public_id";
@@ -60,10 +59,12 @@ public class ProjectConstants {
 
 
     // ======================== Validation ======================== //
-    public static final String GENERAL_TYPE_ALL = "all";
-    public static final String GENERAL_TYPE_OPEN = "open";
-    public static final String GENERAL_VALIDATION_TYPE_PATTERN = "open|all";
-    public static final String GENERAL_VALIDATION_TYPE_FIELD_PATTERN_MESSAGE = "type field must be 'open' or 'all'";
+    public static final String GENERAL_STATUS_ALL = "ALL";
+    public static final String GENERAL_STATUS_OPEN = "OPEN";
+    public static final String GENERAL_STATUS_TAKEN = "TAKEN";
+    public static final String GENERAL_STATUS_DELETED = "DELETED";
+    public static final String GENERAL_VALIDATION_STATUS_PATTERN = "open|taken|deleted|all";
+    public static final String GENERAL_VALIDATION_STATUS_FIELD_PATTERN_MESSAGE = "status field must be 'open', 'taken', 'deleted', or 'all'";
     public static final String GENERAL_VALIDATION_PAGE_POSITIVE_INTEGER = "page must be a positive number";
     public static final String GENERAL_VALIDATION_SIZE_POSITIVE_INTEGER = "size must be a positive number";
     public static final String GENERAL_VALIDATION_DATE_MESSAGE = "date must NOT be null/blank/empty";
@@ -74,7 +75,7 @@ public class ProjectConstants {
     public static final String APPOINTMENT_VALIDATION_START_MESSAGE = "start_time must NOT be null/blank/empty";
     public static final String APPOINTMENT_VALIDATION_END_MESSAGE = "ent_time must NOT be null/blank/empty";
     public static final String APPOINTMENT_VALIDATION_PUBLIC_ID_NULL_MESSAGE = "public_id must BE null on the creation operation";
-    public static final String APPOINTMENT_VALIDATION_TYPE_NULL_MESSAGE = "type must BE null on the creation operation";
+    public static final String APPOINTMENT_VALIDATION_TYPE_NULL_MESSAGE = "status must BE null on the creation operation";
     public static final String APPOINTMENT_VALIDATION_PATIENT_NULL_MESSAGE = "patient must BE null on the creation operation";
     public static final String PATIENT_VALIDATION_NAME_NOT_EMPTY_MESSAGE = "name must NOT be empty";
     public static final String PATIENT_VALIDATION_NAME_NOT_BLANK_MESSAGE = "name must NOT be blank";
@@ -88,7 +89,7 @@ public class ProjectConstants {
 
 
     // ======================== Document ======================== //
-    public static final String GENERAL_DOCUMENT_TYPE_FIELD_PATTERN_MESSAGE = "type field must be 'open' or 'all'";
+    public static final String GENERAL_DOCUMENT_STATUS_FIELD_PATTERN_MESSAGE = "status field must be 'open', 'taken', 'deleted', or 'all'";
     public static final String GENERAL_DOCUMENT_PAGE_EXAMPLE = "3";
     public static final String GENERAL_DOCUMENT_SIZE_EXAMPLE = "25";
     public static final String GENERAL_DOCUMENT_SORT_DIRECTION_FIELD_DESCRIPTION = "'asc' or 'desc'";
@@ -120,11 +121,13 @@ public class ProjectConstants {
     public static final String EXCEPTION_NOT_FOUND_RESOURCE_MESSAGE = "The resource with provided public_id not founded!";
     public static final String EXCEPTION_NOT_FOUND_RESOURCE_BY_PHONE_NUMBER_MESSAGE = "The resource with provided phone_number not founded!";
     public static final String EXCEPTION_NOT_ACCEPTABLE_RESOURCE_MESSAGE = "The resource with provided public_id founded with a relation, so you can not remove it!";
-    public static final String EXCEPTION_RESOURCE_ALREADY_EXIST_MESSAGE = "The resource already exists!";
+    public static final String EXCEPTION_RESOURCE_ALREADY_EXIST_MESSAGE = "The appointment has already been reserved!";
+    public static final String EXCEPTION_RESOURCE_ALREADY_DELETED_MESSAGE = "The appointment has already been deleted!";
 
     public static final String EXCEPTION_METHOD_METHOD_ARGUMENT_NOT_VALID = "MethodArgumentNotValid";
     public static final String EXCEPTION_METHOD_HTTP_MESSAGE_NOT_READABLE = "HttpMessageNotReadable";
     public static final String EXCEPTION_METHOD_APP_SERVICE_EXCEPTION = "AppServiceExceptions";
+    public static final String EXCEPTION_METHOD_CONSTRAINT_VIOLATION_EXCEPTION = "ConstraintViolationExceptions";
     public static final String EXCEPTION_METHOD_APP_500_EXCEPTION = "App500Exceptions";
 
 
@@ -203,6 +206,7 @@ public class ProjectConstants {
                 "date": "11-12-2024",
                 "start": "11:30:10",
                 "end": "12:00:10",
+                "status": "TAKEN",
                 "public_id": "i625bsvXoeAwTFiPGd6Huo4gGIXgCqkMtuF1rwPMTN_sUiDq4kuHgJWIljKc715O",
                 "patient": {
                   "name": "Foo bar",
@@ -276,15 +280,26 @@ public class ProjectConstants {
                   "date": "11-12-2024",
                   "start": "11:30:10",
                   "end": "12:00:10",
-                  "public_id": "6ZCGPsreW4NoaRj12dhZBFRMH1jjzDOdEVHYDsivUdr5r6_JLQ5Mx69VCFHb7aQ4",
-                  "patient": null
+                  "status": "OPEN",
+                  "public_id": "6ZCGPsreW4NoaRj12dhZBFRMH1jjzDOdEVHYDsivUdr5r6_JLQ5Mx69VCFHb7aQ4"
                 },
                 {
                   "date": "11-12-2024",
                   "start": "12:00:10",
                   "end": "12:30:10",
-                  "public_id": "f6we3b2vdp-VQtjmrSIbyEWdO3Klj02JgCGuQHHIB27Yk1wxv2layTeBrVT_YNry",
-                  "patient": null
+                  "status": "OPEN",
+                  "public_id": "f6we3b2vdp-VQtjmrSIbyEWdO3Klj02JgCGuQHHIB27Yk1wxv2layTeBrVT_YNry"
+                },
+                {
+                  "date": "11-12-2024",
+                  "start": "15:30:10",
+                  "end": "16:00:10",
+                  "status": "TAKEN",
+                  "public_id": "i625bsvXoeAwTFiPGd6Huo4gGIXgCqkMtuF1rwPMTN_sUiDq4kuHgJWIljKc715O",
+                  "patient": {
+                    "name": "Foo bar",
+                    "phone_number": "9131231234"
+                  }
                 }
               ]
             }
@@ -312,6 +327,7 @@ public class ProjectConstants {
                   "date": "11-12-2024",
                   "start": "11:30:10",
                   "end": "12:00:10",
+                  "status": "TAKEN",
                   "public_id": "i625bsvXoeAwTFiPGd6Huo4gGIXgCqkMtuF1rwPMTN_sUiDq4kuHgJWIljKc715O",
                   "patient": {
                     "name": "Foo bar",
@@ -322,6 +338,7 @@ public class ProjectConstants {
                   "date": "11-12-2024",
                   "start": "15:30:10",
                   "end": "16:00:10",
+                  "status": "TAKEN",
                   "public_id": "i625bsvXoeAwTFiPGd6Huo4gGIXgCqkMtuF1rwPMTN_sUiDq4kuHgJWIljKc715O",
                   "patient": {
                     "name": "Foo bar",
@@ -360,6 +377,16 @@ public class ProjectConstants {
               "result": true
             }
             """;
+    public static final String API_DOCUMENT_APPOINTMENT_DELETE_BY_PUBLIC_ID_400_EXAMPLE = """
+            {
+              "action": false,
+              "timestamp": "10/09/2024 10:17:26 PM",
+              "result": {
+                "path": "{METHOD} /{VERSION}/{PATH-PID-...}",
+                "message": "The appointment has already been deleted!"
+              }
+            }
+            """;
     public static final String API_DOCUMENT_APPOINTMENT_DELETE_BY_PUBLIC_ID_404_EXAMPLE = """
             {
               "action": false,
@@ -385,24 +412,24 @@ public class ProjectConstants {
     public static final String API_DOCUMENT_APPOINTMENT_POST_201_DESCRIPTION = "Creating appointments with the provided info was successful";
     public static final String API_DOCUMENT_APPOINTMENT_POST_201_EXAMPLE = """
             {
-              "action": true,
-              "timestamp": "10/09/2024 10:20:30 PM",
-              "result": [
-                {
-                  "date": "11-12-2024",
-                  "start": "11:30:10",
-                  "end": "12:00:10",
-                  "public_id": "RIXzFN_gwWmX2qXtY_fMT3HsLZ8fB4Roypdwzf1cQCglaBu8yznm0VXXqdzc01BI",
-                  "patient": null
-                },
-                {
-                  "date": "11-12-2024",
-                  "start": "12:00:10",
-                  "end": "12:30:10",
-                  "public_id": "1_ufS5cjPkmwmcTYIC1rTSvHdJIHP3IfDHY_N-2FXER1J3Vv4fLOE3Z8VYkfl3lG",
-                  "patient": null
-                }
-              ]
+                "action": true,
+                "timestamp": "15/09/2024 09:54:59 AM",
+                "result": [
+                    {
+                        "date": "11-12-2024",
+                        "start": "11:30:10",
+                        "end": "12:00:10",
+                        "status": "OPEN",
+                        "public_id": "9sL0JIT4om-J230FyV-hq6JPfbstKIpTFzpqmpsBYM9yvSEBLzd62F5nV9LEOlaF"
+                    },
+                    {
+                        "date": "11-12-2024",
+                        "start": "12:00:10",
+                        "end": "12:30:10",
+                        "status": "OPEN",
+                        "public_id": "ygqkIvK-B2G164sTJRYCy4pN7O-iuHfERfptHBPd-ouwcb5sdNdCN2y_FDc8RoLu"
+                    }
+                ]
             }
             """;
     public static final String API_DOCUMENT_APPOINTMENT_POST_400_EXAMPLE = """

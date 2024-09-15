@@ -4,6 +4,7 @@ package be.jimsa.reddoctor.config.exception;
 import be.jimsa.reddoctor.utility.constant.ProjectConstants;
 import be.jimsa.reddoctor.ws.model.dto.ResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -37,10 +38,13 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         );
         Map<String, String> hashMap = new HashMap<>();
         List<ObjectError> errors = ex.getBindingResult().getAllErrors();
-        errors.forEach(error ->
-                hashMap.put(((FieldError) error).getField(),
-                        error.getDefaultMessage()
-                )
+        errors.forEach(error -> {
+                    if (error instanceof FieldError) {
+                        hashMap.put(((FieldError) error).getField(),
+                                error.getDefaultMessage()
+                        );
+                    }
+                }
         );
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -65,6 +69,29 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
                                 .action(false)
                                 .timestamp(LocalDateTime.now())
                                 .result(ex.getMostSpecificCause().getMessage())
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ResponseDto> handleConstraintViolationExceptions(ConstraintViolationException ex) {
+        log.error(
+                String.format(GENERAL_EXCEPTION_LOG_PATTERN, EXCEPTION_METHOD_CONSTRAINT_VIOLATION_EXCEPTION, ex.getMessage())
+        );
+        Map<String, String> hashMap = new HashMap<>();
+        ex.getConstraintViolations().forEach(violation -> {
+                    String fullPath = violation.getPropertyPath().toString();
+                    String fieldName = fullPath.substring(fullPath.lastIndexOf('.') + 1);
+                    hashMap.put(fieldName, violation.getMessage());
+                }
+        );
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(
+                        ResponseDto.builder()
+                                .action(false)
+                                .timestamp(LocalDateTime.now())
+                                .result(hashMap)
                                 .build()
                 );
     }

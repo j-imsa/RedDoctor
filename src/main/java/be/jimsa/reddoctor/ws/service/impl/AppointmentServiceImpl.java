@@ -3,10 +3,10 @@ package be.jimsa.reddoctor.ws.service.impl;
 
 import be.jimsa.reddoctor.config.exception.AppServiceException;
 import be.jimsa.reddoctor.config.log.EvaluateExecuteTimeout;
-import be.jimsa.reddoctor.utility.id.PublicIdGenerator;
-import be.jimsa.reddoctor.utility.mapper.AppointmentMapper;
+import be.jimsa.reddoctor.utility.AppointmentUtils;
 import be.jimsa.reddoctor.ws.model.dto.AppointmentDto;
 import be.jimsa.reddoctor.ws.model.entity.Appointment;
+import be.jimsa.reddoctor.ws.model.enums.Status;
 import be.jimsa.reddoctor.ws.repository.AppointmentRepository;
 import be.jimsa.reddoctor.ws.service.AppointmentService;
 import lombok.AllArgsConstructor;
@@ -18,11 +18,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,62 +31,40 @@ import static be.jimsa.reddoctor.utility.constant.ProjectConstants.*;
 public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
-    private final AppointmentMapper appointmentMapper;
-    private final PublicIdGenerator publicIdGenerator;
+    private final AppointmentUtils appointmentUtils;
 
     @EvaluateExecuteTimeout
     @Override
     public List<AppointmentDto> createAppointments(AppointmentDto appointmentDto) {
 
-        // Logic 00: date check?!
         Optional<List<Appointment>> optionalList = appointmentRepository.findAllByDate(appointmentDto.getDate());
         if (optionalList.isPresent() && !optionalList.get().isEmpty()) {
             throw new AppServiceException(EXCEPTION_DATE_MESSAGE, HttpStatus.BAD_REQUEST);
         }
 
-        // Logic 01: end - start >= 0
         int l1 = appointmentDto.getEnd().compareTo(appointmentDto.getStart());
         if (l1 < 0) {
             throw new AppServiceException(EXCEPTION_START_END_FORMAT_MESSAGE, HttpStatus.BAD_REQUEST);
         }
 
-        // Logic 02: |end - start| < 30 min ==> ignore
-        List<AppointmentDto> appointmentDtos = splitter(appointmentDto);
+        List<AppointmentDto> appointmentDtos = appointmentUtils.splitter(appointmentDto);
 
         List<Appointment> savedAppointments = appointmentRepository.saveAll(
                 appointmentDtos.stream()
-                        .map(dto -> appointmentRepository.save(appointmentMapper.mapToEntity(dto)))
+                        .map(dto -> appointmentRepository.save(appointmentUtils.mapToEntity(dto)))
                         .toList()
         );
         return savedAppointments.stream()
-                .map(appointmentMapper::mapToDto)
+                .map(appointmentUtils::mapToDto)
                 .toList();
     }
 
-    private List<AppointmentDto> splitter(AppointmentDto appointmentDto) {
-        Duration interval = Duration.ofMinutes(30);
-        LocalTime current = appointmentDto.getStart();
-        List<AppointmentDto> dtos = new ArrayList<>();
-
-        while (current.plus(interval).isBefore(appointmentDto.getEnd()) || current.plus(interval).equals(appointmentDto.getEnd())) {
-            AppointmentDto dto = AppointmentDto.builder()
-                    .start(current)
-                    .end(current.plus(interval))
-                    .date(appointmentDto.getDate())
-                    .publicId(publicIdGenerator.generatePublicId(PUBLIC_ID_DEFAULT_LENGTH))
-                    .type(GENERAL_TYPE_OPEN)
-                    .build();
-            current = current.plus(interval);
-            dtos.add(dto);
-        }
-
-        return dtos;
-    }
-
     @Override
-    public List<AppointmentDto> readAppointments(String dateStr, int page, int size, String type, String sortDirection) {
+    public List<AppointmentDto> readAppointments(String dateStr, int page, int size, String statusStr, String sortDirection) {
 
         LocalDate date = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern(DATE_FORMAT));
+
+        Status status = Status.valueOf(statusStr.toUpperCase());
 
         Sort sort;
         if (sortDirection.equalsIgnoreCase(GENERAL_SORT_DIRECTION_ASC_FIELD)) {
@@ -98,24 +73,20 @@ public class AppointmentServiceImpl implements AppointmentService {
             sort = Sort.by(Sort.Direction.DESC, APPOINTMENT_TIME_FIELD);
         }
 
-        Pageable pageable = PageRequest.of(
-                page - 1,
-                size,
-                sort
-        );
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
 
         Page<Appointment> appointmentPage;
-        if (type.equalsIgnoreCase(GENERAL_TYPE_ALL)) {
+        if (status == Status.ALL){
             appointmentPage = appointmentRepository.findAllByDate(pageable, date);
         } else {
-            appointmentPage = appointmentRepository.findAllByPatientIsNullAndDate(pageable, date);
+            appointmentPage = appointmentRepository.findAllByDateAndStatus(pageable, date, status);
         }
 
         printLogger(appointmentPage);
 
         return appointmentPage
                 .get()
-                .map(appointmentMapper::mapToDto)
+                .map(appointmentUtils::mapToDto)
                 .toList();
     }
 
@@ -130,11 +101,15 @@ public class AppointmentServiceImpl implements AppointmentService {
     public boolean removeAnAppointment(String publicId) {
         Optional<Appointment> optionalAppointment = appointmentRepository.findByPublicId(publicId);
         if (optionalAppointment.isPresent()) {
-            if (optionalAppointment.get().getPatient() == null) {
-                appointmentRepository.delete(optionalAppointment.get());
+            Appointment appointment = optionalAppointment.get();
+            if (appointment.getStatus() == Status.OPEN) {
+                appointment.setStatus(Status.DELETED);
+                appointmentRepository.save(appointment);
                 return true;
-            } else {
+            } else if (appointment.getStatus() == Status.TAKEN) {
                 throw new AppServiceException(EXCEPTION_NOT_ACCEPTABLE_RESOURCE_MESSAGE, HttpStatus.NOT_ACCEPTABLE);
+            } else { // DELETED
+                throw new AppServiceException(EXCEPTION_RESOURCE_ALREADY_DELETED_MESSAGE, HttpStatus.BAD_REQUEST);
             }
         } else {
             throw new AppServiceException(EXCEPTION_NOT_FOUND_RESOURCE_MESSAGE, HttpStatus.NOT_FOUND);

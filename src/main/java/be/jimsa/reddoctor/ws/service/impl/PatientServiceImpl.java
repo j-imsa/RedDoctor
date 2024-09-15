@@ -1,12 +1,13 @@
 package be.jimsa.reddoctor.ws.service.impl;
 
 import be.jimsa.reddoctor.config.exception.AppServiceException;
-import be.jimsa.reddoctor.utility.mapper.AppointmentMapper;
+import be.jimsa.reddoctor.utility.AppointmentUtils;
 import be.jimsa.reddoctor.utility.mapper.PatientMapper;
 import be.jimsa.reddoctor.ws.model.dto.AppointmentDto;
 import be.jimsa.reddoctor.ws.model.dto.PatientDto;
 import be.jimsa.reddoctor.ws.model.entity.Appointment;
 import be.jimsa.reddoctor.ws.model.entity.Patient;
+import be.jimsa.reddoctor.ws.model.enums.Status;
 import be.jimsa.reddoctor.ws.repository.AppointmentRepository;
 import be.jimsa.reddoctor.ws.repository.PatientRepository;
 import be.jimsa.reddoctor.ws.service.PatientService;
@@ -31,7 +32,7 @@ public class PatientServiceImpl implements PatientService {
     private final AppointmentRepository appointmentRepository;
     private final PatientRepository patientRepository;
     private final PatientMapper patientMapper;
-    private final AppointmentMapper appointmentMapper;
+    private final AppointmentUtils appointmentUtils;
 
 
     @Override
@@ -41,25 +42,27 @@ public class PatientServiceImpl implements PatientService {
         if (optionalAppointment.isEmpty()) {
             throw new AppServiceException(EXCEPTION_NOT_FOUND_RESOURCE_MESSAGE, HttpStatus.NOT_FOUND);
         }
-        if (optionalAppointment.get().getPatient() != null) {
+        if (optionalAppointment.get().getStatus() == Status.TAKEN) {
             throw new AppServiceException(EXCEPTION_RESOURCE_ALREADY_EXIST_MESSAGE, HttpStatus.CONFLICT);
+        }
+        if (optionalAppointment.get().getStatus() == Status.DELETED) {
+            throw new AppServiceException(EXCEPTION_RESOURCE_ALREADY_DELETED_MESSAGE, HttpStatus.CONFLICT);
         }
 
         Optional<Patient> optionalPatient = patientRepository.findByPhoneNumber(patientDto.getPhoneNumber());
-        Patient savedPatient = optionalPatient
-                .map(patient -> patientRepository.save(patientMapper.mapToEntityById(patientDto, patient.getId())))
-                .orElseGet(() -> patientRepository.save(patientMapper.mapToEntity(patientDto)));
+        Patient savedPatient = optionalPatient.map(patient -> patientRepository.save(patientMapper.mapToEntityById(patientDto, patient.getId()))).orElseGet(() -> patientRepository.save(patientMapper.mapToEntity(patientDto)));
 
         Appointment appointment = optionalAppointment.get();
         appointment.setPatient(savedPatient);
+        appointment.setStatus(Status.TAKEN);
 
         Appointment updatedAppointment = appointmentRepository.save(appointment);
 
-        return appointmentMapper.mapToDto(updatedAppointment);
+        return appointmentUtils.mapToDto(updatedAppointment);
     }
 
     @Override
-    public List<AppointmentDto> readMyAppointments(String phoneNumber, int page, int size, String type, String sortDirection) {
+    public List<AppointmentDto> readMyAppointments(String phoneNumber, int page, int size, String sortDirection) {
 
         Optional<Patient> optionalPatient = patientRepository.findByPhoneNumber(phoneNumber);
         if (optionalPatient.isEmpty()) {
@@ -74,17 +77,10 @@ public class PatientServiceImpl implements PatientService {
             sort = Sort.by(Sort.Direction.DESC, APPOINTMENT_TIME_FIELD);
         }
 
-        Pageable pageable = PageRequest.of(
-                page - 1,
-                size,
-                sort
-        );
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
 
         Page<Appointment> appointmentPage = appointmentRepository.findAllByPatient(pageable, optionalPatient.get());
 
-        return appointmentPage
-                .get()
-                .map(appointmentMapper::mapToDto)
-                .toList();
+        return appointmentPage.get().map(appointmentUtils::mapToDto).toList();
     }
 }

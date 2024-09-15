@@ -1,8 +1,8 @@
 package be.jimsa.reddoctor.ws.model.dto;
 
 import be.jimsa.reddoctor.config.validation.annotation.ValidPublicId;
+import be.jimsa.reddoctor.ws.model.enums.Status;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -29,11 +29,7 @@ public class AppointmentDto {
     @JsonProperty(GENERAL_PUBLIC_ID_FIELD)
     @Null(message = APPOINTMENT_VALIDATION_PUBLIC_ID_NULL_MESSAGE, groups = {Create.class})
     @ValidPublicId(groups = Read.class)
-    @Schema(
-            type = GENERAL_STRING_TYPE,
-            description = PUBLIC_ID_DESCRIPTION,
-            example = PUBLIC_ID_EXAMPLE
-    )
+    @Schema(type = GENERAL_STRING_TYPE, description = PUBLIC_ID_DESCRIPTION, example = PUBLIC_ID_EXAMPLE)
     private String publicId;
 
     @JsonFormat(pattern = DATE_FORMAT)
@@ -52,8 +48,7 @@ public class AppointmentDto {
     private LocalTime end;
 
     @Null(message = APPOINTMENT_VALIDATION_TYPE_NULL_MESSAGE, groups = {Create.class})
-    @JsonIgnore
-    private String type;
+    private Status status;
 
     @JsonProperty(PATIENT_FIELD)
     @Null(message = APPOINTMENT_VALIDATION_PATIENT_NULL_MESSAGE, groups = {Create.class})
@@ -65,4 +60,5 @@ public class AppointmentDto {
 
     public interface Read {
     }
+
 }
