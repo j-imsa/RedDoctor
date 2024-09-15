@@ -2,7 +2,7 @@ package be.jimsa.reddoctor.unit.service;
 
 
 import be.jimsa.reddoctor.utility.id.PublicIdGenerator;
-import be.jimsa.reddoctor.utility.mapper.AppointmentMapper;
+import be.jimsa.reddoctor.utility.AppointmentUtils;
 import be.jimsa.reddoctor.ws.model.dto.AppointmentDto;
 import be.jimsa.reddoctor.ws.model.entity.Appointment;
 import be.jimsa.reddoctor.ws.repository.AppointmentRepository;
@@ -41,7 +41,7 @@ class AppointmentServiceTests {
     private AppointmentRepository appointmentRepository;
 
     @Mock
-    private AppointmentMapper appointmentMapper;
+    private AppointmentUtils appointmentUtils;
 
     @Spy
     private PublicIdGenerator publicIdGenerator;
