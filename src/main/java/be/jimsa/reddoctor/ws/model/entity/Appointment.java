@@ -25,6 +25,9 @@ public class Appointment extends BaseEntity {
     @Column(name = APPOINTMENT_DATABASE_JOIN_ID)
     private Long id;
 
+    @Version
+    private Long version;
+
     @Column(nullable = false, unique = true)
     @ValidPublicId
     private String publicId;

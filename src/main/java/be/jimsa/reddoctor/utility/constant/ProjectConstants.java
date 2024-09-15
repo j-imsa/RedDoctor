@@ -127,6 +127,7 @@ public class ProjectConstants {
     public static final String EXCEPTION_METHOD_METHOD_ARGUMENT_NOT_VALID = "MethodArgumentNotValid";
     public static final String EXCEPTION_METHOD_HTTP_MESSAGE_NOT_READABLE = "HttpMessageNotReadable";
     public static final String EXCEPTION_METHOD_APP_SERVICE_EXCEPTION = "AppServiceExceptions";
+    public static final String EXCEPTION_METHOD_OPTIMISTIC_LOCK_EXCEPTION = "OptimisticLockException";
     public static final String EXCEPTION_METHOD_CONSTRAINT_VIOLATION_EXCEPTION = "ConstraintViolationExceptions";
     public static final String EXCEPTION_METHOD_APP_500_EXCEPTION = "App500Exceptions";
 

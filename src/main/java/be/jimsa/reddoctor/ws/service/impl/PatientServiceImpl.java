@@ -11,6 +11,7 @@ import be.jimsa.reddoctor.ws.model.enums.Status;
 import be.jimsa.reddoctor.ws.repository.AppointmentRepository;
 import be.jimsa.reddoctor.ws.repository.PatientRepository;
 import be.jimsa.reddoctor.ws.service.PatientService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,6 +36,7 @@ public class PatientServiceImpl implements PatientService {
     private final AppointmentUtils appointmentUtils;
 
 
+    @Transactional
     @Override
     public AppointmentDto updateAnAppointment(String publicId, PatientDto patientDto) {
 
