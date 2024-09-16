@@ -23,6 +23,11 @@ public class TimeSequenceValidator implements ConstraintValidator<ValidTimeSeque
     public boolean isValid(Object value, ConstraintValidatorContext context) {
         LocalTime time1 = (LocalTime) new BeanWrapperImpl(value).getPropertyValue(currentTime);
         LocalTime time2 = (LocalTime) new BeanWrapperImpl(value).getPropertyValue(nextTime);
+
+        if (Objects.requireNonNull(time2).equals(LocalTime.of(0, 0, 0))) {
+            time2 = time2.minusSeconds(1);
+        }
+
         return !Objects.requireNonNull(time2).isBefore(time1) && !time2.equals(time1);
     }
 }
