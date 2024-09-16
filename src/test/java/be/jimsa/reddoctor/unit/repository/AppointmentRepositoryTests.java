@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
 
 import static be.jimsa.reddoctor.utility.constant.ProjectConstants.PUBLIC_ID_EXAMPLE_1;
@@ -89,6 +90,20 @@ class AppointmentRepositoryTests {
                     .containsOnlyNulls();
         }
 
+        @Test
+        @DisplayName("with an empty list, should return an empty list")
+        void testSaveAllEmptyList() {
+            // given (Arrange)
+            List<Appointment> emptyList = Collections.emptyList();
+
+            // when (Act)
+            List<Appointment> savedAppointments = appointmentRepository.saveAll(emptyList);
+
+            // then (Assert)
+            assertThat(savedAppointments)
+                    .isNotNull()
+                    .isEmpty();
+        }
 
     }
 
