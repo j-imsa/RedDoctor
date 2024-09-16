@@ -12,6 +12,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 
 import java.time.LocalDate;
@@ -191,6 +192,41 @@ class AppointmentRepositoryTests {
                     .allMatch(appointment -> appointment.getStatus() == status);
         }
 
+        @Test
+        @DisplayName("with duplicate publicId, should throw DataIntegrityViolationException")
+        void testSaveAllWithDuplicatePublicId() {
+            // given (Arrange)
+            LocalDate date1 = LocalDate.of(2024, 9, 10);
+            LocalDate date2 = LocalDate.of(2024, 6, 20);
+            LocalTime start1 = LocalTime.of(10, 15);
+            LocalTime start2 = LocalTime.of(12, 20);
+            LocalTime end1 = LocalTime.of(11, 15);
+            LocalTime end2 = LocalTime.of(13, 0);
+            Status status1 = Status.OPEN;
+            Status status2 = Status.OPEN;
+
+            Appointment appointment1 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_1)
+                    .date(date1)
+                    .startTime(start1)
+                    .endTime(end1)
+                    .status(status1)
+                    .build();
+            Appointment appointment2 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_1) // Duplicate publicId
+                    .date(date2)
+                    .startTime(start2)
+                    .endTime(end2)
+                    .status(status2)
+                    .build();
+
+            List<Appointment> appointments = List.of(appointment1, appointment2);
+
+            // when & then (Assert)
+            assertThatThrownBy(() -> appointmentRepository.saveAll(appointments))
+                    .isInstanceOf(DataIntegrityViolationException.class)
+                    .hasMessageContaining("could not execute statement");
+        }
 
 
 
