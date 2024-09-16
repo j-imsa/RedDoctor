@@ -454,7 +454,209 @@ class AppointmentRepositoryTests {
 
         @Test
         @DisplayName("by a valid entity, should return a valid saved entity with id")
-        void givenAValidAppointmentEntity_whenSave_thenReturnSavedAppointmentEntityWithId() {
+        void testSaveWithValidEntity() {
+            // given (Arrange) - precondition or setup:
+            LocalDate date = LocalDate.of(2024, 9, 10);
+            LocalTime start = LocalTime.of(10, 15);
+            LocalTime end = LocalTime.of(11, 15);
+            Status status = Status.OPEN;
+
+            Appointment appointment = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_1)
+                    .date(date)
+                    .startTime(start)
+                    .endTime(end)
+                    .status(status)
+                    .build();
+
+            // when (Act) - action or the behavior that we are going test:
+            Appointment savedAppointment = appointmentRepository.save(appointment);
+
+            // then(Assert) - verify the output:
+            assertThat(savedAppointment)
+                    .isNotNull()
+                    .isInstanceOf(Appointment.class)
+                    .matches(entity -> entity.getId() != null && entity.getId() > 0)
+                    .matches(entity -> entity.getPublicId().equals(PUBLIC_ID_EXAMPLE_1))
+                    .matches(entity -> entity.getDate().equals(date))
+                    .matches(entity -> entity.getStartTime().equals(start))
+                    .matches(entity -> entity.getEndTime().equals(end))
+                    .matches(entity -> entity.getStatus().equals(appointment.getStatus()));
+        }
+
+        @Test
+        @DisplayName("by null public_id, should throw ConstraintViolationException")
+        void testSaveWithNullPublicId() {
+            // given (Arrange) - precondition or setup:
+            LocalDate date = LocalDate.of(2024, 9, 10);
+            LocalTime start = LocalTime.of(10, 15);
+            LocalTime end = LocalTime.of(11, 15);
+            Status status = Status.OPEN;
+
+            Appointment appointment = Appointment.builder()
+                    .publicId(null)
+                    .date(date)
+                    .startTime(start)
+                    .endTime(end)
+                    .status(status)
+                    .build();
+
+            assertThatThrownBy(() -> appointmentRepository.save(appointment))
+                    .isInstanceOf(ConstraintViolationException.class)
+                    .hasMessageContaining("Invalid public_id");
+        }
+
+        @Test
+        @DisplayName("by null date, should throw DataIntegrityViolationException")
+        void testSaveWithNullDate() {
+            // given (Arrange) - precondition or setup:
+            LocalDate date = LocalDate.of(2024, 9, 10);
+            LocalTime start = LocalTime.of(10, 15);
+            LocalTime end = LocalTime.of(11, 15);
+            Status status = Status.OPEN;
+
+            Appointment appointment = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_1)
+                    .date(null)
+                    .startTime(start)
+                    .endTime(end)
+                    .status(status)
+                    .build();
+
+            assertThatThrownBy(() -> appointmentRepository.save(appointment))
+                    .isInstanceOf(DataIntegrityViolationException.class)
+                    .hasMessageContaining("could not execute statement");
+        }
+
+        @Test
+        @DisplayName("by null start time, should throw ValidationException")
+        void testSaveWithNullStartTime() {
+            // given (Arrange) - precondition or setup:
+            LocalDate date = LocalDate.of(2024, 9, 10);
+            LocalTime start = LocalTime.of(10, 15);
+            LocalTime end = LocalTime.of(11, 15);
+            Status status = Status.OPEN;
+
+            Appointment appointment = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_1)
+                    .date(date)
+                    .startTime(null)
+                    .endTime(end)
+                    .status(status)
+                    .build();
+
+            assertThatThrownBy(() -> appointmentRepository.save(appointment))
+                    .isInstanceOf(ValidationException.class)
+                    .hasMessageContaining("Unexpected exception during isValid call");
+        }
+
+        @Test
+        @DisplayName("by null end time, should throw ValidationException")
+        void testSaveWithNullEndTime() {
+            // given (Arrange) - precondition or setup:
+            LocalDate date = LocalDate.of(2024, 9, 10);
+            LocalTime start = LocalTime.of(10, 15);
+            LocalTime end = LocalTime.of(11, 15);
+            Status status = Status.OPEN;
+
+            Appointment appointment = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_1)
+                    .date(date)
+                    .startTime(start)
+                    .endTime(null)
+                    .status(status)
+                    .build();
+
+            assertThatThrownBy(() -> appointmentRepository.save(appointment))
+                    .isInstanceOf(ValidationException.class)
+                    .hasMessageContaining("Unexpected exception during isValid call");
+        }
+
+        @Test
+        @DisplayName("by null object, should throw InvalidDataAccessApiUsageException")
+        void testSaveWithNullObject() {
+
+            Appointment appointment = null;
+
+            assertThatThrownBy(() -> appointmentRepository.save(appointment))
+                    .isInstanceOf(InvalidDataAccessApiUsageException.class)
+                    .hasMessageContaining("Entity must not be null");
+        }
+
+        @Test
+        @DisplayName("by invalid public_id, should throw ConstraintViolationException")
+        void testSaveWithInvalidPublicId() {
+
+            LocalDate date = LocalDate.of(2024, 9, 10);
+            LocalTime start = LocalTime.of(10, 15);
+            LocalTime end = LocalTime.of(11, 15);
+            Status status = Status.OPEN;
+
+            Appointment appointment = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_1.split("-")[0]) // invalid
+                    .date(date)
+                    .startTime(start)
+                    .endTime(end)
+                    .status(status)
+                    .build();
+
+            assertThatThrownBy(() -> appointmentRepository.save(appointment))
+                    .isInstanceOf(ConstraintViolationException.class)
+                    .hasMessageContaining("Invalid public_id");
+        }
+
+        @Test
+        @DisplayName("by invalid time sequence, should throw ConstraintViolationException")
+        void testSaveWithInvalidImeSequence() {
+
+            LocalDate date = LocalDate.of(2024, 9, 10);
+            LocalTime start = LocalTime.of(10, 15);
+            LocalTime end = LocalTime.of(11, 15);
+            Status status = Status.OPEN;
+
+            Appointment appointment = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_1)
+                    .date(date)
+                    .startTime(end) // end
+                    .endTime(start) // start
+                    .status(status)
+                    .build();
+
+            assertThatThrownBy(() -> appointmentRepository.save(appointment))
+                    .isInstanceOf(ConstraintViolationException.class)
+                    .hasMessageContaining("The start time must BE before the end time!");
+        }
+
+        @ParameterizedTest
+        @CsvSource({
+                "00:00, 00:30",
+                "23:30, 00:00"
+        })
+        @DisplayName("with boundary times, should save all of them")
+        void testSaveWithBoundaryTimes(String start, String end) {
+            // given (Arrange) - precondition or setup:
+            LocalDate date = LocalDate.of(2024, 9, 10);
+            Status status = Status.OPEN;
+            LocalTime startTime = LocalTime.parse(start);
+            LocalTime endTime = LocalTime.parse(end);
+
+            Appointment appointment = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_1)
+                    .date(date)
+                    .startTime(startTime)
+                    .endTime(endTime)
+                    .status(status)
+                    .build();
+
+
+            // when (Act) - action or the behavior that we are going test:
+            Appointment savedAppointment = appointmentRepository.save(appointment);
+
+            // then(Assert) - verify the output:
+            assertThat(savedAppointment)
+                    .isNotNull()
+                    .extracting(Appointment::getId)
+                    .matches(id -> id != null && id > 0);
 
         }
 
