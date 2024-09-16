@@ -1,35 +1,27 @@
 package be.jimsa.reddoctor.unit.repository;
 
 
-import be.jimsa.reddoctor.utility.id.PublicIdGenerator;
 import be.jimsa.reddoctor.ws.model.entity.Appointment;
 import be.jimsa.reddoctor.ws.repository.AppointmentRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import static be.jimsa.reddoctor.utility.constant.ProjectConstants.PUBLIC_ID_DEFAULT_LENGTH;
+import static be.jimsa.reddoctor.utility.constant.ProjectConstants.PUBLIC_ID_EXAMPLE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@Slf4j
 class AppointmentRepositoryTests {
 
     @Autowired
     private AppointmentRepository appointmentRepository;
 
-    // @PersistenceContext private EntityManager entityManager;
-
-    @Spy
-    private PublicIdGenerator publicIdGenerator;
 
     private String publicId;
     private LocalDate date;
@@ -37,11 +29,17 @@ class AppointmentRepositoryTests {
     private LocalTime end;
 
     @BeforeEach
-    void cleanDatabase() {
-        publicId = publicIdGenerator.generatePublicId(PUBLIC_ID_DEFAULT_LENGTH);
+    void setup() {
+        publicId = PUBLIC_ID_EXAMPLE;
         date = LocalDate.of(2024, 9, 10);
         start = LocalTime.of(10, 15, 20);
         end = LocalTime.of(12, 17, 22);
+    }
+
+    @Nested
+    @DisplayName("SaveAll")
+    class SaveAllTests {
+
     }
 
     @Nested
@@ -76,5 +74,45 @@ class AppointmentRepositoryTests {
 
     }
 
+    @Nested
+    @DisplayName("FindAllByDate")
+    class FindAllByDateTests {
+
+        @Nested
+        @DisplayName("ByPageable")
+        class ByPageableTests {
+
+        }
+
+        @Nested
+        @DisplayName("WithoutPageable")
+        class WithoutPageableTests {
+
+        }
+    }
+
+    @Nested
+    @DisplayName("FindByPublicId")
+    class FindByPublicIdTests {
+
+    }
+
+    @Nested
+    @DisplayName("FindAllByDateAndStatus")
+    class FindAllByDateAndStatusTests {
+
+    }
+
+    @Nested
+    @DisplayName("FindAllByPatientIsNullAndDate")
+    class FindAllByPatientIsNullAndDateTests {
+
+    }
+
+    @Nested
+    @DisplayName("FindAllByPatient")
+    class FindAllByPatientTests {
+
+    }
 
 }
