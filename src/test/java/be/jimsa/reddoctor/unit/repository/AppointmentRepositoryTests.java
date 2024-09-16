@@ -4,6 +4,7 @@ package be.jimsa.reddoctor.unit.repository;
 import be.jimsa.reddoctor.ws.model.entity.Appointment;
 import be.jimsa.reddoctor.ws.model.enums.Status;
 import be.jimsa.reddoctor.ws.repository.AppointmentRepository;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -17,8 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static be.jimsa.reddoctor.utility.constant.ProjectConstants.PUBLIC_ID_EXAMPLE_1;
-import static be.jimsa.reddoctor.utility.constant.ProjectConstants.PUBLIC_ID_EXAMPLE_2;
+import static be.jimsa.reddoctor.utility.constant.ProjectConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -134,6 +134,32 @@ class AppointmentRepositoryTests {
                     .isInstanceOf(InvalidDataAccessApiUsageException.class)
                     .hasMessageContaining("Entity must not be null");
         }
+
+        @Test
+        @DisplayName("with invalid appointments, should not save and throw ConstraintViolationException")
+        void testSaveAllWithInvalidAppointments() {
+            // given (Arrange)
+            LocalDate date1 = LocalDate.of(2024, 9, 10);
+            LocalTime start1 = LocalTime.of(14, 15); // Invalid time: startTime is after endTime
+            LocalTime end1 = LocalTime.of(11, 15);
+            Status status1 = Status.OPEN;
+
+            Appointment appointment1 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_1)
+                    .date(date1)
+                    .startTime(start1)
+                    .endTime(end1)
+                    .status(status1)
+                    .build();
+
+            List<Appointment> appointments = List.of(appointment1);
+
+            // when & then (Assert)
+            assertThatThrownBy(() -> appointmentRepository.saveAll(appointments))
+                    .isInstanceOf(ConstraintViolationException.class)
+                    .hasMessageContaining(APPOINTMENT_VALIDATION_SEQUENCE_TIME_MESSAGE);
+        }
+
 
     }
 
