@@ -159,7 +159,8 @@ public class ProjectConstants {
     public static final String PUBLIC_ID_PATTERN = "^[A-Za-z0-9-_]+$";
     public static final String PUBLIC_ID_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
     public static final String PUBLIC_ID_DESCRIPTION = "The public_id of the resource";
-    public static final String PUBLIC_ID_EXAMPLE = "a7vqO-mCBzlJpgGjSU-HYsTpLblN4El-UEmr8M9LMIm01dqmNIqENiE0RiLIfu9e";
+    public static final String PUBLIC_ID_EXAMPLE_1 = "a7vqO-mCBzlJpgGjSU-HYsTpLblN4El-UEmr8M9LMIm01dqmNIqENiE0RiLIfu9e";
+    public static final String PUBLIC_ID_EXAMPLE_2 = "a7vqO-mCBzlJpgGjSU-HYsTpLblN4El-UEmr8M9LMIm01dqmNIqENiE0RiLIfu9y";
     public static final int PUBLIC_ID_MIN_LENGTH = 32;
     public static final int PUBLIC_ID_MAX_LENGTH = 512;
     public static final int PUBLIC_ID_DEFAULT_LENGTH = 64;

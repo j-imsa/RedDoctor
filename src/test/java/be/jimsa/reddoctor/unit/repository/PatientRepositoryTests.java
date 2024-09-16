@@ -11,7 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import static be.jimsa.reddoctor.utility.constant.ProjectConstants.PUBLIC_ID_EXAMPLE;
+import static be.jimsa.reddoctor.utility.constant.ProjectConstants.PUBLIC_ID_EXAMPLE_1;
 
 @DataJpaTest
 class PatientRepositoryTests {
@@ -27,7 +27,7 @@ class PatientRepositoryTests {
 
     @BeforeEach
     void setup() {
-        publicId = PUBLIC_ID_EXAMPLE;
+        publicId = PUBLIC_ID_EXAMPLE_1;
         date = LocalDate.of(2024, 9, 10);
         start = LocalTime.of(10, 15, 20);
         end = LocalTime.of(12, 17, 22);

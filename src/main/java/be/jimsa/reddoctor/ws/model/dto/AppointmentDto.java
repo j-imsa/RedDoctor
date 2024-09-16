@@ -29,7 +29,7 @@ public class AppointmentDto {
     @JsonProperty(GENERAL_PUBLIC_ID_FIELD)
     @Null(message = APPOINTMENT_VALIDATION_PUBLIC_ID_NULL_MESSAGE, groups = {Create.class})
     @ValidPublicId(groups = Read.class)
-    @Schema(type = GENERAL_STRING_TYPE, description = PUBLIC_ID_DESCRIPTION, example = PUBLIC_ID_EXAMPLE)
+    @Schema(type = GENERAL_STRING_TYPE, description = PUBLIC_ID_DESCRIPTION, example = PUBLIC_ID_EXAMPLE_1)
     private String publicId;
 
     @JsonFormat(pattern = DATE_FORMAT)
