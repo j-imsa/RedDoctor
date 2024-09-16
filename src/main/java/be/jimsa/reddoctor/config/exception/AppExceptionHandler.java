@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static be.jimsa.reddoctor.utility.constant.ProjectConstants.*;
 
@@ -44,6 +45,11 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
                         hashMap.put(((FieldError) error).getField(),
                                 error.getDefaultMessage()
                         );
+                    } else if (error != null) {
+                        String message = error.getDefaultMessage();
+                        String start = Objects.requireNonNull(error.getArguments())[1].toString();
+                        String end = error.getArguments()[2].toString();
+                        hashMap.put(start + "-" + end, message);
                     }
                 }
         );

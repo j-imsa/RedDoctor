@@ -69,6 +69,7 @@ public class ProjectConstants {
     public static final String GENERAL_VALIDATION_SIZE_POSITIVE_INTEGER = "size must be a positive number";
     public static final String GENERAL_VALIDATION_DATE_MESSAGE = "date must NOT be null/blank/empty";
     public static final String GENERAL_VALIDATION_PUBLIC_ID_DEFAULT_MESSAGE = "Invalid public_id";
+    public static final String GENERAL_VALIDATION_TIME_SEQUENCE_DEFAULT_MESSAGE = "The time sequence isn't valid!";
     public static final String GENERAL_VALIDATION_SORT_DIRECTION_PATTERN = "asc|desc";
     public static final String GENERAL_VALIDATION_SORT_DIRECTION_PATTERN_MESSAGE = "sort direction must be 'asc' or 'desc'";
 
@@ -77,6 +78,11 @@ public class ProjectConstants {
     public static final String APPOINTMENT_VALIDATION_PUBLIC_ID_NULL_MESSAGE = "public_id must BE null on the creation operation";
     public static final String APPOINTMENT_VALIDATION_TYPE_NULL_MESSAGE = "status must BE null on the creation operation";
     public static final String APPOINTMENT_VALIDATION_PATIENT_NULL_MESSAGE = "patient must BE null on the creation operation";
+    public static final String APPOINTMENT_VALIDATION_DTO_START_TIME_FIELD = "start";
+    public static final String APPOINTMENT_VALIDATION_DTO_END_TIME_FIELD = "end";
+    public static final String APPOINTMENT_VALIDATION_ENTITY_START_TIME_FIELD = "startTime";
+    public static final String APPOINTMENT_VALIDATION_ENTITY_END_TIME_FIELD = "endTime";
+    public static final String APPOINTMENT_VALIDATION_SEQUENCE_TIME_MESSAGE = "The start time must BE before the end time!";
     public static final String PATIENT_VALIDATION_NAME_NOT_EMPTY_MESSAGE = "name must NOT be empty";
     public static final String PATIENT_VALIDATION_NAME_NOT_BLANK_MESSAGE = "name must NOT be blank";
     public static final String PATIENT_VALIDATION_PHONE_NUMBER_NOT_EMPTY_MESSAGE = "phone_number must NOT be empty";
