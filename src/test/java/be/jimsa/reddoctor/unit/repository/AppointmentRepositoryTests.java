@@ -4,6 +4,8 @@ package be.jimsa.reddoctor.unit.repository;
 import be.jimsa.reddoctor.ws.model.entity.Appointment;
 import be.jimsa.reddoctor.ws.model.enums.Status;
 import be.jimsa.reddoctor.ws.repository.AppointmentRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -31,6 +33,8 @@ class AppointmentRepositoryTests {
     @Autowired
     private AppointmentRepository appointmentRepository;
 
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Nested
     @DisplayName("SaveAll")
@@ -112,13 +116,17 @@ class AppointmentRepositoryTests {
         }
 
         @Test
-        @DisplayName("with a list containing null, should throw InvalidDataAccessApiUsageException")
+        @DisplayName("with a list containing null, should throw InvalidDataAccessApiUsageException and stop the process")
         void testSaveAllWithNullEntity() {
             // given (Arrange)
             LocalDate date1 = LocalDate.of(2024, 9, 10);
+            LocalDate date2 = LocalDate.of(2024, 6, 20);
             LocalTime start1 = LocalTime.of(10, 15);
+            LocalTime start2 = LocalTime.of(12, 20);
             LocalTime end1 = LocalTime.of(11, 15);
+            LocalTime end2 = LocalTime.of(13, 0);
             Status status1 = Status.OPEN;
+            Status status2 = Status.OPEN;
 
             Appointment appointment1 = Appointment.builder()
                     .publicId(PUBLIC_ID_EXAMPLE_1)
@@ -127,15 +135,27 @@ class AppointmentRepositoryTests {
                     .endTime(end1)
                     .status(status1)
                     .build();
+            Appointment appointment2 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_2)
+                    .date(date2)
+                    .startTime(start2)
+                    .endTime(end2)
+                    .status(status2)
+                    .build();
 
             List<Appointment> appointments = new ArrayList<>();
             appointments.add(appointment1);
             appointments.add(null); // Adding a null entity
+            appointments.add(appointment2); // This item will not be processed!
 
             // when & then (Assert)
             assertThatThrownBy(() -> appointmentRepository.saveAll(appointments))
                     .isInstanceOf(InvalidDataAccessApiUsageException.class)
                     .hasMessageContaining("Entity must not be null");
+
+            // verify no appointments were saved
+            entityManager.clear();
+            assertThat(appointmentRepository.count()).isEqualTo(1);
         }
 
         @Test
@@ -228,6 +248,51 @@ class AppointmentRepositoryTests {
                     .hasMessageContaining("could not execute statement");
         }
 
+        @Test
+        @DisplayName("with mixed valid and invalid appointments, should save valid items, until exception")
+        void testSaveAllWithMixedAppointments() {
+            // given (Arrange)
+            LocalDate date1 = LocalDate.of(2024, 9, 10);
+            LocalDate date2 = LocalDate.of(2024, 6, 20);
+            LocalTime start1 = LocalTime.of(10, 15);
+            LocalTime start2 = LocalTime.of(12, 20);
+            LocalTime end1 = LocalTime.of(11, 15);
+            LocalTime end2 = LocalTime.of(8, 0);
+            Status status1 = Status.OPEN;
+            Status status2 = Status.OPEN;
+
+            Appointment appointment1 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_1)
+                    .date(date1)
+                    .startTime(start1)
+                    .endTime(end1)
+                    .status(status1)
+                    .build();
+            Appointment appointment2 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_2)
+                    .date(date2)
+                    .startTime(start2)
+                    .endTime(end2) // Invalid time
+                    .status(status2)
+                    .build();
+            Appointment appointment3 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_1 + PUBLIC_ID_EXAMPLE_2)
+                    .date(date1)
+                    .startTime(start1)
+                    .endTime(end1)
+                    .status(status1)
+                    .build();
+
+            List<Appointment> appointments = List.of(appointment1, appointment2, appointment3);
+
+            // when & then (Assert)
+            assertThatThrownBy(() -> appointmentRepository.saveAll(appointments))
+                    .isInstanceOf(ConstraintViolationException.class);
+
+            // verify no appointments were saved
+            entityManager.clear();
+            assertThat(appointmentRepository.count()).isEqualTo(1);
+        }
 
 
     }

@@ -9,7 +9,6 @@ import be.jimsa.reddoctor.ws.model.entity.Appointment;
 import be.jimsa.reddoctor.ws.model.enums.Status;
 import be.jimsa.reddoctor.ws.repository.AppointmentRepository;
 import be.jimsa.reddoctor.ws.service.AppointmentService;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -18,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
