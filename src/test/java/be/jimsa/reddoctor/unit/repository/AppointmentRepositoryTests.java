@@ -1,6 +1,7 @@
 package be.jimsa.reddoctor.unit.repository;
 
 
+import be.jimsa.reddoctor.utility.id.PublicIdGenerator;
 import be.jimsa.reddoctor.ws.model.entity.Appointment;
 import be.jimsa.reddoctor.ws.model.enums.Status;
 import be.jimsa.reddoctor.ws.repository.AppointmentRepository;
@@ -12,7 +13,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -36,6 +39,9 @@ class AppointmentRepositoryTests {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Spy
+    private PublicIdGenerator publicIdGenerator;
 
     @Nested
     @DisplayName("SaveAll")
@@ -398,12 +404,46 @@ class AppointmentRepositoryTests {
         @Test
         @DisplayName("by a null as a list, should throw InvalidDataAccessApiUsageException")
         void testSaveAllWithNullAppointments() {
-        	// given (Arrange) - precondition or setup:
+            // given (Arrange) - precondition or setup:
             List<Appointment> appointments = null;
 
             // when & then (Assert)
             assertThatThrownBy(() -> appointmentRepository.saveAll(appointments))
                     .isInstanceOf(InvalidDataAccessApiUsageException.class);
+
+        }
+
+        @ParameterizedTest
+        @CsvSource({
+                "00:00, 00:30",
+                "23:30, 00:00"
+        })
+        @DisplayName("with boundary times, should save all of them")
+        void testSaveAllWithBoundaryTimes(String start, String end) {
+            // given (Arrange) - precondition or setup:
+            LocalDate date1 = LocalDate.of(2024, 9, 10);
+            Status status1 = Status.OPEN;
+            LocalTime startTime = LocalTime.parse(start);
+            LocalTime endTime = LocalTime.parse(end);
+
+            Appointment appointment = Appointment.builder()
+                    .publicId(publicIdGenerator.generatePublicId(PUBLIC_ID_DEFAULT_LENGTH))
+                    .date(date1)
+                    .startTime(startTime)
+                    .endTime(endTime)
+                    .status(status1)
+                    .build();
+
+            List<Appointment> appointments = List.of(appointment);
+
+            // when (Act) - action or the behavior that we are going test:
+            List<Appointment> savedAppointments = appointmentRepository.saveAll(appointments);
+
+            // then(Assert) - verify the output:
+            assertThat(savedAppointments)
+                    .isNotNull()
+                    .extracting(Appointment::getId)
+                    .allMatch(id -> id != null && id > 0);
 
         }
     }
