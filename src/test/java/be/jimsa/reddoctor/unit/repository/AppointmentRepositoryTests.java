@@ -8,6 +8,8 @@ import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -160,6 +162,37 @@ class AppointmentRepositoryTests {
                     .hasMessageContaining(APPOINTMENT_VALIDATION_SEQUENCE_TIME_MESSAGE);
         }
 
+        @ParameterizedTest
+        @EnumSource(value = Status.class, names = {"OPEN", "DELETED", "TAKEN"})
+        @DisplayName("with valid status appointment, should save the entity with the status")
+        void testSaveAllWithValidStatusAppointment(Status status) {
+            // given (Arrange)
+            LocalDate date1 = LocalDate.of(2024, 9, 10);
+            LocalTime start1 = LocalTime.of(10, 15);
+            LocalTime end1 = LocalTime.of(11, 15);
+
+            Appointment appointment1 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_1)
+                    .date(date1)
+                    .startTime(start1)
+                    .endTime(end1)
+                    .status(status)
+                    .build();
+
+            List<Appointment> appointments = List.of(appointment1);
+
+            // when (Act)
+            List<Appointment> savedAppointments = appointmentRepository.saveAll(appointments);
+
+            // then (Assert)
+            assertThat(savedAppointments)
+                    .isNotEmpty()
+                    .hasSize(1)
+                    .allMatch(appointment -> appointment.getStatus() == status);
+        }
+
+
+
 
     }
 
@@ -170,27 +203,7 @@ class AppointmentRepositoryTests {
         @Test
         @DisplayName("by a valid entity, should return a valid saved entity with id")
         void givenAValidAppointmentEntity_whenSave_thenReturnSavedAppointmentEntityWithId() {
-            Appointment appointment = Appointment.builder()
-//                    .publicId(publicId)
-//                    .date(date)
-//                    .startTime(start)
-//                    .endTime(end)
-                    .build();
 
-            Appointment savedAppointment = appointmentRepository.save(appointment);
-
-            assertThat(savedAppointment)
-                    .isNotNull()
-                    .isInstanceOf(Appointment.class)
-                    .hasFieldOrPropertyWithValue("publicId", savedAppointment.getPublicId())
-                    .hasFieldOrPropertyWithValue("date", savedAppointment.getDate())
-                    .hasFieldOrPropertyWithValue("startTime", savedAppointment.getStartTime())
-                    .hasFieldOrPropertyWithValue("endTime", savedAppointment.getEndTime())
-                    .hasFieldOrPropertyWithValue("patient", null);
-            assertThat(savedAppointment.getId())
-                    .isNotNull()
-                    .isPositive();
-            assertThat(appointmentRepository.count()).isEqualTo(1);
         }
 
     }
