@@ -83,19 +83,12 @@ public class AppointmentServiceImpl implements AppointmentService {
             appointmentPage = appointmentRepository.findAllByDateAndStatus(pageable, date, status);
         }
 
-        printLogger(appointmentPage);
+        appointmentUtils.printLogger(log, appointmentPage);
 
         return appointmentPage
                 .get()
                 .map(appointmentUtils::mapToDto)
                 .toList();
-    }
-
-    private void printLogger(Page<Appointment> appointmentPage) {
-        log.info(LOGGER_TOTAL_ELEMENTS, appointmentPage.getTotalElements());
-        log.info(LOGGER_TOTAL_PAGES, appointmentPage.getTotalPages());
-        log.info(LOGGER_NUMBER_OF_ELEMENTS, appointmentPage.getNumberOfElements());
-        log.info(LOGGER_SIZE, appointmentPage.getSize());
     }
 
     @Transactional

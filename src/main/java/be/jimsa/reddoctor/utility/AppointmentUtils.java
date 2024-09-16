@@ -7,6 +7,8 @@ import be.jimsa.reddoctor.ws.model.entity.Appointment;
 import be.jimsa.reddoctor.ws.model.entity.Patient;
 import be.jimsa.reddoctor.ws.model.enums.Status;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -69,4 +71,12 @@ public class AppointmentUtils {
         }
         return dtos;
     }
+
+    public void printLogger(Logger logger, Page<Appointment> appointmentPage) {
+        logger.info(LOGGER_TOTAL_ELEMENTS, appointmentPage.getTotalElements());
+        logger.info(LOGGER_TOTAL_PAGES, appointmentPage.getTotalPages());
+        logger.info(LOGGER_NUMBER_OF_ELEMENTS, appointmentPage.getNumberOfElements());
+        logger.info(LOGGER_SIZE, appointmentPage.getSize());
+    }
+
 }
