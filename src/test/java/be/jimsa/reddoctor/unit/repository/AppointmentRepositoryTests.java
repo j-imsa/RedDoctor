@@ -9,15 +9,18 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static be.jimsa.reddoctor.utility.constant.ProjectConstants.PUBLIC_ID_EXAMPLE_1;
 import static be.jimsa.reddoctor.utility.constant.ProjectConstants.PUBLIC_ID_EXAMPLE_2;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
 class AppointmentRepositoryTests {
@@ -103,6 +106,33 @@ class AppointmentRepositoryTests {
             assertThat(savedAppointments)
                     .isNotNull()
                     .isEmpty();
+        }
+
+        @Test
+        @DisplayName("with a list containing null, should throw InvalidDataAccessApiUsageException")
+        void testSaveAllWithNullEntity() {
+            // given (Arrange)
+            LocalDate date1 = LocalDate.of(2024, 9, 10);
+            LocalTime start1 = LocalTime.of(10, 15);
+            LocalTime end1 = LocalTime.of(11, 15);
+            Status status1 = Status.OPEN;
+
+            Appointment appointment1 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_1)
+                    .date(date1)
+                    .startTime(start1)
+                    .endTime(end1)
+                    .status(status1)
+                    .build();
+
+            List<Appointment> appointments = new ArrayList<>();
+            appointments.add(appointment1);
+            appointments.add(null); // Adding a null entity
+
+            // when & then (Assert)
+            assertThatThrownBy(() -> appointmentRepository.saveAll(appointments))
+                    .isInstanceOf(InvalidDataAccessApiUsageException.class)
+                    .hasMessageContaining("Entity must not be null");
         }
 
     }
