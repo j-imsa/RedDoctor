@@ -7,6 +7,7 @@ import be.jimsa.reddoctor.ws.repository.AppointmentRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -246,6 +247,106 @@ class AppointmentRepositoryTests {
             assertThatThrownBy(() -> appointmentRepository.saveAll(appointments))
                     .isInstanceOf(DataIntegrityViolationException.class)
                     .hasMessageContaining("could not execute statement");
+        }
+
+        @Test
+        @DisplayName("with null publicId, should throw ConstraintViolationException")
+        void testSaveAllWithNullPublicId() {
+            // given (Arrange)
+            LocalDate date1 = LocalDate.of(2024, 9, 10);
+            LocalTime start1 = LocalTime.of(10, 15);
+            LocalTime end1 = LocalTime.of(11, 15);
+            Status status1 = Status.OPEN;
+
+            Appointment appointment1 = Appointment.builder()
+                    .publicId(null)
+                    .date(date1)
+                    .startTime(start1)
+                    .endTime(end1)
+                    .status(status1)
+                    .build();
+
+            List<Appointment> appointments = List.of(appointment1);
+
+            // when & then (Assert)
+            assertThatThrownBy(() -> appointmentRepository.saveAll(appointments))
+                    .isInstanceOf(ConstraintViolationException.class)
+                    .hasMessageContaining("Validation failed for");
+        }
+
+        @Test
+        @DisplayName("with null date, should throw DataIntegrityViolationException")
+        void testSaveAllWithNullDate() {
+            // given (Arrange)
+            LocalDate date1 = LocalDate.of(2024, 9, 10);
+            LocalTime start1 = LocalTime.of(10, 15);
+            LocalTime end1 = LocalTime.of(11, 15);
+            Status status1 = Status.OPEN;
+
+            Appointment appointment1 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_1)
+                    .date(null)
+                    .startTime(start1)
+                    .endTime(end1)
+                    .status(status1)
+                    .build();
+
+            List<Appointment> appointments = List.of(appointment1);
+
+            // when & then (Assert)
+            assertThatThrownBy(() -> appointmentRepository.saveAll(appointments))
+                    .isInstanceOf(DataIntegrityViolationException.class)
+                    .hasMessageContaining("could not execute statement");
+        }
+
+        @Test
+        @DisplayName("with null start time, should throw ValidationException")
+        void testSaveAllWithNullStartTime() {
+            // given (Arrange)
+            LocalDate date1 = LocalDate.of(2024, 9, 10);
+            LocalTime start1 = LocalTime.of(10, 15);
+            LocalTime end1 = LocalTime.of(11, 15);
+            Status status1 = Status.OPEN;
+
+            Appointment appointment1 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_1)
+                    .date(date1)
+                    .startTime(null)
+                    .endTime(end1)
+                    .status(status1)
+                    .build();
+
+            List<Appointment> appointments = List.of(appointment1);
+
+            // when & then (Assert)
+            assertThatThrownBy(() -> appointmentRepository.saveAll(appointments))
+                    .isInstanceOf(ValidationException.class)
+                    .hasMessageContaining("Unexpected exception during isValid call");
+        }
+
+        @Test
+        @DisplayName("with null end time, should throw ValidationException")
+        void testSaveAllWithNullEndTime() {
+            // given (Arrange)
+            LocalDate date1 = LocalDate.of(2024, 9, 10);
+            LocalTime start1 = LocalTime.of(10, 15);
+            LocalTime end1 = LocalTime.of(11, 15);
+            Status status1 = Status.OPEN;
+
+            Appointment appointment1 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_1)
+                    .date(date1)
+                    .startTime(start1)
+                    .endTime(null)
+                    .status(status1)
+                    .build();
+
+            List<Appointment> appointments = List.of(appointment1);
+
+            // when & then (Assert)
+            assertThatThrownBy(() -> appointmentRepository.saveAll(appointments))
+                    .isInstanceOf(ValidationException.class)
+                    .hasMessageContaining("Unexpected exception during isValid call");
         }
 
         @Test
