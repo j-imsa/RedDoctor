@@ -65,7 +65,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         LocalDate date = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern(DATE_FORMAT));
 
-        Status status = Status.valueOf(statusStr.toUpperCase());
+        Status status = null;
+        if (statusStr != null && !statusStr.equalsIgnoreCase(GENERAL_STATUS_ALL)) {
+            status = Status.valueOf(statusStr.toUpperCase());
+        }
 
         Sort sort;
         if (sortDirection.equalsIgnoreCase(GENERAL_SORT_DIRECTION_ASC_FIELD)) {
@@ -77,7 +80,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         Pageable pageable = PageRequest.of(page - 1, size, sort);
 
         Page<Appointment> appointmentPage;
-        if (status == Status.ALL){
+        if (status == null) {
             appointmentPage = appointmentRepository.findAllByDate(pageable, date);
         } else {
             appointmentPage = appointmentRepository.findAllByDateAndStatus(pageable, date, status);
