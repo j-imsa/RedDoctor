@@ -294,7 +294,17 @@ class AppointmentRepositoryTests {
             assertThat(appointmentRepository.count()).isEqualTo(1);
         }
 
+        @Test
+        @DisplayName("by a null as a list, should throw InvalidDataAccessApiUsageException")
+        void testSaveAllWithNullAppointments() {
+        	// given (Arrange) - precondition or setup:
+            List<Appointment> appointments = null;
 
+            // when & then (Assert)
+            assertThatThrownBy(() -> appointmentRepository.saveAll(appointments))
+                    .isInstanceOf(InvalidDataAccessApiUsageException.class);
+
+        }
     }
 
     @Nested
