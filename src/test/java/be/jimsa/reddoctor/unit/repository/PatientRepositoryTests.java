@@ -11,6 +11,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -21,7 +23,6 @@ class PatientRepositoryTests {
     private PatientRepository patientRepository;
 
 
-
     @Nested
     @DisplayName("Save")
     class SaveTests {
@@ -29,7 +30,7 @@ class PatientRepositoryTests {
         @Test
         @DisplayName("with valid patient, should return saved patient with id")
         void testSaveWithValidInfo() {
-        	// given (Arrange) - precondition or setup:
+            // given (Arrange) - precondition or setup:
             String patientName = "Foo bar";
             String patientPhoneNumber = "9131231234";
             Patient patient = Patient.builder()
@@ -37,10 +38,10 @@ class PatientRepositoryTests {
                     .phoneNumber(patientPhoneNumber)
                     .build();
 
-        	// when (Act) - action or the behavior that we are going test:
+            // when (Act) - action or the behavior that we are going test:
             Patient savedPatient = patientRepository.save(patient);
 
-        	// then(Assert) - verify the output:
+            // then(Assert) - verify the output:
             assertThat(savedPatient)
                     .isNotNull()
                     .hasFieldOrPropertyWithValue("id", savedPatient.getId())
@@ -53,7 +54,7 @@ class PatientRepositoryTests {
         void testSaveWithNull() {
             assertThatThrownBy(() -> patientRepository.save(null))
                     .isInstanceOf(InvalidDataAccessApiUsageException.class)
-                            .hasMessageContaining("Entity must not be null");
+                    .hasMessageContaining("Entity must not be null");
         }
 
         @Test
@@ -67,9 +68,9 @@ class PatientRepositoryTests {
                     .phoneNumber(patientPhoneNumber)
                     .build();
 
-            assertThatThrownBy(()-> patientRepository.save(patient))
+            assertThatThrownBy(() -> patientRepository.save(patient))
                     .isInstanceOf(DataIntegrityViolationException.class)
-                            .hasMessageContaining("could not execute statement");
+                    .hasMessageContaining("could not execute statement");
         }
 
         @Test
@@ -83,7 +84,7 @@ class PatientRepositoryTests {
                     .phoneNumber(null)
                     .build();
 
-            assertThatThrownBy(()-> patientRepository.save(patient))
+            assertThatThrownBy(() -> patientRepository.save(patient))
                     .isInstanceOf(DataIntegrityViolationException.class)
                     .hasMessageContaining("could not execute statement");
         }
@@ -105,7 +106,7 @@ class PatientRepositoryTests {
                     .build();
             patientRepository.save(patient1);
 
-            assertThatThrownBy(()-> patientRepository.save(patient2))
+            assertThatThrownBy(() -> patientRepository.save(patient2))
                     .isInstanceOf(DataIntegrityViolationException.class)
                     .hasMessageContaining("could not execute statement");
         }
@@ -115,6 +116,68 @@ class PatientRepositoryTests {
     @Nested
     @DisplayName("FindByPhoneNumber")
     class FindByPhoneNumberTests {
+
+        @Test
+        @DisplayName("with valid info, should return valid entity/optional")
+        void testFindByPhoneNumberWithValidInfo() {
+            String patientName = "Foo bar";
+            String patientPhoneNumber = "9131231234";
+            Patient patient = Patient.builder()
+                    .name(patientName)
+                    .phoneNumber(patientPhoneNumber)
+                    .build();
+
+            Patient savedPatient = patientRepository.save(patient);
+
+            // when (Act) - action or the behavior that we are going test:
+            Optional<Patient> optionalPatient = patientRepository.findByPhoneNumber(patientPhoneNumber);
+
+            // then(Assert) - verify the output:
+            assertThat(optionalPatient)
+                    .isPresent()
+                    .contains(savedPatient)
+                    .hasValueSatisfying(pt -> {
+                        assertThat(pt)
+                                .hasFieldOrPropertyWithValue("id", savedPatient.getId())
+                                .hasFieldOrPropertyWithValue("name", patientName)
+                                .hasFieldOrPropertyWithValue("phoneNumber", patientPhoneNumber);
+                    });
+
+        }
+
+        @Test
+        @DisplayName("with invalid info, should return valid-empty optional")
+        void testFindByPhoneNumberWithInvalidInfo() {
+            String patientName = "Foo bar";
+            String patientPhoneNumber = "9131231234";
+            String invalidPhoneNumber = "9121231234";
+            Patient patient = Patient.builder()
+                    .name(patientName)
+                    .phoneNumber(patientPhoneNumber)
+                    .build();
+            Patient savedPatient = patientRepository.save(patient);
+
+            // when (Act) - action or the behavior that we are going test:
+            Optional<Patient> optionalPatient = patientRepository.findByPhoneNumber(invalidPhoneNumber);
+
+            // then(Assert) - verify the output:
+            assertThat(optionalPatient)
+                    .isEmpty();
+
+        }
+
+        @Test
+        @DisplayName("with null, should return valid-empty optional")
+        void testFindByPhoneNumberWithNull() {
+
+            // when (Act) - action or the behavior that we are going test:
+            Optional<Patient> optionalPatient = patientRepository.findByPhoneNumber(null);
+
+            // then(Assert) - verify the output:
+            assertThat(optionalPatient)
+                    .isEmpty();
+
+        }
 
     }
 
