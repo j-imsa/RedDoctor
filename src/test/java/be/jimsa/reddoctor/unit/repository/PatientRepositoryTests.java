@@ -30,7 +30,6 @@ class PatientRepositoryTests {
         @Test
         @DisplayName("with valid patient, should return saved patient with id")
         void testSaveWithValidInfo() {
-            // given (Arrange) - precondition or setup:
             String patientName = "Foo bar";
             String patientPhoneNumber = "9131231234";
             Patient patient = Patient.builder()
@@ -38,10 +37,8 @@ class PatientRepositoryTests {
                     .phoneNumber(patientPhoneNumber)
                     .build();
 
-            // when (Act) - action or the behavior that we are going test:
             Patient savedPatient = patientRepository.save(patient);
 
-            // then(Assert) - verify the output:
             assertThat(savedPatient)
                     .isNotNull()
                     .hasFieldOrPropertyWithValue("id", savedPatient.getId())
@@ -60,8 +57,6 @@ class PatientRepositoryTests {
         @Test
         @DisplayName("with null name, should throw DataIntegrityViolationException")
         void testSaveWithNullName() {
-            // given (Arrange) - precondition or setup:
-            String patientName = "Foo bar";
             String patientPhoneNumber = "9131231234";
             Patient patient = Patient.builder()
                     .name(null)
@@ -76,9 +71,7 @@ class PatientRepositoryTests {
         @Test
         @DisplayName("with null phone_number, should throw DataIntegrityViolationException")
         void testSaveWithNullPhoneNumber() {
-            // given (Arrange) - precondition or setup:
             String patientName = "Foo bar";
-            String patientPhoneNumber = "9131231234";
             Patient patient = Patient.builder()
                     .name(patientName)
                     .phoneNumber(null)
@@ -92,7 +85,6 @@ class PatientRepositoryTests {
         @Test
         @DisplayName("with duplicate phone_number, should throw DataIntegrityViolationException")
         void testSaveWithDuplicatePhoneNumber() {
-            // given (Arrange) - precondition or setup:
             String patientName1 = "Foo bar";
             String patientName2 = "Foo beer";
             String patientPhoneNumber = "9131231234";
@@ -126,13 +118,10 @@ class PatientRepositoryTests {
                     .name(patientName)
                     .phoneNumber(patientPhoneNumber)
                     .build();
-
             Patient savedPatient = patientRepository.save(patient);
 
-            // when (Act) - action or the behavior that we are going test:
             Optional<Patient> optionalPatient = patientRepository.findByPhoneNumber(patientPhoneNumber);
 
-            // then(Assert) - verify the output:
             assertThat(optionalPatient)
                     .isPresent()
                     .contains(savedPatient)
@@ -142,7 +131,6 @@ class PatientRepositoryTests {
                                 .hasFieldOrPropertyWithValue("name", patientName)
                                 .hasFieldOrPropertyWithValue("phoneNumber", patientPhoneNumber);
                     });
-
         }
 
         @Test
@@ -155,28 +143,22 @@ class PatientRepositoryTests {
                     .name(patientName)
                     .phoneNumber(patientPhoneNumber)
                     .build();
-            Patient savedPatient = patientRepository.save(patient);
+            patientRepository.save(patient);
 
-            // when (Act) - action or the behavior that we are going test:
             Optional<Patient> optionalPatient = patientRepository.findByPhoneNumber(invalidPhoneNumber);
 
-            // then(Assert) - verify the output:
             assertThat(optionalPatient)
                     .isEmpty();
-
         }
 
         @Test
         @DisplayName("with null, should return valid-empty optional")
         void testFindByPhoneNumberWithNull() {
 
-            // when (Act) - action or the behavior that we are going test:
             Optional<Patient> optionalPatient = patientRepository.findByPhoneNumber(null);
 
-            // then(Assert) - verify the output:
             assertThat(optionalPatient)
                     .isEmpty();
-
         }
 
     }
