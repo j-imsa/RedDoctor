@@ -667,16 +667,105 @@ class AppointmentRepositoryTests {
     class FindAllByDateTests {
 
         @Nested
-        @DisplayName("ByPageable")
-        class ByPageableTests {
-
-        }
-
-        @Nested
         @DisplayName("WithoutPageable")
         class WithoutPageableTests {
 
+            @Test
+            @DisplayName("with a valid date, should return valid list")
+            void testFindAllByDateWithValidDate() {
+                LocalDate date = LocalDate.of(2024, 9, 10);
+                LocalTime start1 = LocalTime.of(10, 15);
+                LocalTime start2 = LocalTime.of(12, 20);
+                LocalTime end1 = LocalTime.of(11, 15);
+                LocalTime end2 = LocalTime.of(13, 0);
+                Status status1 = Status.OPEN;
+                Status status2 = Status.OPEN;
+
+                Appointment appointment1 = Appointment.builder()
+                        .publicId(PUBLIC_ID_EXAMPLE_1)
+                        .date(date)
+                        .startTime(start1)
+                        .endTime(end1)
+                        .status(status1)
+                        .build();
+                Appointment appointment2 = Appointment.builder()
+                        .publicId(PUBLIC_ID_EXAMPLE_2)
+                        .date(date)
+                        .startTime(start2)
+                        .endTime(end2)
+                        .status(status2)
+                        .build();
+
+                appointmentRepository.saveAll(List.of(appointment1, appointment2));
+
+            	// when (Act) - action or the behavior that we are going test:
+                List<Appointment> savedAppointments = appointmentRepository.findAllByDate(date);
+
+            	// then(Assert) - verify the output:
+                assertThat(savedAppointments)
+                        .isNotNull()
+                        .hasSize(2)
+                        .allMatch(appointment -> appointment.getDate().isEqual(date));
+            }
+
+            @Test
+            @DisplayName("with different date, should return empty list")
+            void testFindAllByDateWithDifferentDate() {
+                LocalDate date1 = LocalDate.of(2024, 9, 10);
+                LocalDate date2 = LocalDate.of(2024, 9, 11);
+                LocalTime start1 = LocalTime.of(10, 15);
+                LocalTime start2 = LocalTime.of(12, 20);
+                LocalTime end1 = LocalTime.of(11, 15);
+                LocalTime end2 = LocalTime.of(13, 0);
+                Status status1 = Status.OPEN;
+                Status status2 = Status.OPEN;
+
+                Appointment appointment1 = Appointment.builder()
+                        .publicId(PUBLIC_ID_EXAMPLE_1)
+                        .date(date1)
+                        .startTime(start1)
+                        .endTime(end1)
+                        .status(status1)
+                        .build();
+                Appointment appointment2 = Appointment.builder()
+                        .publicId(PUBLIC_ID_EXAMPLE_2)
+                        .date(date1)
+                        .startTime(start2)
+                        .endTime(end2)
+                        .status(status2)
+                        .build();
+
+                appointmentRepository.saveAll(List.of(appointment1, appointment2));
+
+                // when (Act) - action or the behavior that we are going test:
+                List<Appointment> savedAppointments = appointmentRepository.findAllByDate(date2);
+
+                // then(Assert) - verify the output:
+                assertThat(savedAppointments)
+                        .isNotNull()
+                        .hasSize(0);
+            }
+
+            @Test
+            @DisplayName("with null, should return empty list")
+            void testFindAllByDateWithNull() {
+
+                List<Appointment> appointments = appointmentRepository.findAllByDate(null);
+
+                assertThat(appointments)
+                        .isNotNull()
+                        .hasSize(0);
+            }
         }
+
+        @Nested
+        @DisplayName("ByPageable")
+        class ByPageableTests {
+
+
+
+        }
+
     }
 
     @Nested
