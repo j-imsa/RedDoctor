@@ -30,6 +30,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static be.jimsa.reddoctor.utility.constant.ProjectConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -1032,17 +1033,102 @@ class AppointmentRepositoryTests {
     @DisplayName("FindByPublicId")
     class FindByPublicIdTests {
 
+        @Test
+        @DisplayName("with valid info, should return valid entity")
+        void testFindByPublicIdWithValidInfo() {
+        	// given (Arrange) - precondition or setup:
+            LocalDate date = LocalDate.of(2024, 9, 10);
+            LocalTime start1 = LocalTime.of(10, 15);
+            LocalTime start2 = LocalTime.of(12, 20);
+            LocalTime end1 = LocalTime.of(11, 15);
+            LocalTime end2 = LocalTime.of(13, 0);
+            Status status1 = Status.OPEN;
+            Status status2 = Status.OPEN;
+
+            Appointment appointment1 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_1)
+                    .date(date)
+                    .startTime(start1)
+                    .endTime(end1)
+                    .status(status1)
+                    .build();
+            Appointment appointment2 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_2)
+                    .date(date)
+                    .startTime(start2)
+                    .endTime(end2)
+                    .status(status2)
+                    .build();
+
+            appointmentRepository.saveAll(List.of(appointment1, appointment2));
+
+        	// when (Act) - action or the behavior that we are going test:
+            Optional<Appointment> optionalAppointment = appointmentRepository.findByPublicId(PUBLIC_ID_EXAMPLE_1);
+
+        	// then(Assert) - verify the output:
+            assertThat(optionalAppointment)
+                    .isPresent()
+                    .contains(appointment1)
+                    .hasValueSatisfying(appointment -> {
+                        assertThat(appointment).isNotNull();
+                        assertThat(appointment.getPublicId()).isEqualTo(PUBLIC_ID_EXAMPLE_1);
+                        assertThat(appointment.getId()).isGreaterThan(0L);
+                        assertThat(appointment)
+                                .hasFieldOrPropertyWithValue("date", date)
+                                .hasFieldOrPropertyWithValue("startTime", start1)
+                                .hasFieldOrPropertyWithValue("endTime", end1)
+                                .hasFieldOrPropertyWithValue("status", status1);
+                    });
+
+        }
+
+        @Test
+        @DisplayName("with valid info and empty db, should return valid-empty optional")
+        void testFindByPublicIdWithValidInfoAndEmptyDb() {
+
+            // when (Act) - action or the behavior that we are going test:
+            Optional<Appointment> optionalAppointment = appointmentRepository.findByPublicId(PUBLIC_ID_EXAMPLE_1);
+
+            // then(Assert) - verify the output:
+            assertThat(optionalAppointment)
+                    .isNotNull()
+                    .isEmpty();
+
+        }
+
+        @Test
+        @DisplayName("with null public_id, should return valid-empty optional")
+        void testFindByPublicIdWithNull() {
+
+            // when (Act) - action or the behavior that we are going test:
+            Optional<Appointment> optionalAppointment = appointmentRepository.findByPublicId(null);
+
+            // then(Assert) - verify the output:
+            assertThat(optionalAppointment)
+                    .isNotNull()
+                    .isEmpty();
+
+        }
+
+        @Test
+        @DisplayName("with invalid public_id, should return valid-empty optional")
+        void testFindByPublicIdWithInvalidPublicId() {
+
+            // when (Act) - action or the behavior that we are going test:
+            Optional<Appointment> optionalAppointment = appointmentRepository.findByPublicId(PUBLIC_ID_EXAMPLE_1.split("-")[0]);
+
+            // then(Assert) - verify the output:
+            assertThat(optionalAppointment)
+                    .isNotNull()
+                    .isEmpty();
+
+        }
+
     }
 
     @Nested
     @DisplayName("FindAllByDateAndStatus")
     class FindAllByDateAndStatusTests {
-
-    }
-
-    @Nested
-    @DisplayName("FindAllByPatientIsNullAndDate")
-    class FindAllByPatientIsNullAndDateTests {
 
     }
 
