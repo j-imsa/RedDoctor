@@ -1,6 +1,7 @@
 package be.jimsa.reddoctor.ws.model.dto;
 
 import be.jimsa.reddoctor.config.validation.annotation.ValidPublicId;
+import be.jimsa.reddoctor.config.validation.annotation.ValidTimeSequence;
 import be.jimsa.reddoctor.ws.model.enums.Status;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -24,12 +25,18 @@ import static be.jimsa.reddoctor.utility.constant.ProjectConstants.*;
 @Schema(name = APPOINTMENT_DTO_DOCUMENT_NAME, description = APPOINTMENT_DTO_DOCUMENT_DESCRIPTION)
 @AllArgsConstructor
 @NoArgsConstructor
+@ValidTimeSequence(
+        currentTime = APPOINTMENT_VALIDATION_DTO_START_TIME_FIELD,
+        nextTime = APPOINTMENT_VALIDATION_DTO_END_TIME_FIELD,
+        message = APPOINTMENT_VALIDATION_SEQUENCE_TIME_MESSAGE,
+        groups = {AppointmentDto.Create.class, AppointmentDto.Read.class}
+)
 public class AppointmentDto {
 
     @JsonProperty(GENERAL_PUBLIC_ID_FIELD)
     @Null(message = APPOINTMENT_VALIDATION_PUBLIC_ID_NULL_MESSAGE, groups = {Create.class})
     @ValidPublicId(groups = Read.class)
-    @Schema(type = GENERAL_STRING_TYPE, description = PUBLIC_ID_DESCRIPTION, example = PUBLIC_ID_EXAMPLE)
+    @Schema(type = GENERAL_STRING_TYPE, description = PUBLIC_ID_DESCRIPTION, example = PUBLIC_ID_EXAMPLE_1)
     private String publicId;
 
     @JsonFormat(pattern = DATE_FORMAT)

@@ -2,6 +2,7 @@ package be.jimsa.reddoctor.ws.model.entity;
 
 
 import be.jimsa.reddoctor.config.validation.annotation.ValidPublicId;
+import be.jimsa.reddoctor.config.validation.annotation.ValidTimeSequence;
 import be.jimsa.reddoctor.ws.model.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,6 +19,11 @@ import static be.jimsa.reddoctor.utility.constant.ProjectConstants.*;
 @Builder
 @Entity
 @Table(name = APPOINTMENT_DATABASE_TABLE_NAME)
+@ValidTimeSequence(
+        currentTime = APPOINTMENT_VALIDATION_ENTITY_START_TIME_FIELD,
+        nextTime = APPOINTMENT_VALIDATION_ENTITY_END_TIME_FIELD,
+        message = APPOINTMENT_VALIDATION_SEQUENCE_TIME_MESSAGE
+)
 public class Appointment extends BaseEntity {
 
     @Id

@@ -1,8 +1,8 @@
 package be.jimsa.reddoctor.unit.service;
 
 
-import be.jimsa.reddoctor.utility.id.PublicIdGenerator;
 import be.jimsa.reddoctor.utility.AppointmentUtils;
+import be.jimsa.reddoctor.utility.id.PublicIdGenerator;
 import be.jimsa.reddoctor.ws.model.dto.AppointmentDto;
 import be.jimsa.reddoctor.ws.model.entity.Appointment;
 import be.jimsa.reddoctor.ws.repository.AppointmentRepository;
@@ -22,14 +22,13 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static be.jimsa.reddoctor.utility.constant.ProjectConstants.PUBLIC_ID_DEFAULT_LENGTH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyList;
 
 @ExtendWith(MockitoExtension.class)
 class AppointmentServiceTests {
@@ -81,7 +80,7 @@ class AppointmentServiceTests {
                     .build();
             List<Appointment> appointmentList = new ArrayList<>();
             appointmentList.add(appointmentEntity);
-            given(appointmentRepository.findAllByDate(any(LocalDate.class))).willReturn(Optional.of(new ArrayList<>()));
+            given(appointmentRepository.findAllByDate(any(LocalDate.class))).willReturn(new ArrayList<>());
             given(appointmentRepository.saveAll(anyList())).willReturn(appointmentList);
             given(appointmentRepository.save(any())).willReturn(appointmentEntity);
 
