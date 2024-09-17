@@ -38,8 +38,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public List<AppointmentDto> createAppointments(AppointmentDto appointmentDto) {
 
-        Optional<List<Appointment>> optionalList = appointmentRepository.findAllByDate(appointmentDto.getDate());
-        if (optionalList.isPresent() && !optionalList.get().isEmpty()) {
+        List<Appointment> appointments = appointmentRepository.findAllByDate(appointmentDto.getDate());
+        if (!appointments.isEmpty()) {
             throw new AppServiceException(EXCEPTION_DATE_MESSAGE, HttpStatus.BAD_REQUEST);
         }
 

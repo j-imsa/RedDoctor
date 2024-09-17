@@ -16,7 +16,7 @@ import java.util.Optional;
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
 
-    Optional<List<Appointment>> findAllByDate(LocalDate date);
+    List<Appointment> findAllByDate(LocalDate date);
 
     Page<Appointment> findAllByDate(Pageable pageable, LocalDate date);
 
