@@ -3,8 +3,10 @@ package be.jimsa.reddoctor.unit.repository;
 
 import be.jimsa.reddoctor.utility.id.PublicIdGenerator;
 import be.jimsa.reddoctor.ws.model.entity.Appointment;
+import be.jimsa.reddoctor.ws.model.entity.Patient;
 import be.jimsa.reddoctor.ws.model.enums.Status;
 import be.jimsa.reddoctor.ws.repository.AppointmentRepository;
+import be.jimsa.reddoctor.ws.repository.PatientRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.validation.ConstraintViolationException;
@@ -41,6 +43,9 @@ class AppointmentRepositoryTests {
 
     @Autowired
     private AppointmentRepository appointmentRepository;
+
+    @Autowired
+    private PatientRepository patientRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -1036,7 +1041,7 @@ class AppointmentRepositoryTests {
         @Test
         @DisplayName("with valid info, should return valid entity")
         void testFindByPublicIdWithValidInfo() {
-        	// given (Arrange) - precondition or setup:
+            // given (Arrange) - precondition or setup:
             LocalDate date = LocalDate.of(2024, 9, 10);
             LocalTime start1 = LocalTime.of(10, 15);
             LocalTime start2 = LocalTime.of(12, 20);
@@ -1062,10 +1067,10 @@ class AppointmentRepositoryTests {
 
             appointmentRepository.saveAll(List.of(appointment1, appointment2));
 
-        	// when (Act) - action or the behavior that we are going test:
+            // when (Act) - action or the behavior that we are going test:
             Optional<Appointment> optionalAppointment = appointmentRepository.findByPublicId(PUBLIC_ID_EXAMPLE_1);
 
-        	// then(Assert) - verify the output:
+            // then(Assert) - verify the output:
             assertThat(optionalAppointment)
                     .isPresent()
                     .contains(appointment1)
@@ -1133,7 +1138,7 @@ class AppointmentRepositoryTests {
         @Test
         @DisplayName("with valid info, should return valid page")
         void testFindAllByDateAndStatusWithValidInfo() {
-        	// given (Arrange) - precondition or setup:
+            // given (Arrange) - precondition or setup:
             LocalDate date = LocalDate.of(2024, 9, 10);
             LocalTime start1 = LocalTime.of(10, 15);
             LocalTime start2 = LocalTime.of(12, 20);
@@ -1161,10 +1166,10 @@ class AppointmentRepositoryTests {
             Pageable pageable = PageRequest.of(0, 2, Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD));
             appointmentRepository.saveAll(List.of(appointment1, appointment2));
 
-        	// when (Act) - action or the behavior that we are going test:
+            // when (Act) - action or the behavior that we are going test:
             Page<Appointment> appointmentPage = appointmentRepository.findAllByDateAndStatus(pageable, date, status);
 
-        	// then(Assert) - verify the output:
+            // then(Assert) - verify the output:
             assertThat(appointmentPage).isNotNull();
             assertThat(appointmentPage.getTotalElements()).isEqualTo(2);
             assertThat(appointmentPage.getTotalPages()).isEqualTo(1);
@@ -1598,6 +1603,486 @@ class AppointmentRepositoryTests {
     @Nested
     @DisplayName("FindAllByPatient")
     class FindAllByPatientTests {
+
+        @Test
+        @DisplayName("with valid info, (one patient, two appointments), should return valid page")
+        void testFindAllByPatientWithValidInfo1() {
+            // given (Arrange) - precondition or setup:
+            LocalDate date = LocalDate.of(2024, 9, 10);
+            LocalTime start1 = LocalTime.of(10, 15);
+            LocalTime start2 = LocalTime.of(12, 20);
+            LocalTime end1 = LocalTime.of(11, 15);
+            LocalTime end2 = LocalTime.of(13, 0);
+            Status status1 = Status.OPEN;
+            Status status2 = Status.OPEN;
+            String pName1 = "Foo bar";
+            String pName2 = "Foo beer";
+            String pPhoneNumber1 = "9131231234";
+            String pPhoneNumber2 = "9121231234";
+
+            Patient patient1 = Patient.builder()
+                    .name(pName1)
+                    .phoneNumber(pPhoneNumber1)
+                    .build();
+            Patient patient2 = Patient.builder()
+                    .name(pName2)
+                    .phoneNumber(pPhoneNumber2)
+                    .build();
+
+            Appointment appointment1 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_1)
+                    .date(date)
+                    .startTime(start1)
+                    .endTime(end1)
+                    .status(status1)
+                    .patient(patient1)
+                    .build();
+            Appointment appointment2 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_2)
+                    .date(date)
+                    .startTime(start2)
+                    .endTime(end2)
+                    .status(status2)
+                    .patient(patient1)
+                    .build();
+
+            Pageable pageable = PageRequest.of(0, 2, Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD));
+            patientRepository.saveAll(List.of(patient1, patient2));
+            appointmentRepository.saveAll(List.of(appointment1, appointment2));
+
+            // when (Act) - action or the behavior that we are going test:
+            Page<Appointment> appointmentPage = appointmentRepository.findAllByPatient(pageable, patient1);
+
+            // then(Assert) - verify the output:
+            assertThat(appointmentPage).isNotNull();
+            assertThat(appointmentPage.getTotalElements()).isEqualTo(2);
+            assertThat(appointmentPage.getTotalPages()).isEqualTo(1);
+            assertThat(appointmentPage.getNumberOfElements()).isEqualTo(2);
+            assertThat(appointmentPage.getSize()).isEqualTo(2);
+            assertThat(appointmentPage.getPageable()).isNotNull();
+            assertThat(appointmentPage.getSort()).isEqualTo(Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD));
+
+        }
+
+        @Test
+        @DisplayName("with valid info, (one patient, one appointment), should return valid page")
+        void testFindAllByPatientWithValidInfo2() {
+            // given (Arrange) - precondition or setup:
+            LocalDate date = LocalDate.of(2024, 9, 10);
+            LocalTime start1 = LocalTime.of(10, 15);
+            LocalTime start2 = LocalTime.of(12, 20);
+            LocalTime end1 = LocalTime.of(11, 15);
+            LocalTime end2 = LocalTime.of(13, 0);
+            Status status1 = Status.OPEN;
+            Status status2 = Status.OPEN;
+            String pName1 = "Foo bar";
+            String pName2 = "Foo beer";
+            String pPhoneNumber1 = "9131231234";
+            String pPhoneNumber2 = "9121231234";
+
+            Patient patient1 = Patient.builder()
+                    .name(pName1)
+                    .phoneNumber(pPhoneNumber1)
+                    .build();
+            Patient patient2 = Patient.builder()
+                    .name(pName2)
+                    .phoneNumber(pPhoneNumber2)
+                    .build();
+
+            Appointment appointment1 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_1)
+                    .date(date)
+                    .startTime(start1)
+                    .endTime(end1)
+                    .status(status1)
+                    .patient(patient1)
+                    .build();
+            Appointment appointment2 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_2)
+                    .date(date)
+                    .startTime(start2)
+                    .endTime(end2)
+                    .status(status2)
+                    .patient(patient2)
+                    .build();
+
+            Pageable pageable = PageRequest.of(0, 2, Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD));
+            patientRepository.saveAll(List.of(patient1, patient2));
+            appointmentRepository.saveAll(List.of(appointment1, appointment2));
+
+            // when (Act) - action or the behavior that we are going test:
+            Page<Appointment> appointmentPage = appointmentRepository.findAllByPatient(pageable, patient1);
+
+            // then(Assert) - verify the output:
+            assertThat(appointmentPage).isNotNull();
+            assertThat(appointmentPage.getTotalElements()).isEqualTo(1);
+            assertThat(appointmentPage.getTotalPages()).isEqualTo(1);
+            assertThat(appointmentPage.getNumberOfElements()).isEqualTo(1);
+            assertThat(appointmentPage.getSize()).isEqualTo(2);
+            assertThat(appointmentPage.getPageable()).isNotNull();
+            assertThat(appointmentPage.getSort()).isEqualTo(Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD));
+
+        }
+
+        @Test
+        @DisplayName("with invalid patient, should return valid-empty page")
+        void testFindAllByPatientWithInvalidPatient() {
+            // given (Arrange) - precondition or setup:
+            LocalDate date = LocalDate.of(2024, 9, 10);
+            LocalTime start1 = LocalTime.of(10, 15);
+            LocalTime start2 = LocalTime.of(12, 20);
+            LocalTime end1 = LocalTime.of(11, 15);
+            LocalTime end2 = LocalTime.of(13, 0);
+            Status status1 = Status.OPEN;
+            Status status2 = Status.OPEN;
+            String pName1 = "Foo bar";
+            String pName2 = "Foo beer";
+            String pPhoneNumber1 = "9131231234";
+            String pPhoneNumber2 = "9121231234";
+
+            Patient patient1 = Patient.builder()
+                    .name(pName1)
+                    .phoneNumber(pPhoneNumber1)
+                    .build();
+            Patient patient2 = Patient.builder()
+                    .name(pName2)
+                    .phoneNumber(pPhoneNumber2)
+                    .build();
+
+            Appointment appointment1 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_1)
+                    .date(date)
+                    .startTime(start1)
+                    .endTime(end1)
+                    .status(status1)
+                    .patient(patient1)
+                    .build();
+            Appointment appointment2 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_2)
+                    .date(date)
+                    .startTime(start2)
+                    .endTime(end2)
+                    .status(status2)
+                    .patient(patient1)
+                    .build();
+
+            Pageable pageable = PageRequest.of(0, 2, Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD));
+            patientRepository.saveAll(List.of(patient1, patient2));
+            appointmentRepository.saveAll(List.of(appointment1, appointment2));
+
+            // when (Act) - action or the behavior that we are going test:
+            Page<Appointment> appointmentPage = appointmentRepository.findAllByPatient(pageable, patient2);
+
+            // then(Assert) - verify the output:
+            assertThat(appointmentPage).isNotNull();
+            assertThat(appointmentPage.getTotalElements()).isEqualTo(0);
+            assertThat(appointmentPage.getTotalPages()).isEqualTo(0);
+            assertThat(appointmentPage.getNumberOfElements()).isEqualTo(0);
+            assertThat(appointmentPage.getSize()).isEqualTo(2);
+            assertThat(appointmentPage.getPageable()).isNotNull();
+            assertThat(appointmentPage.getSort()).isEqualTo(Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD));
+
+        }
+
+        @Test
+        @DisplayName("with invalid pageable, should return valid-empty page")
+        void testFindAllByPatientWithInvalidPageable() {
+            // given (Arrange) - precondition or setup:
+            LocalDate date = LocalDate.of(2024, 9, 10);
+            LocalTime start1 = LocalTime.of(10, 15);
+            LocalTime start2 = LocalTime.of(12, 20);
+            LocalTime end1 = LocalTime.of(11, 15);
+            LocalTime end2 = LocalTime.of(13, 0);
+            Status status1 = Status.OPEN;
+            Status status2 = Status.OPEN;
+            String pName1 = "Foo bar";
+            String pName2 = "Foo beer";
+            String pPhoneNumber1 = "9131231234";
+            String pPhoneNumber2 = "9121231234";
+
+            Patient patient1 = Patient.builder()
+                    .name(pName1)
+                    .phoneNumber(pPhoneNumber1)
+                    .build();
+            Patient patient2 = Patient.builder()
+                    .name(pName2)
+                    .phoneNumber(pPhoneNumber2)
+                    .build();
+
+            Appointment appointment1 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_1)
+                    .date(date)
+                    .startTime(start1)
+                    .endTime(end1)
+                    .status(status1)
+                    .patient(patient1)
+                    .build();
+            Appointment appointment2 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_2)
+                    .date(date)
+                    .startTime(start2)
+                    .endTime(end2)
+                    .status(status2)
+                    .patient(patient1)
+                    .build();
+
+            Pageable pageable = PageRequest.of(1_000, 2_000, Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD));
+            patientRepository.saveAll(List.of(patient1, patient2));
+            appointmentRepository.saveAll(List.of(appointment1, appointment2));
+
+            // when (Act) - action or the behavior that we are going test:
+            Page<Appointment> appointmentPage = appointmentRepository.findAllByPatient(pageable, patient1);
+
+            // then(Assert) - verify the output:
+            assertThat(appointmentPage).isNotNull();
+            assertThat(appointmentPage.getTotalElements()).isEqualTo(2);
+            assertThat(appointmentPage.getTotalPages()).isEqualTo(1);
+            assertThat(appointmentPage.getNumberOfElements()).isEqualTo(0);
+            assertThat(appointmentPage.getSize()).isEqualTo(2_000);
+            assertThat(appointmentPage.getPageable()).isNotNull();
+            assertThat(appointmentPage.getSort()).isEqualTo(Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD));
+
+        }
+
+        @Test
+        @DisplayName("with invalid pageable and patient, should return valid-empty page")
+        void testFindAllByPatientWithInvalidPageableAndPatient() {
+            // given (Arrange) - precondition or setup:
+            LocalDate date = LocalDate.of(2024, 9, 10);
+            LocalTime start1 = LocalTime.of(10, 15);
+            LocalTime start2 = LocalTime.of(12, 20);
+            LocalTime end1 = LocalTime.of(11, 15);
+            LocalTime end2 = LocalTime.of(13, 0);
+            Status status1 = Status.OPEN;
+            Status status2 = Status.OPEN;
+            String pName1 = "Foo bar";
+            String pName2 = "Foo beer";
+            String pPhoneNumber1 = "9131231234";
+            String pPhoneNumber2 = "9121231234";
+
+            Patient patient1 = Patient.builder()
+                    .name(pName1)
+                    .phoneNumber(pPhoneNumber1)
+                    .build();
+            Patient patient2 = Patient.builder()
+                    .name(pName2)
+                    .phoneNumber(pPhoneNumber2)
+                    .build();
+
+            Appointment appointment1 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_1)
+                    .date(date)
+                    .startTime(start1)
+                    .endTime(end1)
+                    .status(status1)
+                    .patient(patient1)
+                    .build();
+            Appointment appointment2 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_2)
+                    .date(date)
+                    .startTime(start2)
+                    .endTime(end2)
+                    .status(status2)
+                    .patient(patient1)
+                    .build();
+
+            Pageable pageable = PageRequest.of(1_000, 2_000, Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD));
+            patientRepository.saveAll(List.of(patient1, patient2));
+            appointmentRepository.saveAll(List.of(appointment1, appointment2));
+
+            // when (Act) - action or the behavior that we are going test:
+            Page<Appointment> appointmentPage = appointmentRepository.findAllByPatient(pageable, patient2);
+
+            // then(Assert) - verify the output:
+            assertThat(appointmentPage).isNotNull();
+            assertThat(appointmentPage.getTotalElements()).isEqualTo(0);
+            assertThat(appointmentPage.getTotalPages()).isEqualTo(0);
+            assertThat(appointmentPage.getNumberOfElements()).isEqualTo(0);
+            assertThat(appointmentPage.getSize()).isEqualTo(2_000);
+            assertThat(appointmentPage.getPageable()).isNotNull();
+            assertThat(appointmentPage.getSort()).isEqualTo(Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD));
+
+        }
+
+        @Test
+        @DisplayName("with null pageable, should return valid-empty page")
+        void testFindAllByPatientWithNullPageable() {
+            // given (Arrange) - precondition or setup:
+            LocalDate date = LocalDate.of(2024, 9, 10);
+            LocalTime start1 = LocalTime.of(10, 15);
+            LocalTime start2 = LocalTime.of(12, 20);
+            LocalTime end1 = LocalTime.of(11, 15);
+            LocalTime end2 = LocalTime.of(13, 0);
+            Status status1 = Status.OPEN;
+            Status status2 = Status.OPEN;
+            String pName1 = "Foo bar";
+            String pName2 = "Foo beer";
+            String pPhoneNumber1 = "9131231234";
+            String pPhoneNumber2 = "9121231234";
+
+            Patient patient1 = Patient.builder()
+                    .name(pName1)
+                    .phoneNumber(pPhoneNumber1)
+                    .build();
+            Patient patient2 = Patient.builder()
+                    .name(pName2)
+                    .phoneNumber(pPhoneNumber2)
+                    .build();
+
+            Appointment appointment1 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_1)
+                    .date(date)
+                    .startTime(start1)
+                    .endTime(end1)
+                    .status(status1)
+                    .patient(patient1)
+                    .build();
+            Appointment appointment2 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_2)
+                    .date(date)
+                    .startTime(start2)
+                    .endTime(end2)
+                    .status(status2)
+                    .patient(patient1)
+                    .build();
+
+            // Pageable pageable = PageRequest.of(1_000, 2_000, Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD));
+            patientRepository.saveAll(List.of(patient1, patient2));
+            appointmentRepository.saveAll(List.of(appointment1, appointment2));
+
+            // when (Act) - action or the behavior that we are going test:
+            Page<Appointment> appointmentPage = appointmentRepository.findAllByPatient(null, patient1);
+
+            // then(Assert) - verify the output:
+            assertThat(appointmentPage).isNotNull();
+            assertThat(appointmentPage.getTotalElements()).isEqualTo(2);
+            assertThat(appointmentPage.getTotalPages()).isEqualTo(1);
+            assertThat(appointmentPage.getNumberOfElements()).isEqualTo(2);
+            assertThat(appointmentPage.getSize()).isEqualTo(2);
+            assertThat(appointmentPage.getPageable()).isNotNull();
+            assertThat(appointmentPage.getSort()).isEqualTo(Sort.unsorted());
+
+        }
+
+        @Test
+        @DisplayName("with null patient, should return valid-empty page")
+        void testFindAllByPatientWithNullPatient() {
+            // given (Arrange) - precondition or setup:
+            LocalDate date = LocalDate.of(2024, 9, 10);
+            LocalTime start1 = LocalTime.of(10, 15);
+            LocalTime start2 = LocalTime.of(12, 20);
+            LocalTime end1 = LocalTime.of(11, 15);
+            LocalTime end2 = LocalTime.of(13, 0);
+            Status status1 = Status.OPEN;
+            Status status2 = Status.OPEN;
+            String pName1 = "Foo bar";
+            String pName2 = "Foo beer";
+            String pPhoneNumber1 = "9131231234";
+            String pPhoneNumber2 = "9121231234";
+
+            Patient patient1 = Patient.builder()
+                    .name(pName1)
+                    .phoneNumber(pPhoneNumber1)
+                    .build();
+            Patient patient2 = Patient.builder()
+                    .name(pName2)
+                    .phoneNumber(pPhoneNumber2)
+                    .build();
+
+            Appointment appointment1 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_1)
+                    .date(date)
+                    .startTime(start1)
+                    .endTime(end1)
+                    .status(status1)
+                    .patient(patient1)
+                    .build();
+            Appointment appointment2 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_2)
+                    .date(date)
+                    .startTime(start2)
+                    .endTime(end2)
+                    .status(status2)
+                    .patient(patient1)
+                    .build();
+
+            Pageable pageable = PageRequest.of(0, 2, Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD));
+            patientRepository.saveAll(List.of(patient1, patient2));
+            appointmentRepository.saveAll(List.of(appointment1, appointment2));
+
+            // when (Act) - action or the behavior that we are going test:
+            Page<Appointment> appointmentPage = appointmentRepository.findAllByPatient(pageable, null);
+
+            // then(Assert) - verify the output:
+            assertThat(appointmentPage).isNotNull();
+            assertThat(appointmentPage.getTotalElements()).isEqualTo(0);
+            assertThat(appointmentPage.getTotalPages()).isEqualTo(0);
+            assertThat(appointmentPage.getNumberOfElements()).isEqualTo(0);
+            assertThat(appointmentPage.getSize()).isEqualTo(2);
+            assertThat(appointmentPage.getPageable()).isNotNull();
+            assertThat(appointmentPage.getSort()).isEqualTo(Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD));
+
+        }
+
+        @Test
+        @DisplayName("with null patient and pageable, should return valid-empty page")
+        void testFindAllByPatientWithNullPatientAndPageable() {
+            // given (Arrange) - precondition or setup:
+            LocalDate date = LocalDate.of(2024, 9, 10);
+            LocalTime start1 = LocalTime.of(10, 15);
+            LocalTime start2 = LocalTime.of(12, 20);
+            LocalTime end1 = LocalTime.of(11, 15);
+            LocalTime end2 = LocalTime.of(13, 0);
+            Status status1 = Status.OPEN;
+            Status status2 = Status.OPEN;
+            String pName1 = "Foo bar";
+            String pName2 = "Foo beer";
+            String pPhoneNumber1 = "9131231234";
+            String pPhoneNumber2 = "9121231234";
+
+            Patient patient1 = Patient.builder()
+                    .name(pName1)
+                    .phoneNumber(pPhoneNumber1)
+                    .build();
+            Patient patient2 = Patient.builder()
+                    .name(pName2)
+                    .phoneNumber(pPhoneNumber2)
+                    .build();
+
+            Appointment appointment1 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_1)
+                    .date(date)
+                    .startTime(start1)
+                    .endTime(end1)
+                    .status(status1)
+                    .patient(patient1)
+                    .build();
+            Appointment appointment2 = Appointment.builder()
+                    .publicId(PUBLIC_ID_EXAMPLE_2)
+                    .date(date)
+                    .startTime(start2)
+                    .endTime(end2)
+                    .status(status2)
+                    .patient(patient1)
+                    .build();
+
+            Pageable pageable = PageRequest.of(0, 2, Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD));
+            patientRepository.saveAll(List.of(patient1, patient2));
+            appointmentRepository.saveAll(List.of(appointment1, appointment2));
+
+            // when (Act) - action or the behavior that we are going test:
+            Page<Appointment> appointmentPage = appointmentRepository.findAllByPatient(null, null);
+
+            // then(Assert) - verify the output:
+            assertThat(appointmentPage).isNotNull();
+            assertThat(appointmentPage.getTotalElements()).isEqualTo(0);
+            assertThat(appointmentPage.getTotalPages()).isEqualTo(1);
+            assertThat(appointmentPage.getNumberOfElements()).isEqualTo(0);
+            assertThat(appointmentPage.getSize()).isEqualTo(0);
+            assertThat(appointmentPage.getPageable()).isNotNull();
+            assertThat(appointmentPage.getSort()).isEqualTo(Sort.unsorted());
+
+        }
 
     }
 
