@@ -24,7 +24,5 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     Page<Appointment> findAllByDateAndStatus(Pageable pageable, LocalDate date, Status status);
 
-    Page<Appointment> findAllByPatientIsNullAndDate(Pageable pageable, LocalDate date);
-
     Page<Appointment> findAllByPatient(Pageable pageable, Patient patient);
 }
