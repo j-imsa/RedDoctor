@@ -1,19 +1,33 @@
 # RedDoctor
 
 
-### Challenge
 
+> [!NOTE]
+> 
+> Read the challenge, here:
+> 
 > [CHALLENGE.md](CHALLENGE.md)
+> 
 
+---
 
-### Document:
-
+> [!IMPORTANT]
+> 
+> Documents are available at:
+>
+> Actuator endpoints: 
 > http://localhost:8088/api-docs
-
+>
+> Swagger UI:
 > http://localhost:8088/docs-ui
+> 
 
+---
 
-### Requests:
+> [!TIP]
+>
+> ### Curl requests:
+> 
 
 1. Add a day
 
@@ -62,36 +76,19 @@ curl --location 'http://localhost:8088/v0.9/patients/i625bsvXoeAwTFiPGd6Huo4gGIX
 curl --location 'http://localhost:8088/v0.9/patients/9131231234'
 ```
 
+---
 
-
-### Postman imports
-
+> [!TIP]
+> 
+> ### Postman imports/requests
+> 
 > Environment: [DoctorApp Environment.postman_environment.json](DoctorApp%20Environment.postman_environment.json)
-
+> 
 > Collection: [DoctorApp Collection.postman_collection.json](DoctorApp%20Collection.postman_collection.json)
+> 
 
+---
 
-### To-Do
+> [!CAUTION] 
+> This is a non-commercial, personal repository provided by Iman Salehi to help junior developers learn microservices and cloud-native applications using Java.
 
-- [x] Concurrency check
-  - Locking
-    - [x] Optimistic Locking
-    - [ ] Pessimistic Locking
-  - Transactional Boundaries
-    - [x] @Transactional
-
-- [x] Status
-  - [x] OPEN
-  - [x] TAKEN
-  - [x] DELETED
-
-- [ ] Docker
-  - [Google Jib](https://cloud.google.com/java/getting-started/jib)
-  - Compose
-    - [ ] MySQL
-
-- [ ] Code Coverage
-  - [JaCoCo](https://www.jacoco.org/jacoco/trunk/index.html)
-
-- [ ] Testcontainers
-  - [Link](https://java.testcontainers.org/)
