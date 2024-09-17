@@ -20,6 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -698,14 +702,28 @@ class AppointmentRepositoryTests {
 
                 appointmentRepository.saveAll(List.of(appointment1, appointment2));
 
-            	// when (Act) - action or the behavior that we are going test:
+                // when (Act) - action or the behavior that we are going test:
                 List<Appointment> savedAppointments = appointmentRepository.findAllByDate(date);
 
-            	// then(Assert) - verify the output:
+                // then(Assert) - verify the output:
                 assertThat(savedAppointments)
                         .isNotNull()
                         .hasSize(2)
                         .allMatch(appointment -> appointment.getDate().isEqual(date));
+            }
+
+            @Test
+            @DisplayName("with a valid date and empty db, should return valid-empty list")
+            void testFindAllByDateWithValidDateAndEmptyDb() {
+                LocalDate date = LocalDate.of(2024, 9, 10);
+
+                // when (Act) - action or the behavior that we are going test:
+                List<Appointment> savedAppointments = appointmentRepository.findAllByDate(date);
+
+                // then(Assert) - verify the output:
+                assertThat(savedAppointments)
+                        .isNotNull()
+                        .hasSize(0);
             }
 
             @Test
@@ -756,13 +774,255 @@ class AppointmentRepositoryTests {
                         .isNotNull()
                         .hasSize(0);
             }
+
         }
 
         @Nested
         @DisplayName("ByPageable")
         class ByPageableTests {
 
+            @Test
+            @DisplayName("with valid info, should return valid page")
+            void testFindAllByDateWithValidInfo() {
+                // given (Arrange) - precondition or setup:
+                LocalDate date = LocalDate.of(2024, 9, 10);
+                LocalTime start1 = LocalTime.of(10, 15);
+                LocalTime start2 = LocalTime.of(12, 20);
+                LocalTime end1 = LocalTime.of(11, 15);
+                LocalTime end2 = LocalTime.of(13, 0);
+                Status status1 = Status.OPEN;
+                Status status2 = Status.OPEN;
 
+                Appointment appointment1 = Appointment.builder()
+                        .publicId(PUBLIC_ID_EXAMPLE_1)
+                        .date(date)
+                        .startTime(start1)
+                        .endTime(end1)
+                        .status(status1)
+                        .build();
+                Appointment appointment2 = Appointment.builder()
+                        .publicId(PUBLIC_ID_EXAMPLE_2)
+                        .date(date)
+                        .startTime(start2)
+                        .endTime(end2)
+                        .status(status2)
+                        .build();
+
+                Pageable pageable = PageRequest.of(0, 2, Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD));
+                appointmentRepository.saveAll(List.of(appointment1, appointment2));
+
+                // when (Act) - action or the behavior that we are going test:
+                Page<Appointment> appointmentPage = appointmentRepository.findAllByDate(pageable, date);
+
+                // then(Assert) - verify the output:
+                assertThat(appointmentPage).isNotNull();
+                assertThat(appointmentPage.getTotalElements()).isEqualTo(2);
+                assertThat(appointmentPage.getTotalPages()).isEqualTo(1);
+                assertThat(appointmentPage.getNumberOfElements()).isEqualTo(2);
+                assertThat(appointmentPage.getSize()).isEqualTo(2);
+                assertThat(appointmentPage.getPageable()).isNotNull();
+                assertThat(appointmentPage.getSort()).isEqualTo(Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD));
+
+            }
+
+            @Test
+            @DisplayName("with valid info and empty db, should return valid-empty page")
+            void testFindAllByDateWithValidInfoAndEmptyDb() {
+                // given (Arrange) - precondition or setup:
+                LocalDate date = LocalDate.of(2024, 9, 10);
+
+                Pageable pageable = PageRequest.of(0, 2, Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD));
+
+                // when (Act) - action or the behavior that we are going test:
+                Page<Appointment> appointmentPage = appointmentRepository.findAllByDate(pageable, date);
+
+                // then(Assert) - verify the output:
+                assertThat(appointmentPage).isNotNull();
+                assertThat(appointmentPage.getTotalElements()).isEqualTo(0);
+                assertThat(appointmentPage.getTotalPages()).isEqualTo(0);
+                assertThat(appointmentPage.getNumberOfElements()).isEqualTo(0);
+                assertThat(appointmentPage.getSize()).isEqualTo(2);
+                assertThat(appointmentPage.getPageable()).isNotNull();
+                assertThat(appointmentPage.getSort()).isEqualTo(Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD));
+
+            }
+
+            @Test
+            @DisplayName("with different date, should return empty page")
+            void testFindAllByDateWithDifferentDate() {
+                // given (Arrange) - precondition or setup:
+                LocalDate date1 = LocalDate.of(2024, 9, 9);
+                LocalDate date2 = LocalDate.of(2024, 9, 10);
+                LocalTime start1 = LocalTime.of(10, 15);
+                LocalTime start2 = LocalTime.of(12, 20);
+                LocalTime end1 = LocalTime.of(11, 15);
+                LocalTime end2 = LocalTime.of(13, 0);
+                Status status1 = Status.OPEN;
+                Status status2 = Status.OPEN;
+
+                Appointment appointment1 = Appointment.builder()
+                        .publicId(PUBLIC_ID_EXAMPLE_1)
+                        .date(date1)
+                        .startTime(start1)
+                        .endTime(end1)
+                        .status(status1)
+                        .build();
+                Appointment appointment2 = Appointment.builder()
+                        .publicId(PUBLIC_ID_EXAMPLE_2)
+                        .date(date1)
+                        .startTime(start2)
+                        .endTime(end2)
+                        .status(status2)
+                        .build();
+
+                Pageable pageable = PageRequest.of(0, 2, Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD));
+                appointmentRepository.saveAll(List.of(appointment1, appointment2));
+
+                // when (Act) - action or the behavior that we are going test:
+                Page<Appointment> appointmentPage = appointmentRepository.findAllByDate(pageable, date2);
+
+                // then(Assert) - verify the output:
+                assertThat(appointmentPage).isNotNull();
+                assertThat(appointmentPage.getTotalElements()).isEqualTo(0);
+                assertThat(appointmentPage.getTotalPages()).isEqualTo(0);
+                assertThat(appointmentPage.getNumberOfElements()).isEqualTo(0);
+                assertThat(appointmentPage.getSize()).isEqualTo(2);
+                assertThat(appointmentPage.getPageable()).isNotNull();
+                assertThat(appointmentPage.getSort()).isEqualTo(Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD));
+
+
+            }
+
+            @Test
+            @DisplayName("with null date, should return empty page")
+            void testFindAllByDateWithNullDate() {
+                // given (Arrange) - precondition or setup:
+                LocalDate date = LocalDate.of(2024, 9, 9);
+                LocalTime start1 = LocalTime.of(10, 15);
+                LocalTime start2 = LocalTime.of(12, 20);
+                LocalTime end1 = LocalTime.of(11, 15);
+                LocalTime end2 = LocalTime.of(13, 0);
+                Status status1 = Status.OPEN;
+                Status status2 = Status.OPEN;
+
+                Appointment appointment1 = Appointment.builder()
+                        .publicId(PUBLIC_ID_EXAMPLE_1)
+                        .date(date)
+                        .startTime(start1)
+                        .endTime(end1)
+                        .status(status1)
+                        .build();
+                Appointment appointment2 = Appointment.builder()
+                        .publicId(PUBLIC_ID_EXAMPLE_2)
+                        .date(date)
+                        .startTime(start2)
+                        .endTime(end2)
+                        .status(status2)
+                        .build();
+
+                Pageable pageable = PageRequest.of(0, 2, Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD));
+                appointmentRepository.saveAll(List.of(appointment1, appointment2));
+
+                // when (Act) - action or the behavior that we are going test:
+                Page<Appointment> appointmentPage = appointmentRepository.findAllByDate(pageable, null);
+
+                // then(Assert) - verify the output:
+                assertThat(appointmentPage).isNotNull();
+                assertThat(appointmentPage.getTotalElements()).isEqualTo(0);
+                assertThat(appointmentPage.getTotalPages()).isEqualTo(0);
+                assertThat(appointmentPage.getNumberOfElements()).isEqualTo(0);
+                assertThat(appointmentPage.getSize()).isEqualTo(2);
+                assertThat(appointmentPage.getPageable()).isNotNull();
+                assertThat(appointmentPage.getSort()).isEqualTo(Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD));
+
+
+            }
+
+            @Test
+            @DisplayName("with null pageable, should return unsorted page")
+            void testFindAllByDateWithNullPageable() {
+                // given (Arrange) - precondition or setup:
+                LocalDate date = LocalDate.of(2024, 9, 9);
+                LocalTime start1 = LocalTime.of(10, 15);
+                LocalTime start2 = LocalTime.of(12, 20);
+                LocalTime end1 = LocalTime.of(11, 15);
+                LocalTime end2 = LocalTime.of(13, 0);
+                Status status1 = Status.OPEN;
+                Status status2 = Status.OPEN;
+
+                Appointment appointment1 = Appointment.builder()
+                        .publicId(PUBLIC_ID_EXAMPLE_1)
+                        .date(date)
+                        .startTime(start1)
+                        .endTime(end1)
+                        .status(status1)
+                        .build();
+                Appointment appointment2 = Appointment.builder()
+                        .publicId(PUBLIC_ID_EXAMPLE_2)
+                        .date(date)
+                        .startTime(start2)
+                        .endTime(end2)
+                        .status(status2)
+                        .build();
+
+                appointmentRepository.saveAll(List.of(appointment1, appointment2));
+
+                // when (Act) - action or the behavior that we are going test:
+                Page<Appointment> appointmentPage = appointmentRepository.findAllByDate(null, date);
+
+                // then(Assert) - verify the output:
+                assertThat(appointmentPage).isNotNull();
+                assertThat(appointmentPage.getTotalElements()).isEqualTo(2);
+                assertThat(appointmentPage.getTotalPages()).isEqualTo(1);
+                assertThat(appointmentPage.getNumberOfElements()).isEqualTo(2);
+                assertThat(appointmentPage.getSize()).isEqualTo(2);
+                assertThat(appointmentPage.getPageable()).isNotNull();
+                assertThat(appointmentPage.getSort()).isEqualTo(Sort.unsorted());
+
+            }
+
+            @Test
+            @DisplayName("with null pageable and date, should return unsorted-empty page")
+            void testFindAllByDateWithNullPageableAndNullDate() {
+                // given (Arrange) - precondition or setup:
+                LocalDate date = LocalDate.of(2024, 9, 9);
+                LocalTime start1 = LocalTime.of(10, 15);
+                LocalTime start2 = LocalTime.of(12, 20);
+                LocalTime end1 = LocalTime.of(11, 15);
+                LocalTime end2 = LocalTime.of(13, 0);
+                Status status1 = Status.OPEN;
+                Status status2 = Status.OPEN;
+
+                Appointment appointment1 = Appointment.builder()
+                        .publicId(PUBLIC_ID_EXAMPLE_1)
+                        .date(date)
+                        .startTime(start1)
+                        .endTime(end1)
+                        .status(status1)
+                        .build();
+                Appointment appointment2 = Appointment.builder()
+                        .publicId(PUBLIC_ID_EXAMPLE_2)
+                        .date(date)
+                        .startTime(start2)
+                        .endTime(end2)
+                        .status(status2)
+                        .build();
+
+                appointmentRepository.saveAll(List.of(appointment1, appointment2));
+
+                // when (Act) - action or the behavior that we are going test:
+                Page<Appointment> appointmentPage = appointmentRepository.findAllByDate(null, null);
+
+                // then(Assert) - verify the output:
+                assertThat(appointmentPage).isNotNull();
+                assertThat(appointmentPage.getTotalElements()).isEqualTo(0);
+                assertThat(appointmentPage.getTotalPages()).isEqualTo(1); // page starts from one by default
+                assertThat(appointmentPage.getNumberOfElements()).isEqualTo(0);
+                assertThat(appointmentPage.getSize()).isEqualTo(0);
+                assertThat(appointmentPage.getPageable()).isNotNull();
+                assertThat(appointmentPage.getSort()).isEqualTo(Sort.unsorted());
+
+            }
 
         }
 
