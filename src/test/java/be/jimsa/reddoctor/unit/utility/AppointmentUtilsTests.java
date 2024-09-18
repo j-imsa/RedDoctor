@@ -220,6 +220,109 @@ class AppointmentUtilsTests {
     @DisplayName("MapToDto")
     class MapToDtoTests {
 
+        @Test
+        @DisplayName("with valid entity (null patient), should return valid dto")
+        void testMapToDtoWithValidEntity() {
+            Appointment appointment = getAppointment();
+
+            AppointmentDto appointmentDto = appointmentUtils.mapToDto(appointment);
+
+            assertThat(appointmentDto)
+                    .isNotNull()
+                    .hasFieldOrPropertyWithValue("publicId", appointment.getPublicId())
+                    .hasFieldOrPropertyWithValue("date", appointment.getDate())
+                    .hasFieldOrPropertyWithValue("start", appointment.getStartTime())
+                    .hasFieldOrPropertyWithValue("end", appointment.getEndTime())
+                    .hasFieldOrPropertyWithValue("status", appointment.getStatus())
+                    .hasFieldOrPropertyWithValue("patientDto", null);
+        }
+
+        @Test
+        @DisplayName("with valid entity (with patient), should return valid dto")
+        void testMapToDtoWithValidEntityAndPatient() {
+            Appointment appointment = getAppointment();
+            Patient patient = getPatient();
+            appointment.setPatient(patient);
+
+            AppointmentDto appointmentDto = appointmentUtils.mapToDto(appointment);
+
+            assertThat(appointmentDto)
+                    .isNotNull()
+                    .hasFieldOrPropertyWithValue("publicId", appointment.getPublicId())
+                    .hasFieldOrPropertyWithValue("date", appointment.getDate())
+                    .hasFieldOrPropertyWithValue("start", appointment.getStartTime())
+                    .hasFieldOrPropertyWithValue("end", appointment.getEndTime())
+                    .hasFieldOrPropertyWithValue("status", appointment.getStatus());
+            assertThat(appointmentDto.getPatientDto())
+                    .isNotNull()
+                    .hasFieldOrPropertyWithValue("name", patient.getName())
+                    .hasFieldOrPropertyWithValue("phoneNumber", patient.getPhoneNumber());
+        }
+
+        @Test
+        @DisplayName("with null entity, should throw NullPointerException")
+        void testMapToDtoWithNullEntity() {
+            assertThatThrownBy(() -> appointmentUtils.mapToDto(null))
+                    .isInstanceOf(NullPointerException.class)
+                    .hasMessageContaining("Cannot invoke");
+        }
+
+        @Test
+        @DisplayName("with null values, should return valid dto with null values")
+        void testMapToDtoWithNullValues() {
+            Appointment appointment = getAppointment();
+            appointment.setId(null);
+            appointment.setPublicId(null);
+            appointment.setDate(null);
+            appointment.setStatus(null);
+            appointment.setStartTime(null);
+            appointment.setEndTime(null);
+            appointment.setPatient(null);
+
+            AppointmentDto appointmentDto = appointmentUtils.mapToDto(appointment);
+
+            assertThat(appointmentDto)
+                    .isNotNull()
+                    .hasFieldOrPropertyWithValue("publicId", appointment.getPublicId())
+                    .hasFieldOrPropertyWithValue("date", appointment.getDate())
+                    .hasFieldOrPropertyWithValue("start", appointment.getStartTime())
+                    .hasFieldOrPropertyWithValue("end", appointment.getEndTime())
+                    .hasFieldOrPropertyWithValue("status", appointment.getStatus());
+            assertThat(appointmentDto.getPatientDto())
+                    .isNull();
+        }
+
+        @Test
+        @DisplayName("with invalid values, should return valid dto with invalid values")
+        void testMapToDtoWithInvalidValues() {
+            Appointment appointment = getAppointment();
+            appointment.setId(-500L);
+            appointment.setPublicId("Invalid PublicId !@#$%^&*()");
+            appointment.setDate(LocalDate.MIN);
+            appointment.setStatus(Status.DELETED); // Status has not invalid value!
+            appointment.setStartTime(LocalTime.MAX);
+            appointment.setEndTime(LocalTime.MIN);
+            Patient patient = getPatient();
+            patient.setId(-100L);
+            patient.setName("I");
+            patient.setPhoneNumber("1234");
+            appointment.setPatient(patient);
+
+            AppointmentDto appointmentDto = appointmentUtils.mapToDto(appointment);
+
+            assertThat(appointmentDto)
+                    .isNotNull()
+                    .hasFieldOrPropertyWithValue("publicId", appointment.getPublicId())
+                    .hasFieldOrPropertyWithValue("date", appointment.getDate())
+                    .hasFieldOrPropertyWithValue("start", appointment.getStartTime())
+                    .hasFieldOrPropertyWithValue("end", appointment.getEndTime())
+                    .hasFieldOrPropertyWithValue("status", appointment.getStatus());
+            assertThat(appointmentDto.getPatientDto())
+                    .isNotNull()
+                    .hasFieldOrPropertyWithValue("name", patient.getName())
+                    .hasFieldOrPropertyWithValue("phoneNumber", patient.getPhoneNumber());
+        }
+
     }
 
     @Nested
