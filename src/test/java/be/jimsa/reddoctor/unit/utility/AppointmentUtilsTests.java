@@ -12,10 +12,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
+import static be.jimsa.reddoctor.utility.constant.ProjectConstants.GENERAL_DURATION;
 import static be.jimsa.reddoctor.utility.constant.ProjectConstants.PUBLIC_ID_EXAMPLE_1;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -328,6 +332,52 @@ class AppointmentUtilsTests {
     @Nested
     @DisplayName("Splitter")
     class SplitterTests {
+
+        @ParameterizedTest
+        @CsvSource({
+                "10:00:00, 10:00:00, 0",
+                "10:00:00, 10:29:00, 0",
+                "10:00:00, 10:30:00, 1",
+                "00:00:00, 00:30:00, 1",
+                "23:29:00, 23:59:59, 1",
+                "23:30:00, 23:59:59, 0",
+                "23:31:00, 23:59:59, 0",
+                "00:00:00, 23:59:59, 47"
+        })
+        @DisplayName("with valid times, should return a valid list")
+        void testSplitterWithValidDto(String startStr, String endStr, int size) {
+            AppointmentDto appointmentDto = getAppointmentDto();
+            appointmentDto.setStart(LocalTime.parse(startStr));
+            appointmentDto.setEnd(LocalTime.parse(endStr));
+
+            List<AppointmentDto> appointmentDtos = appointmentUtils.splitter(appointmentDto);
+
+            assertThat(appointmentDtos)
+                    .isNotNull()
+                    .hasSize(size)
+                    .allMatch(dto -> dto.getStart().plusMinutes(GENERAL_DURATION).equals(dto.getEnd()));
+        }
+
+        @ParameterizedTest
+        @CsvSource({
+                "00:00:00, 00:00:00, 0",
+                "00:00, 00:00, 0",
+                "23:59:59, 10:10:10, 0",
+                "23:59:59, 00:00:00, 0",
+                "23:59, 00:00, 0",
+        })
+        @DisplayName("with invalid times, should return an empty list")
+        void testSplitterWithValidDtoAndDifferentTime(String startStr, String endStr, int size) {
+            AppointmentDto appointmentDto = getAppointmentDto();
+            appointmentDto.setStart(LocalTime.parse(startStr));
+            appointmentDto.setEnd(LocalTime.parse(endStr));
+
+            List<AppointmentDto> appointmentDtos = appointmentUtils.splitter(appointmentDto);
+
+            assertThat(appointmentDtos)
+                    .isNotNull()
+                    .hasSize(size);
+        }
 
     }
 
