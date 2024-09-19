@@ -41,6 +41,7 @@ public class ProjectConstants {
 
 
     // ======================== General ======================== //
+    public static final long GENERAL_DURATION = 30L;
     public static final String GENERAL_STRING_TYPE = "string";
     public static final String GENERAL_STATUS_FIELD = "status";
     public static final String GENERAL_DATE_FIELD = "date";
