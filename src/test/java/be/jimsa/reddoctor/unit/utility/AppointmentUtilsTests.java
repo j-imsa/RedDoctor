@@ -12,17 +12,29 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.Logger;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
 
-import static be.jimsa.reddoctor.utility.constant.ProjectConstants.GENERAL_DURATION;
-import static be.jimsa.reddoctor.utility.constant.ProjectConstants.PUBLIC_ID_EXAMPLE_1;
+import static be.jimsa.reddoctor.utility.constant.ProjectConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 
 class AppointmentUtilsTests {
 
@@ -383,7 +395,37 @@ class AppointmentUtilsTests {
 
     @Nested
     @DisplayName("PrintLogger")
+    @ExtendWith(MockitoExtension.class)
     class PrintLoggerTests {
+
+        @Mock
+        private Logger logger;
+
+        @Test
+        @DisplayName("with valid data, should print 4 times info")
+        void testPrintLoggerWithValidData() {
+            Page<Appointment> appointmentPage = new PageImpl<>(
+                    Collections.emptyList(),
+                    PageRequest.of(0, 5),
+                    10
+            );
+
+            appointmentUtils.printLogger(logger, appointmentPage);
+
+            verify(logger).info(eq(LOGGER_TOTAL_ELEMENTS), eq(appointmentPage.getTotalElements()));
+            verify(logger).info(eq(LOGGER_TOTAL_PAGES), eq(appointmentPage.getTotalPages()));
+            verify(logger).info(eq(LOGGER_NUMBER_OF_ELEMENTS), eq(appointmentPage.getNumberOfElements()));
+            verify(logger).info(eq(LOGGER_SIZE), eq(appointmentPage.getSize()));
+
+        }
+
+        @Test
+        @DisplayName("with null data, should do nothing!")
+        void testPrintLoggerWithNullData() {
+            appointmentUtils.printLogger(null, null);
+
+            verify(logger, times(0)).info(anyString(), anyString());
+        }
 
     }
 
