@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class PatientMapperTests {
+class PatientMapperTests {
 
     private PatientMapper patientMapper;
 
@@ -93,8 +93,62 @@ public class PatientMapperTests {
     }
 
     @Nested
-    @DisplayName("MapToDto")
-    class MapToDtoTests {
+    @DisplayName("MapToEntityById")
+    class MapToEntityByIdTests {
+
+        @Test
+        @DisplayName("with valid dto, should return valid entity")
+        void testMapToEntityByIdWithValidDto() {
+            PatientDto patientDto = getPatientDto();
+            long id = 100L;
+
+            Patient patient = patientMapper.mapToEntityById(patientDto, id);
+
+            assertThat(patient).isNotNull();
+            assertThat(patient.getId()).isNotNull().isEqualTo(id);
+            assertThat(patient.getName()).isNotNull().isEqualTo(patientDto.getName());
+            assertThat(patient.getPhoneNumber()).isNotNull().isEqualTo(patientDto.getPhoneNumber());
+        }
+
+        @Test
+        @DisplayName("with null dto, should throw ")
+        void testMapToEntityByIdWithNullDto() {
+            assertThatThrownBy(() -> patientMapper.mapToEntityById(null, -1))
+                    .isInstanceOf(NullPointerException.class)
+                    .hasMessageContaining("Cannot invoke");
+        }
+
+        @Test
+        @DisplayName("with valid dto and invalid values, should return valid-same entity")
+        void testMapToEntityByIdWithValidDtoAndInvalidValues() {
+            PatientDto patientDto = getPatientDto();
+            patientDto.setName("I");
+            patientDto.setPhoneNumber("Invalid phone number!!!");
+            long id = -100L;
+
+            Patient patient = patientMapper.mapToEntityById(patientDto, id);
+
+            assertThat(patient).isNotNull();
+            assertThat(patient.getId()).isNotNull().isEqualTo(id);
+            assertThat(patient.getName()).isNotNull().isEqualTo(patientDto.getName());
+            assertThat(patient.getPhoneNumber()).isNotNull().isEqualTo(patientDto.getPhoneNumber());
+        }
+
+        @Test
+        @DisplayName("with valid dto and null values, should return valid-same entity")
+        void testMapToEntityByIdWithValidDtoAndNullValues() {
+            PatientDto patientDto = getPatientDto();
+            patientDto.setName(null);
+            patientDto.setPhoneNumber(null);
+            long id = 0L;
+
+            Patient patient = patientMapper.mapToEntityById(patientDto, id);
+
+            assertThat(patient).isNotNull();
+            assertThat(patient.getId()).isNotNull().isEqualTo(id);
+            assertThat(patient.getName()).isNull();
+            assertThat(patient.getPhoneNumber()).isNull();
+        }
 
     }
 
