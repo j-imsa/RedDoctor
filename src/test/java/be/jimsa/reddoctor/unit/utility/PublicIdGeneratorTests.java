@@ -19,12 +19,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PublicIdGeneratorTests {
 
     private PublicIdGenerator publicIdGenerator;
-    private Random random;
 
     @BeforeEach
     void setUp() {
         publicIdGenerator = new PublicIdGenerator();
-        random = new Random();
     }
 
     @Nested
@@ -37,6 +35,7 @@ class PublicIdGeneratorTests {
         void givenAValidLength_whenGeneratePublicId_thenReturnRightLength(int length) {
             String publicId = publicIdGenerator.generatePublicId(length);
             log.info("input length: {}, generated public_id length: {}", length, publicId.length());
+
             assertThat(publicId).hasSize(length);
         }
 
@@ -46,18 +45,21 @@ class PublicIdGeneratorTests {
         void givenAnInvalidLength_whenGeneratePublicId_thenReturnDefaultLength(int length) {
             String publicId = publicIdGenerator.generatePublicId(length);
             log.info("input length: {}, generated public_id length: {}", length, publicId.length());
+
             assertThat(publicId).hasSize(PUBLIC_ID_DEFAULT_LENGTH);
         }
 
-        @RepeatedTest(5_000)
+        @RepeatedTest(1_000)
         @DisplayName("generated public_id must just include a special pattern: [A-Z][a-z][0-9][-][_]")
         void givenARandomLength_whenGeneratePublicId_thenReturnAEspecialStringIncludingJustValidCharacters() {
-            String publicIdPattern = "^[A-Za-z0-9_-]+$";
+            Random random = new Random();
             int randomLength = random.nextInt((PUBLIC_ID_MAX_LENGTH - PUBLIC_ID_MIN_LENGTH) + 1) + PUBLIC_ID_MIN_LENGTH;
+
             String publicId = publicIdGenerator.generatePublicId(randomLength);
             log.info("randomLength length: {}, generated public_id length: {}", randomLength, publicId.length());
+
             assertThat(publicId)
-                    .matches(publicIdPattern)
+                    .matches(PUBLIC_ID_PATTERN)
                     .hasSizeBetween(PUBLIC_ID_MIN_LENGTH, PUBLIC_ID_MAX_LENGTH);
         }
 

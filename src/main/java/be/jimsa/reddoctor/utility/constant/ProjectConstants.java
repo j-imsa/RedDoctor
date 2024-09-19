@@ -41,6 +41,7 @@ public class ProjectConstants {
 
 
     // ======================== General ======================== //
+    public static final long GENERAL_DURATION = 30L;
     public static final String GENERAL_STRING_TYPE = "string";
     public static final String GENERAL_STATUS_FIELD = "status";
     public static final String GENERAL_DATE_FIELD = "date";
@@ -82,7 +83,7 @@ public class ProjectConstants {
     public static final String APPOINTMENT_VALIDATION_DTO_END_TIME_FIELD = "end";
     public static final String APPOINTMENT_VALIDATION_ENTITY_START_TIME_FIELD = "startTime";
     public static final String APPOINTMENT_VALIDATION_ENTITY_END_TIME_FIELD = "endTime";
-    public static final String APPOINTMENT_VALIDATION_SEQUENCE_TIME_MESSAGE = "The start time must BE before the end time!";
+    public static final String APPOINTMENT_VALIDATION_SEQUENCE_TIME_MESSAGE = "The start time must BE before the end time! It means this formula must be true: 'abs(end-start) > 1s' and be sure that 'The start can not be 23:59:59 (MAX) and the end can not be 00:00:00 (MIN)'";
     public static final String PATIENT_VALIDATION_NAME_NOT_EMPTY_MESSAGE = "name must NOT be empty";
     public static final String PATIENT_VALIDATION_NAME_NOT_BLANK_MESSAGE = "name must NOT be blank";
     public static final String PATIENT_VALIDATION_PHONE_NUMBER_NOT_EMPTY_MESSAGE = "phone_number must NOT be empty";
@@ -117,7 +118,9 @@ public class ProjectConstants {
 
 
     // ======================== Exception ======================== //
-    public static final String GENERAL_EXCEPTION_LOG_PATTERN = "%s : %s";
+    public static final String GENERAL_EXCEPTION_NULL = "null";
+    public static final String GENERAL_EXCEPTION_NULL_MESSAGE = "Unfortunately, initialization failed, and the Null object was detected! Please report this status to the developers' team.";
+    public static final String GENERAL_EXCEPTION_LOG_PATTERN = "{} : {}";
     public static final String GENERAL_EXCEPTION_REGEX = "%s %s";
     public static final String GENERAL_EXCEPTION_MESSAGE = "message";
     public static final String GENERAL_EXCEPTION_PATH = "path";
@@ -455,7 +458,8 @@ public class ProjectConstants {
               "action": false,
               "timestamp": "10/09/2024 10:01:13 PM",
               "result": {
-                "publicId": "public_id must be null on the creation operation"
+                "publicId": "public_id must be null on the creation operation",
+                "start-end": "The start time must BE before the end time! It means this formula must be true: 'abs(end-start) > 1s' and be sure that 'The start can not be 23:59:59 (MAX) and the end can not be 00:00:00 (MIN)'"
               }
             }
             """;

@@ -5,7 +5,9 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.BeanWrapperImpl;
 
+import java.time.Duration;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class TimeSequenceValidator implements ConstraintValidator<ValidTimeSequence, Object> {
@@ -21,13 +23,25 @@ public class TimeSequenceValidator implements ConstraintValidator<ValidTimeSeque
 
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
-        LocalTime time1 = (LocalTime) new BeanWrapperImpl(value).getPropertyValue(currentTime);
-        LocalTime time2 = (LocalTime) new BeanWrapperImpl(value).getPropertyValue(nextTime);
+        LocalTime start = Objects.requireNonNull((LocalTime) new BeanWrapperImpl(value).getPropertyValue(currentTime));
+        LocalTime end = Objects.requireNonNull((LocalTime) new BeanWrapperImpl(value).getPropertyValue(nextTime));
 
-        if (Objects.requireNonNull(time2).equals(LocalTime.of(0, 0, 0))) {
-            time2 = time2.minusSeconds(1);
+        if (end.equals(LocalTime.MIDNIGHT.truncatedTo(ChronoUnit.SECONDS))) { // end cannot be 00:00:00
+            return false;
+        }
+        if (start.equals(LocalTime.MAX.truncatedTo(ChronoUnit.SECONDS))) { // start cannot be 23:59:59
+            return false;
+        }
+        if (start.equals(end)) { // abs(end-start) == 0 does not make sense!
+            return false;
         }
 
-        return !Objects.requireNonNull(time2).isBefore(time1) && !time2.equals(time1);
+        // return Duration.between(start, end).compareTo(Duration.ofSeconds(1)) > 0;
+
+        // if start > end then -1
+        Duration duration = Duration.between(start, end);
+        if (duration.isNegative()) {
+            return false;
+        } else return !duration.isZero();
     }
 }
