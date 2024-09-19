@@ -38,12 +38,11 @@ import static org.mockito.Mockito.verify;
 
 class AppointmentUtilsTests {
 
-    private PublicIdGenerator publicIdGenerator;
     private AppointmentUtils appointmentUtils;
 
     @BeforeEach
     void setUp() {
-        publicIdGenerator = new PublicIdGenerator();
+        PublicIdGenerator publicIdGenerator = new PublicIdGenerator();
         appointmentUtils = new AppointmentUtils(publicIdGenerator);
     }
 

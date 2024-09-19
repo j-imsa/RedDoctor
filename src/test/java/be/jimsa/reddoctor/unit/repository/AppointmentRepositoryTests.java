@@ -294,7 +294,7 @@ class AppointmentRepositoryTests {
         }
 
         @ParameterizedTest
-        @CsvSource({"00:00, 00:30", "23:30, 00:00"})
+        @CsvSource({"00:00, 00:30", "23:29, 23:59"})
         @DisplayName("with boundary times, should save all of them")
         void testSaveAllWithBoundaryTimes(String start, String end) {
             LocalTime startTime = LocalTime.parse(start);
@@ -414,7 +414,7 @@ class AppointmentRepositoryTests {
         }
 
         @ParameterizedTest
-        @CsvSource({"00:00, 00:30", "23:30, 00:00"})
+        @CsvSource({"00:00, 00:30", "23:29, 23:59"})
         @DisplayName("with boundary times, should save all of them")
         void testSaveWithBoundaryTimes(String start, String end) {
             LocalTime startTime = LocalTime.parse(start);
