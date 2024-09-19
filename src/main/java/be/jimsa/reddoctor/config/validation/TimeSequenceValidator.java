@@ -7,6 +7,7 @@ import org.springframework.beans.BeanWrapperImpl;
 
 import java.time.Duration;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class TimeSequenceValidator implements ConstraintValidator<ValidTimeSequence, Object> {
@@ -25,15 +26,22 @@ public class TimeSequenceValidator implements ConstraintValidator<ValidTimeSeque
         LocalTime start = Objects.requireNonNull((LocalTime) new BeanWrapperImpl(value).getPropertyValue(currentTime));
         LocalTime end = Objects.requireNonNull((LocalTime) new BeanWrapperImpl(value).getPropertyValue(nextTime));
 
-        if (end.equals(LocalTime.MIDNIGHT)) { // end cannot be 00:00
+        if (end.equals(LocalTime.MIDNIGHT.truncatedTo(ChronoUnit.SECONDS))) { // end cannot be 00:00:00
             return false;
         }
-        if (start.equals(LocalTime.MAX)) { // start cannot be 23:59:59
+        if (start.equals(LocalTime.MAX.truncatedTo(ChronoUnit.SECONDS))) { // start cannot be 23:59:59
             return false;
         }
         if (start.equals(end)) { // abs(end-start) == 0 does not make sense!
             return false;
         }
-        return Duration.between(start, end).compareTo(Duration.ofSeconds(1)) > 0;
+
+        // return Duration.between(start, end).compareTo(Duration.ofSeconds(1)) > 0;
+
+        // if start > end then -1
+        Duration duration = Duration.between(start, end);
+        if (duration.isNegative()) {
+            return false;
+        } else return !duration.isZero();
     }
 }
