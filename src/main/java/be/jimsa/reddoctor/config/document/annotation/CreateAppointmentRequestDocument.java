@@ -85,5 +85,6 @@ import static be.jimsa.reddoctor.utility.constant.ProjectConstants.*;
 )
 public @interface CreateAppointmentRequestDocument {
     String summary() default API_DOCUMENT_DEFAULT_SUMMERY;
+
     String description() default API_DOCUMENT_DEFAULT_DESCRIPTION;
 }
