@@ -134,10 +134,12 @@ public class AppointmentUtils {
     }
 
     public void printLogger(Logger logger, Page<Appointment> appointmentPage) {
-        logger.info(LOGGER_TOTAL_ELEMENTS, appointmentPage.getTotalElements());
-        logger.info(LOGGER_TOTAL_PAGES, appointmentPage.getTotalPages());
-        logger.info(LOGGER_NUMBER_OF_ELEMENTS, appointmentPage.getNumberOfElements());
-        logger.info(LOGGER_SIZE, appointmentPage.getSize());
+        if (logger != null && appointmentPage != null) {
+            logger.info(LOGGER_TOTAL_ELEMENTS, appointmentPage.getTotalElements());
+            logger.info(LOGGER_TOTAL_PAGES, appointmentPage.getTotalPages());
+            logger.info(LOGGER_NUMBER_OF_ELEMENTS, appointmentPage.getNumberOfElements());
+            logger.info(LOGGER_SIZE, appointmentPage.getSize());
+        }
     }
 
 }
