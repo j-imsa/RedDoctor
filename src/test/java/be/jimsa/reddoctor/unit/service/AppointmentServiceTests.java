@@ -6,6 +6,7 @@ import be.jimsa.reddoctor.utility.AppointmentUtils;
 import be.jimsa.reddoctor.utility.id.PublicIdGenerator;
 import be.jimsa.reddoctor.ws.model.dto.AppointmentDto;
 import be.jimsa.reddoctor.ws.model.entity.Appointment;
+import be.jimsa.reddoctor.ws.model.enums.Status;
 import be.jimsa.reddoctor.ws.repository.AppointmentRepository;
 import be.jimsa.reddoctor.ws.service.impl.AppointmentServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,10 +27,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static be.jimsa.reddoctor.utility.constant.ProjectConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -479,9 +477,83 @@ class AppointmentServiceTests {
 
     @Nested
     @DisplayName("RemoveAnAppointment")
-    class removeAnAppointmentTests {
+    class RemoveAnAppointmentTests {
+
+        @Test
+        @DisplayName("with valid public_id, should return true")
+        void testRemoveAnAppointmentWithValidPublicId() {
+            Appointment appointment = generateAppointment();
+            appointment.setStatus(Status.OPEN);
+            given(appointmentRepository.findByPublicId(anyString())).willReturn(Optional.of(appointment));
+            given(appointmentRepository.save(any(Appointment.class))).willReturn(appointment);
+
+            boolean result = appointmentService.removeAnAppointment(PUBLIC_ID_EXAMPLE_1);
+
+            assertThat(result).isTrue();
+        }
+
+        @Test
+        @DisplayName("with invalid public_id, should throw AppServiceException")
+        void testRemoveAnAppointmentWithInvalidPublicId() {
+            given(appointmentRepository.findByPublicId(anyString())).willReturn(Optional.empty());
+
+            assertThatThrownBy(() -> appointmentService.removeAnAppointment(PUBLIC_ID_EXAMPLE_1))
+                    .isInstanceOf(AppServiceException.class)
+                    .hasMessageContaining(EXCEPTION_NOT_FOUND_RESOURCE_MESSAGE);
+        }
+
+        @Test
+        @DisplayName("with null public_id, should throw AppServiceException")
+        void testRemoveAnAppointmentWithNullPublicId() {
+            given(appointmentRepository.findByPublicId(any())).willReturn(Optional.empty());
+
+            assertThatThrownBy(() -> appointmentService.removeAnAppointment(null))
+                    .isInstanceOf(AppServiceException.class)
+                    .hasMessageContaining(EXCEPTION_NOT_FOUND_RESOURCE_MESSAGE);
+        }
+
+        @Test
+        @DisplayName("with deleted status, should throw AppServiceException")
+        void testRemoveAnAppointmentWithDeletedStatus() {
+            Appointment appointment = generateAppointment();
+            appointment.setStatus(Status.DELETED);
+            given(appointmentRepository.findByPublicId(anyString())).willReturn(Optional.of(appointment));
+
+            assertThatThrownBy(() -> appointmentService.removeAnAppointment(PUBLIC_ID_EXAMPLE_1))
+                    .isInstanceOf(AppServiceException.class)
+                    .hasMessageContaining(EXCEPTION_RESOURCE_ALREADY_DELETED_MESSAGE);
+        }
+
+        @Test
+        @DisplayName("with taken status, should throw AppServiceException")
+        void testRemoveAnAppointmentWithTakenStatus() {
+            Appointment appointment = generateAppointment();
+            appointment.setStatus(Status.TAKEN);
+            given(appointmentRepository.findByPublicId(anyString())).willReturn(Optional.of(appointment));
+
+            assertThatThrownBy(() -> appointmentService.removeAnAppointment(PUBLIC_ID_EXAMPLE_1))
+                    .isInstanceOf(AppServiceException.class)
+                    .hasMessageContaining(EXCEPTION_NOT_ACCEPTABLE_RESOURCE_MESSAGE);
+        }
+
+        @Test
+        @DisplayName("transactional? should rollback")
+        void testRemoveAnAppointmentWithTransactional() {
+            long initialCount = appointmentRepository.count();
+            Appointment appointment = generateAppointment();
+            appointment.setStatus(Status.OPEN);
+            given(appointmentRepository.findByPublicId(anyString())).willReturn(Optional.of(appointment));
+            doAnswer(invocation -> {
+                Appointment savedAppointment = invocation.getArgument(0);
+                throw new RuntimeException("transactional");
+            }).when(appointmentRepository).save(any(Appointment.class));
+
+            assertThatThrownBy(() -> appointmentService.removeAnAppointment(PUBLIC_ID_EXAMPLE_1))
+                    .isInstanceOf(RuntimeException.class)
+                    .hasMessageContaining("transactional");
+            assertThat(appointmentRepository.count()).isEqualTo(initialCount);
+        }
 
     }
-
 
 }
