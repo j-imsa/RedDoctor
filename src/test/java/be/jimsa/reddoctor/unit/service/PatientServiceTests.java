@@ -27,6 +27,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -253,6 +254,88 @@ class PatientServiceTests {
     @Nested
     @DisplayName("ReadMyAppointments")
     class ReadMyAppointmentsTests {
+
+        @Test
+        @DisplayName("with valid data, should return valid list")
+        void testReadMyAppointmentsWithValidData() {
+            String phoneNumber = "9131231234";
+            int page = 1;
+            int size = 20;
+            String sortDirection = "asc";
+            int expectedSize = 2;
+            given(patientRepository.findByPhoneNumber(anyString())).willReturn(Optional.of(generatePatient()));
+            given(appointmentRepository.findAllByPatient(any(), any())).willReturn(generateAppointmentPage(page, size, 2 * size));
+            given(appointmentUtils.mapToDto(any())).willReturn(generateAppointmentDto());
+
+            List<AppointmentDto> appointmentDtos = patientService.readMyAppointments(phoneNumber, page, size, sortDirection);
+
+            assertThat(appointmentDtos)
+                    .isNotNull()
+                    .hasSize(expectedSize);
+        }
+
+        @Test
+        @DisplayName("with invalid phone number, should return valid-empty list")
+        void testReadMyAppointmentsWithInvalidPhoneNumber() {
+            String phoneNumber = "9131231234";
+            int page = 1;
+            int size = 20;
+            String sortDirection = "asc";
+            int expectedSize = 0;
+            given(patientRepository.findByPhoneNumber(anyString())).willReturn(Optional.empty());
+
+            List<AppointmentDto> appointmentDtos = patientService.readMyAppointments(phoneNumber, page, size, sortDirection);
+
+            assertThat(appointmentDtos)
+                    .isNotNull()
+                    .hasSize(expectedSize);
+        }
+
+        @Test
+        @DisplayName("with invalid page, should throw IllegalArgumentException")
+        void testReadMyAppointmentsWithInvalidPage() {
+            String phoneNumber = "9131231234";
+            int page = -100;
+            int size = 20;
+            String sortDirection = "asc";
+            given(patientRepository.findByPhoneNumber(anyString())).willReturn(Optional.of(generatePatient()));
+
+            assertThatThrownBy(() ->patientService.readMyAppointments(phoneNumber, page, size, sortDirection))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("Page index must not be less than zero");
+        }
+
+        @Test
+        @DisplayName("with invalid page size, should throw IllegalArgumentException")
+        void testReadMyAppointmentsWithInvalidPageSize() {
+            String phoneNumber = "9131231234";
+            int page = 1;
+            int size = -200;
+            String sortDirection = "asc";
+            given(patientRepository.findByPhoneNumber(anyString())).willReturn(Optional.of(generatePatient()));
+
+            assertThatThrownBy(() ->patientService.readMyAppointments(phoneNumber, page, size, sortDirection))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("Page size must not be less than one");
+        }
+
+        @Test
+        @DisplayName("with valid patient and no appointment, should return valid-empty list")
+        void testReadMyAppointmentsWithValidDataAndNoAppointment() {
+            String phoneNumber = "9131231234";
+            int page = 1;
+            int size = 20;
+            String sortDirection = "asc";
+            int expectedSize = 0;
+            given(patientRepository.findByPhoneNumber(anyString())).willReturn(Optional.of(generatePatient()));
+            given(appointmentRepository.findAllByPatient(any(), any())).willReturn(new PageImpl<>(Collections.emptyList()));
+
+            List<AppointmentDto> appointmentDtos = patientService.readMyAppointments(phoneNumber, page, size, sortDirection);
+
+            assertThat(appointmentDtos)
+                    .isNotNull()
+                    .hasSize(expectedSize);
+        }
 
     }
 
