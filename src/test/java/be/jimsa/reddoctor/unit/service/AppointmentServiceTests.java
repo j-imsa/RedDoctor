@@ -16,12 +16,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.Logger;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static be.jimsa.reddoctor.utility.constant.ProjectConstants.*;
@@ -30,8 +37,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AppointmentServiceTests {
@@ -95,6 +101,14 @@ class AppointmentServiceTests {
                 .endTime(LocalTime.now().truncatedTo(ChronoUnit.SECONDS).plusMinutes(GENERAL_DURATION).plusHours(1L))
                 .build());
         return entities;
+    }
+
+    private Page<Appointment> generateAppointmentPage(int page, int size, int total) {
+        return new PageImpl<>(
+                generateAppointments(),
+                PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD)),
+                total
+        );
     }
 
     @Nested
@@ -239,6 +253,227 @@ class AppointmentServiceTests {
     @Nested
     @DisplayName("ReadAppointments")
     class ReadAppointmentsTests {
+
+        @Test
+        @DisplayName("with valid data (all), should return valid list")
+        void testReadAppointmentsWithValidDataAll() {
+            String dateStr = "16-01-2020";
+            int page = 1;
+            int size = 20;
+            String statusStr = "all"; // invalid status
+            String sortDirection = "desc";
+            // findAllByDate
+            given(appointmentRepository.findAllByDate(any(), any(LocalDate.class))).willReturn(generateAppointmentPage(page, size, 2 * size));
+            // printLogger
+            doNothing().when(appointmentUtils).printLogger(any(Logger.class), any());
+            // mapToDto
+            given(appointmentUtils.mapToDto(any(Appointment.class))).willReturn(generateAppointmentDto());
+            // expected
+            int expectedSize = 2;
+
+            List<AppointmentDto> appointmentDtos = appointmentService.readAppointments(dateStr, page, size, statusStr, sortDirection);
+
+            assertThat(appointmentDtos)
+                    .isNotNull()
+                    .hasSize(expectedSize);
+        }
+
+        @Test
+        @DisplayName("with valid data (open), should return valid list")
+        void testReadAppointmentsWithValidDataOpen() {
+            String dateStr = "16-01-2020";
+            int page = 1;
+            int size = 20;
+            String statusStr = "open";
+            String sortDirection = "desc";
+            // findAllByDateAndStatus
+            given(appointmentRepository.findAllByDateAndStatus(any(), any(LocalDate.class), any())).willReturn(generateAppointmentPage(page, size, 2 * size));
+            // printLogger
+            doNothing().when(appointmentUtils).printLogger(any(Logger.class), any());
+            // mapToDto
+            given(appointmentUtils.mapToDto(any(Appointment.class))).willReturn(generateAppointmentDto());
+            // expected
+            int expectedSize = 2;
+
+            List<AppointmentDto> appointmentDtos = appointmentService.readAppointments(dateStr, page, size, statusStr, sortDirection);
+
+            assertThat(appointmentDtos)
+                    .isNotNull()
+                    .hasSize(expectedSize);
+        }
+
+        @Test
+        @DisplayName("with invalid time, should throw DateTimeParseException")
+        void testReadAppointmentsWithInvalidTime() {
+            String dateStr = "2020- 16-01";
+            int page = 1;
+            int size = 20;
+            String statusStr = "open";
+            String sortDirection = "desc";
+
+            assertThatThrownBy(() -> appointmentService.readAppointments(dateStr, page, size, statusStr, sortDirection))
+                    .isInstanceOf(DateTimeParseException.class)
+                    .hasMessageContaining("could not be parsed");
+        }
+
+        @Test
+        @DisplayName("with null time, should throw NullPointerException")
+        void testReadAppointmentsWithNullTime() {
+            int page = 1;
+            int size = 20;
+            String statusStr = "open";
+            String sortDirection = "desc";
+
+            assertThatThrownBy(() -> appointmentService.readAppointments(null, page, size, statusStr, sortDirection))
+                    .isInstanceOf(NullPointerException.class)
+                    .hasMessageContaining("text");
+        }
+
+        @Test
+        @DisplayName("with invalid page, should throw IllegalArgumentException")
+        void testReadAppointmentsWithInvalidPage() {
+            String dateStr = "16-01-2020";
+            int page = -10;
+            int size = 20;
+            String statusStr = "open";
+            String sortDirection = "desc";
+
+            assertThatThrownBy(() -> appointmentService.readAppointments(dateStr, page, size, statusStr, sortDirection))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("Page index must not be less than zero");
+        }
+
+        @Test
+        @DisplayName("with invalid size, should throw IllegalArgumentException")
+        void testReadAppointmentsWithInvalidSize() {
+            String dateStr = "16-01-2020";
+            int page = 1;
+            int size = -20;
+            String statusStr = "open";
+            String sortDirection = "desc";
+
+            assertThatThrownBy(() -> appointmentService.readAppointments(dateStr, page, size, statusStr, sortDirection))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("Page size must not be less than one");
+        }
+
+        @Test
+        @DisplayName("with invalid sort direction, should return reversed-sorted list")
+        void testReadAppointmentsWithInvalidSortDirection() {
+            String dateStr = "20-09-2024";
+            int page = 1;
+            int size = 20;
+            String statusStr = "open";
+            String sortDirection = "xyz";
+            // findAllByDateAndStatus
+            given(appointmentRepository.findAllByDateAndStatus(any(), any(LocalDate.class), any())).willReturn(generateAppointmentPage(page, size, 2 * size));
+            // printLogger
+            doNothing().when(appointmentUtils).printLogger(any(Logger.class), any());
+            // mapToDto
+            given(appointmentUtils.mapToDto(any(Appointment.class)))
+                    // DESC order, return
+                    .willReturn(generateAppointmentDtos().get(1))
+                    .willReturn(generateAppointmentDtos().get(0));
+            // expected
+            int expectedSize = 2;
+
+            List<AppointmentDto> appointmentDtos = appointmentService.readAppointments(dateStr, page, size, statusStr, sortDirection);
+
+            assertThat(appointmentDtos)
+                    .isNotNull()
+                    .hasSize(expectedSize)
+                    .isSortedAccordingTo(Comparator.comparing(AppointmentDto::getStart).reversed());
+        }
+
+        @Test
+        @DisplayName("with null sort direction, should throw NullPointerException")
+        void testReadAppointmentsWithNullSortDirection() {
+            String dateStr = "20-09-2024";
+            int page = 1;
+            int size = 20;
+            String statusStr = "open";
+
+            assertThatThrownBy(() -> appointmentService.readAppointments(dateStr, page, size, statusStr, null))
+                    .isInstanceOf(NullPointerException.class)
+                    .hasMessageContaining("Cannot invoke");
+        }
+
+        @Test
+        @DisplayName("with db exception, by status, should throw RuntimeException")
+        void testReadAppointmentsWithDbExceptionWithStatus() {
+            String dateStr = "20-09-2024";
+            int page = 1;
+            int size = 20;
+            String statusStr = "open";
+            String sortDirection = "asc";
+            // findAllByDateAndStatus
+            given(appointmentRepository.findAllByDateAndStatus(any(), any(LocalDate.class), any()))
+                    .willThrow(new RuntimeException("db"));
+
+            assertThatThrownBy(() -> appointmentService.readAppointments(dateStr, page, size, statusStr, sortDirection))
+                    .isInstanceOf(RuntimeException.class)
+                    .hasMessageContaining("db");
+        }
+
+        @Test
+        @DisplayName("with db exception, without status, should throw RuntimeException")
+        void testReadAppointmentsWithDbExceptionWithoutStatus() {
+            String dateStr = "20-09-2024";
+            int page = 1;
+            int size = 20;
+            String statusStr = "all";
+            String sortDirection = "asc";
+            // findAllByDateAndStatus
+            given(appointmentRepository.findAllByDate(any(), any(LocalDate.class)))
+                    .willThrow(new RuntimeException("db"));
+
+            assertThatThrownBy(() -> appointmentService.readAppointments(dateStr, page, size, statusStr, sortDirection))
+                    .isInstanceOf(RuntimeException.class)
+                    .hasMessageContaining("db");
+        }
+
+        @Test
+        @DisplayName("with utils exception, printLogger, should throw RuntimeException")
+        void testReadAppointmentsWithUtilsExceptionPrintLogger() {
+            String dateStr = "20-09-2024";
+            int page = 1;
+            int size = 20;
+            String statusStr = "open";
+            String sortDirection = "asc";
+            // findAllByDateAndStatus
+            given(appointmentRepository.findAllByDateAndStatus(any(), any(LocalDate.class), any()))
+                    .willReturn(generateAppointmentPage(page, size, 2 * size));
+            // printLogger
+            doThrow(new RuntimeException("printLogger"))
+                    .when(appointmentUtils)
+                    .printLogger(any(Logger.class), any());
+
+            assertThatThrownBy(() -> appointmentService.readAppointments(dateStr, page, size, statusStr, sortDirection))
+                    .isInstanceOf(RuntimeException.class)
+                    .hasMessageContaining("printLogger");
+        }
+
+        @Test
+        @DisplayName("with utils exception, mapToDto, should throw RuntimeException")
+        void testReadAppointmentsWithUtilsExceptionMapToDto() {
+            String dateStr = "20-09-2024";
+            int page = 1;
+            int size = 20;
+            String statusStr = "open";
+            String sortDirection = "asc";
+            // findAllByDateAndStatus
+            given(appointmentRepository.findAllByDateAndStatus(any(), any(LocalDate.class), any()))
+                    .willReturn(generateAppointmentPage(page, size, 2 * size));
+            // printLogger
+            doNothing().when(appointmentUtils).printLogger(any(Logger.class), any());
+            // mapToDto
+            given(appointmentUtils.mapToDto(any(Appointment.class)))
+                    .willThrow(new RuntimeException("mapToDto"));
+
+            assertThatThrownBy(() -> appointmentService.readAppointments(dateStr, page, size, statusStr, sortDirection))
+                    .isInstanceOf(RuntimeException.class)
+                    .hasMessageContaining("mapToDto");
+        }
 
     }
 
