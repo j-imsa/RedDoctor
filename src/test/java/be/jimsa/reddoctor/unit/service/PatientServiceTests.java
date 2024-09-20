@@ -65,18 +65,6 @@ class PatientServiceTests {
                 .build();
     }
 
-    private List<AppointmentDto> generateAppointmentDtos() {
-        List<AppointmentDto> dtos = new ArrayList<>();
-        dtos.add(generateAppointmentDto());
-        dtos.add(AppointmentDto.builder()
-                .publicId(PUBLIC_ID_EXAMPLE_2)
-                .date(LocalDate.now())
-                .start(LocalTime.now().truncatedTo(ChronoUnit.SECONDS).plusHours(1L))
-                .end(LocalTime.now().truncatedTo(ChronoUnit.SECONDS).plusMinutes(GENERAL_DURATION).plusHours(1L))
-                .build());
-        return dtos;
-    }
-
     private Appointment generateAppointment() {
         return Appointment.builder()
                 .id(100L)

@@ -9,7 +9,6 @@ import be.jimsa.reddoctor.ws.model.entity.Appointment;
 import be.jimsa.reddoctor.ws.model.enums.Status;
 import be.jimsa.reddoctor.ws.repository.AppointmentRepository;
 import be.jimsa.reddoctor.ws.service.impl.AppointmentServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -51,11 +50,6 @@ class AppointmentServiceTests {
 
     @Mock
     private AppointmentUtils appointmentUtils;
-
-    @BeforeEach
-    void setup() {
-
-    }
 
     private AppointmentDto generateAppointmentDto() {
         return AppointmentDto.builder()
