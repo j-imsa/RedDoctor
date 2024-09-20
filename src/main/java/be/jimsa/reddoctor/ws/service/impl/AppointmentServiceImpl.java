@@ -35,6 +35,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentUtils appointmentUtils;
 
     @EvaluateExecuteTimeout
+    @Transactional
     @Override
     public List<AppointmentDto> createAppointments(AppointmentDto appointmentDto) {
 
@@ -43,16 +44,11 @@ public class AppointmentServiceImpl implements AppointmentService {
             throw new AppServiceException(EXCEPTION_DATE_MESSAGE, HttpStatus.BAD_REQUEST);
         }
 
-        int l1 = appointmentDto.getEnd().compareTo(appointmentDto.getStart());
-        if (l1 < 0) {
-            throw new AppServiceException(EXCEPTION_START_END_FORMAT_MESSAGE, HttpStatus.BAD_REQUEST);
-        }
-
         List<AppointmentDto> appointmentDtos = appointmentUtils.splitter(appointmentDto);
 
         List<Appointment> savedAppointments = appointmentRepository.saveAll(
                 appointmentDtos.stream()
-                        .map(dto -> appointmentRepository.save(appointmentUtils.mapToEntity(dto)))
+                        .map(appointmentUtils::mapToEntity)
                         .toList()
         );
         return savedAppointments.stream()
@@ -72,9 +68,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Sort sort;
         if (sortDirection.equalsIgnoreCase(GENERAL_SORT_DIRECTION_ASC_FIELD)) {
-            sort = Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD);
-        } else {
             sort = Sort.by(Sort.Direction.DESC, APPOINTMENT_TIME_FIELD);
+        } else {
+            sort = Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD);
         }
 
         Pageable pageable = PageRequest.of(page - 1, size, sort);

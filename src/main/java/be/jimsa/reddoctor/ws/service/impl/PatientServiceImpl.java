@@ -11,7 +11,6 @@ import be.jimsa.reddoctor.ws.model.enums.Status;
 import be.jimsa.reddoctor.ws.repository.AppointmentRepository;
 import be.jimsa.reddoctor.ws.repository.PatientRepository;
 import be.jimsa.reddoctor.ws.service.PatientService;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +52,9 @@ public class PatientServiceImpl implements PatientService {
         }
 
         Optional<Patient> optionalPatient = patientRepository.findByPhoneNumber(patientDto.getPhoneNumber());
-        Patient savedPatient = optionalPatient.map(patient -> patientRepository.save(patientMapper.mapToEntityById(patientDto, patient.getId()))).orElseGet(() -> patientRepository.save(patientMapper.mapToEntity(patientDto)));
+        Patient savedPatient = optionalPatient
+                .map(patient -> patientRepository.save(patientMapper.mapToEntityById(patientDto, patient.getId())))
+                .orElseGet(() -> patientRepository.save(patientMapper.mapToEntity(patientDto)));
 
         Appointment appointment = optionalAppointment.get();
         appointment.setPatient(savedPatient);
@@ -74,9 +76,9 @@ public class PatientServiceImpl implements PatientService {
 
         Sort sort;
         if (sortDirection.equalsIgnoreCase(GENERAL_SORT_DIRECTION_ASC_FIELD)) {
-            sort = Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD);
-        } else {
             sort = Sort.by(Sort.Direction.DESC, APPOINTMENT_TIME_FIELD);
+        } else {
+            sort = Sort.by(Sort.Direction.ASC, APPOINTMENT_TIME_FIELD);
         }
 
         Pageable pageable = PageRequest.of(page - 1, size, sort);
